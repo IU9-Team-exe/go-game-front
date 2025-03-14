@@ -1,0 +1,11 @@
+/* Стили для Toolbar */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Стили для заголовка */
+.title {
+    font-weight: bold;
+}

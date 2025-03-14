@@ -8,7 +8,7 @@ export default function AppRouter() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/game/:gameId" element={<Game />} />
+                <Route path="/game" element={<Game />} />
                 <Route path="*" element={<div>Страница не найдена</div>} />
             </Routes>
         </BrowserRouter>

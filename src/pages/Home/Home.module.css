@@ -1,6 +1,15 @@
 .home-container {
     padding: 2rem;
+    margin: 0 auto;
+    max-width: 800px;
 }
-h1 {
-    color: #333;
+
+/* Отступы для абзацев */
+.home-container p {
+    margin-bottom: 1rem;
+}
+
+/* Небольшой отступ для заголовка */
+.home-container h1 {
+    margin-bottom: 1.5rem;
 }

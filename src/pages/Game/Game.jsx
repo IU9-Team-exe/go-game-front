@@ -24,7 +24,6 @@ function Game() {
     return (
 
         <div>
-            <h1>Игра в Го</h1>
             <GoPlayer width={800} height={800} options={{}}/>
         </div>
     );
