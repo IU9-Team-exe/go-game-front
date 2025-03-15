@@ -37,6 +37,8 @@ const GoPlayer = ({
 
             const player = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
             player.setCoordinates(true);
+            const editable = new window.WGo.Player.Editable(player, player.board);
+            editable.set(true);
 
             player.addEventListener("update", (e) => {
                 if (e.change && e.change.add && e.change.add.length > 0) {
@@ -45,9 +47,6 @@ const GoPlayer = ({
             });
 
             if (mode === "multiplayer") {
-                const editable = new window.WGo.Player.Editable(player, player.board);
-                editable.set(true);
-
                 const originalPlay = editable.play;
                 editable.play = function (x, y) {
                     const currentTurn = this.player.kifuReader.game.turn === window.WGo.B ? "b" : "w";
@@ -104,9 +103,6 @@ const GoPlayer = ({
                         socketRef.current.close();
                     }
                 };
-            } else {
-                const editable = new window.WGo.Player.Editable(player, player.board);
-                editable.set(true);
             }
 
             playerRef.current = player;
