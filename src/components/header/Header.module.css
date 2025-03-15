@@ -9,3 +9,16 @@
 .title {
     font-weight: bold;
 }
+
+.link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.link:hover,
+.link:focus,
+.link:visited,
+.link:active {
+    text-decoration: none;
+    color: inherit;
+}

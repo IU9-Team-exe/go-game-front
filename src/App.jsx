@@ -8,11 +8,8 @@ function App() {
     return (
         <>
             <Header />
-            <Provider store={store}>
-                <AppRouter />
-            </Provider>
+            <AppRouter />
         </>
-
     );
 }
 

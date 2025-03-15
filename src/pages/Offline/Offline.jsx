@@ -4,7 +4,7 @@
 // import {getGameById} from "../../services/gameService";
 import GoPlayer from "../../components/board/GoPlayer.jsx";
 
-function Game() {
+function Offline() {
     // const {gameId} = useParams();
     // const user = useSelector((state) => state.user.user);
 
@@ -29,4 +29,4 @@ function Game() {
     );
 }
 
-export default Game;
+export default Offline;
