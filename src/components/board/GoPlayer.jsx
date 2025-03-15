@@ -38,6 +38,12 @@ const GoPlayer = ({
             const player = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
             player.setCoordinates(true);
 
+            player.addEventListener("update", (e) => {
+                if (e.change && e.change.add && e.change.add.length > 0) {
+                    console.log("Current SGF:", player.kifuReader.kifu.toSgf());
+                }
+            });
+
             if (mode === "multiplayer") {
                 const editable = new window.WGo.Player.Editable(player, player.board);
                 editable.set(true);
