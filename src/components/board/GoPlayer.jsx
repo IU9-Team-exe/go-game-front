@@ -30,7 +30,7 @@ const GoPlayer = ({
                 ...options,
             };
 
-            if (mode === "multiplayer") {
+            if (mode === "multiplayer" || mode === "ai") {
                 playerOptions.layout = { top: [], bottom: [], left: [], right: [] };
                 playerOptions.enableKeys = false;
             }

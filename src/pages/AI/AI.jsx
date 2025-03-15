@@ -6,7 +6,7 @@ function AI() {
     return (
         <div>
             <h2 style={{ textAlign: 'center'}}>Игра с KataGo</h2>
-            <GoPlayer mode="multiplayer" playerColor={playerColor} />
+            <GoPlayer mode="ai" playerColor={playerColor} />
         </div>
     );
 }
