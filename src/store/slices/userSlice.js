@@ -1,26 +1,74 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { loginRequest, registerRequest } from "../../services/API/authApi";
 
-const initialState = {
-    user: null,
-    token: null,
-};
+export const loginUser = createAsyncThunk(
+    "user/loginUser",
+    async ({ email, password }, { rejectWithValue }) => {
+        try {
+            const data = await loginRequest(email, password);
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Ошибка при авторизации");
+        }
+    }
+);
+
+export const registerUser = createAsyncThunk(
+    "user/registerUser",
+    async ({ email, nickname, password }, { rejectWithValue }) => {
+        try {
+            const data = await registerRequest(email, nickname, password);
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Ошибка при регистрации");
+        }
+    }
+);
 
 const userSlice = createSlice({
     name: "user",
-    initialState,
+    initialState: {
+        user: null,
+        isLoading: false,
+        error: null,
+    },
     reducers: {
-        setUser(state, action) {
-            state.user = action.payload;
-        },
-        setToken(state, action) {
-            state.token = action.payload;
-        },
-        logout(state) {
+        logout: (state) => {
             state.user = null;
-            state.token = null;
+            state.error = null;
         },
+    },
+    extraReducers: (builder) => {
+        builder
+            // Логин
+            .addCase(loginUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(loginUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.user = action.payload;
+            })
+            .addCase(loginUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
+
+            // Регистрация
+            .addCase(registerUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(registerUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.user = action.payload;
+            })
+            .addCase(registerUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
     },
 });
 
-export const { setUser, setToken, logout } = userSlice.actions;
+export const { logout } = userSlice.actions;
 export default userSlice.reducer;

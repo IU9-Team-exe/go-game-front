@@ -1,0 +1,26 @@
+.authForm {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin: 40px auto;
+}
+
+.authForm h2 {
+    text-align: center;
+}
+
+.authForm label {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.authForm input {
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.error {
+    color: red;
+    margin: 5px 0;
+}

@@ -19,12 +19,20 @@ function Header() {
 
                 <Button color="inherit">
                     <Link to="/offline" className={styles.link}>
-                        offline
+                        Offline
                     </Link>
                 </Button>
 
                 <Button color="inherit">
-                    Login
+                    <Link to="/login" className={styles.link}>
+                        Login
+                    </Link>
+                </Button>
+
+                <Button color="inherit">
+                    <Link to="/register" className={styles.link}>
+                        Register
+                    </Link>
                 </Button>
             </Toolbar>
         </AppBar>

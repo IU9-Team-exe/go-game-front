@@ -1,0 +1,26 @@
+.registerForm {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin: 40px auto;
+}
+
+.registerForm h2 {
+    text-align: center;
+}
+
+.registerForm label {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.registerForm input {
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.error {
+    color: red;
+    margin: 5px 0;
+}

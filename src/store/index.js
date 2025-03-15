@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userSlice from "./slices/userSlice";
-import gameSlice from "./slices/gameSlice";
+import userReducer from "./slices/userSlice";
+import gameReducer from "./slices/gameSlice"; // если у вас есть gameSlice
 
 const store = configureStore({
     reducer: {
-        user: userSlice,
-        game: gameSlice,
+        user: userReducer,
+        game: gameReducer,
+        // другие слайсы
     },
 });
 
