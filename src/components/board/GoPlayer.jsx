@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { callAiMove } from "../../services/API/aiApi";
 
 const defaultSgf = "(;FF[4]GM[1]SZ[19])";
 
@@ -7,6 +8,15 @@ const convertCoords = (x, y, boardSize) => {
     const letter = letters[x] || "";
     const number = boardSize - y;
     return letter + number;
+};
+
+const parseCoords = (moveStr, boardSize) => {
+    const letters = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
+    const letter = moveStr[0];
+    const num = parseInt(moveStr.slice(1), 10);
+    const x = letters.indexOf(letter);
+    const y = boardSize - num;
+    return { x, y };
 };
 
 const GoPlayer = ({
@@ -103,6 +113,35 @@ const GoPlayer = ({
                         socketRef.current.close();
                     }
                 };
+            }
+            else if (mode === "ai") {
+                const originalPlay = editable.play;
+                editable.play = function (x, y) {
+                    const currentTurn = this.player.kifuReader.game.turn === window.WGo.B ? "b" : "w";
+                    if (currentTurn !== "b") {
+                        console.warn("Ход не разрешен: не ваша очередь.");
+                        return;
+                    }
+                    originalPlay.call(this, x, y);
+                    const playerMoveStr = convertCoords(x, y, player.kifu.size);
+                    const currentSgf = player.kifuReader.kifu.toSgf();
+
+                    callAiMove(currentSgf, ["b", playerMoveStr])
+                        .then((data) => {
+                            const botMoveStr = data.move[1];
+                            const { x: botX, y: botY } = parseCoords(botMoveStr, player.kifu.size);
+                            originalPlay.call(this, botX, botY);
+                        })
+                        .catch((err) => {
+                            console.error("Ошибка получения хода от ИИ:", err);
+                        });
+                };
+
+                if (editable._ev_click) {
+                    player.board.removeEventListener("click", editable._ev_click);
+                }
+                editable._ev_click = editable.play.bind(editable);
+                player.board.addEventListener("click", editable._ev_click);
             }
 
             playerRef.current = player;
