@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 
-// Определяем минимальный SGF для пустой доски 19x19
 const defaultSgf = "(;FF[4]GM[1]SZ[19])";
 
 const GoPlayer = ({ width = 800, height = 800, sgf = defaultSgf, options = {} }) => {
@@ -16,10 +15,15 @@ const GoPlayer = ({ width = 800, height = 800, sgf = defaultSgf, options = {} })
                 ...options,
             };
 
-            playerRef.current = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
+            const player = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
+
+            const editable = new window.WGo.Player.Editable(player, player.board);
+            editable.set(true);
+            player.setCoordinates(true);
+
+            playerRef.current = player;
         }
     }, [width, height, sgf, options]);
-    console.log(containerRef);
 
     return <div ref={containerRef} style={{ width, height }} />;
 };

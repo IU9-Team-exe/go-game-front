@@ -24,7 +24,7 @@ function Offline() {
     return (
 
         <div>
-            <GoPlayer width={800} height={800} options={{}}/>
+            <GoPlayer width={865} height={865} options={{}}/>
         </div>
     );
 }
