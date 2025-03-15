@@ -6,6 +6,7 @@ import Login from "../pages/Login/Login.jsx";
 import Register from "../pages/Register/Register.jsx";
 import JoinGame from "../pages/JoinGame/JoinGame.jsx";
 import Game from "../pages/Game/Game.jsx";
+import AI from "../pages/AI/AI.jsx";
 
 export default function AppRouter() {
     return (
@@ -16,6 +17,7 @@ export default function AppRouter() {
             <Route path="/offline" element={<Offline/>}/>
             <Route path="/join" element={<JoinGame />} />
             <Route path="/game" element={<Game />} />
+            <Route path="/ai" element={<AI />} />
             <Route path="*" element={<div>Страница не найдена</div>}/>
         </Routes>
     );

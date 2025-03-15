@@ -34,6 +34,12 @@ function Header() {
                             Join
                         </Link>
                     </Button>
+
+                    <Button color="inherit">
+                        <Link to="/ai" className={styles.link}>
+                            AI
+                        </Link>
+                    </Button>
                 </div>
 
                 <div className={styles.right}>
