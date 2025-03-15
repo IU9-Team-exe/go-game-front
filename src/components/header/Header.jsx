@@ -22,6 +22,18 @@ function Header() {
                             Offline
                         </Link>
                     </Button>
+
+                    <Button color="inherit">
+                        <Link to="/game" className={styles.link}>
+                            Create
+                        </Link>
+                    </Button>
+
+                    <Button color="inherit">
+                        <Link to="/join" className={styles.link}>
+                            Join
+                        </Link>
+                    </Button>
                 </div>
 
                 <div className={styles.right}>
