@@ -3,6 +3,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 1rem;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 /* Стили для заголовка */
@@ -10,6 +23,7 @@
     font-weight: bold;
 }
 
+/* Стили для ссылок */
 .link {
     color: inherit;
     text-decoration: none;
