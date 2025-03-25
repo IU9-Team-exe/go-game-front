@@ -19,6 +19,19 @@ const parseCoords = (moveStr, boardSize) => {
     return { x, y };
 };
 
+const extractMoves = (sgf, boardSize) => {
+    const moves = [];
+    const regex = /;[BW]\[([a-z]{2})\]/gi;
+    let match;
+    while ((match = regex.exec(sgf)) !== null) {
+        const coord = match[1]; // например, "dd"
+        const x = coord.charCodeAt(0) - "a".charCodeAt(0);
+        const y = coord.charCodeAt(1) - "a".charCodeAt(0);
+        moves.push(convertCoords(x, y, boardSize));
+    }
+    return moves;
+};
+
 const GoPlayer = ({
                       width = 800,
                       height = 800,
@@ -123,12 +136,12 @@ const GoPlayer = ({
                         return;
                     }
                     originalPlay.call(this, x, y);
-                    const playerMoveStr = convertCoords(x, y, player.kifu.size);
                     const currentSgf = player.kifuReader.kifu.toSgf();
+                    const moves = extractMoves(currentSgf, 19);
 
-                    callAiMove(currentSgf, ["b", playerMoveStr])
+                    callAiMove(currentSgf, moves)
                         .then((data) => {
-                            const botMoveStr = data.move[1];
+                            const botMoveStr = data.bot_move;
                             const { x: botX, y: botY } = parseCoords(botMoveStr, player.kifu.size);
                             originalPlay.call(this, botX, botY);
                         })
