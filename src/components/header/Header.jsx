@@ -5,8 +5,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import styles from "./Header.module.css";
+import {useAuth} from "../../contexts/AuthContext";
 
-function Header() {
+const Header = () => {
+    const {user, logout} = useAuth();
+
     return (
         <AppBar position="static">
             <Toolbar className={styles.toolbar}>
@@ -37,20 +40,30 @@ function Header() {
                 </div>
 
                 <div className={styles.right}>
+                    {user ? (
+                        <>
+                            <Typography variant="subtitle1" className={styles.link}>
+                                {user.nickname}
+                            </Typography>
+                            <Button color="inherit" onClick={logout}>
+                                Logout
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/login" className={styles.link}>
+                                Login
+                            </Link>
 
-                    <Link to="/login" className={styles.link}>
-                        Login
-                    </Link>
-
-
-                    <Link to="/register" className={styles.link}>
-                        Register
-                    </Link>
-
+                            <Link to="/register" className={styles.link}>
+                                Register
+                            </Link>
+                        </>
+                    )}
                 </div>
             </Toolbar>
         </AppBar>
     );
-}
+};
 
 export default Header;
