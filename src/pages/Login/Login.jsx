@@ -1,20 +1,26 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+
 import AuthForm from "../../components/AuthForm/AuthForm";
-import { loginUser } from "../../store/slices/userSlice";
 
 const Login = () => {
-    const dispatch = useDispatch();
-    const { error, isLoading } = useSelector((state) => state.user);
+    // const dispatch = useDispatch();
+    // const navigate = useNavigate();
+    // const { error, isLoading } = useSelector((state) => state.user);
 
-    const handleLogin = (data) => {
-        // data: { email, password }
-        dispatch(loginUser(data));
+    const handleLogin = () => {
+        // dispatch(loginUser({ Username: data.login, Password: data.password }))
+        //     .unwrap()
+        //     .then(() => {
+        //         navigate("/");
+        //     })
+        //     .catch((err) => {
+        //         console.error("Ошибка при логине", err);
+        //     });
     };
 
     return (
         <div>
-            <AuthForm onSubmit={handleLogin} error={error} isLoading={isLoading} />
+            <AuthForm onSubmit={handleLogin} />
         </div>
     );
 };

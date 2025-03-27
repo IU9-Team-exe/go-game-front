@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { callAiMove } from "../../services/API/aiApi";
+import {callAIMove} from "../../services/API/aiApi";
 
 const defaultSgf = "(;FF[4]GM[1]SZ[19])";
 
@@ -21,13 +21,23 @@ const parseCoords = (moveStr, boardSize) => {
 
 const extractMoves = (sgf, boardSize) => {
     const moves = [];
-    const regex = /;[BW]\[([a-z]{2})\]/gi;
+    const regex = /;([BW])\[([a-z]{2})\]/gi;
     let match;
     while ((match = regex.exec(sgf)) !== null) {
-        const coord = match[1]; // например, "dd"
+        const colorChar = match[1];
+        const coord = match[2];
+
         const x = coord.charCodeAt(0) - "a".charCodeAt(0);
         const y = coord.charCodeAt(1) - "a".charCodeAt(0);
-        moves.push(convertCoords(x, y, boardSize));
+
+        const coordinates = convertCoords(x, y, boardSize);
+
+        const color = colorChar.toLowerCase();
+
+        moves.push({
+            color,
+            coordinates,
+        });
     }
     return moves;
 };
@@ -139,10 +149,20 @@ const GoPlayer = ({
                     const currentSgf = player.kifuReader.kifu.toSgf();
                     const moves = extractMoves(currentSgf, 19);
 
-                    callAiMove(currentSgf, moves)
-                        .then((data) => {
-                            const botMoveStr = data.bot_move;
-                            const { x: botX, y: botY } = parseCoords(botMoveStr, player.kifu.size);
+                    const payload = {
+                        moves,
+                    };
+                    console.log(payload);
+
+                    callAIMove(payload)
+                        .then((response) => {
+                            const { bot_move } = response.data;
+                            if (!bot_move) {
+                                console.error("Сервер не вернул bot_move");
+                                return;
+                            }
+                            const { x: botX, y: botY } = parseCoords(bot_move.coordinates, player.kifu.size);
+
                             originalPlay.call(this, botX, botY);
                         })
                         .catch((err) => {

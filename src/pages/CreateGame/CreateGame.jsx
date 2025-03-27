@@ -1,0 +1,50 @@
+import React, { useState } from "react";
+import { newGame } from "../../services/API/gameApi";
+import { useNavigate } from "react-router-dom";
+import styles from "./CreateGame.module.css";
+
+function CreateGame() {
+    const navigate = useNavigate();
+    const [nickname, setNickname] = useState("");
+
+    const handleCreate = async () => {
+        try {
+            const payload = {
+                users: [
+                    {
+                        id: nickname,
+                        color: "black",
+                        role: "creator",
+                    },
+                ],
+                board_size: 19,
+                status: "waiting",
+                player_black: nickname,
+            };
+            const response = await newGame(payload);
+            console.log(response.data);
+            navigate(`/game/${response.data.Body.unique_key}`);
+        } catch (error) {
+            console.error("Ошибка создания игры", error);
+            navigate("/game");
+        }
+    };
+
+    return (
+        <div className={styles.container}>
+            <h2>Создать игру</h2>
+            <input
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                placeholder="Введите ник"
+                className={styles.inputField}
+            />
+            <button onClick={handleCreate} className={styles.createButton}>
+                Создать игру
+            </button>
+        </div>
+    );
+}
+
+export default CreateGame;

@@ -14,10 +14,10 @@ const AuthForm = ({ onSubmit, error, isLoading }) => {
         <form className={styles.authForm} onSubmit={handleSubmit}>
             <h2>Авторизация</h2>
             <label>
-                Email:
+                Username:
                 <input
-                    type="email"
-                    placeholder="Введите email"
+                    type="Username"
+                    placeholder="Введите username"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -26,7 +26,7 @@ const AuthForm = ({ onSubmit, error, isLoading }) => {
             <label>
                 Пароль:
                 <input
-                    type="password"
+                    type="Password"
                     placeholder="Введите пароль"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

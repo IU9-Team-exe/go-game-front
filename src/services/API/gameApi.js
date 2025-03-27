@@ -1,12 +1,21 @@
-import api from "./api";
+import api from "../api";
 
 /**
  * Создание новой игры
  * @param {Object} options - Параметры игры (размер доски, режим, противник и т.д.)
  * @returns {Promise} - Результат запроса
  */
-export function createGame(options) {
-    return api.post("/games", options);
+export function newGame(options) {
+    return api.post("/NewGame", options);
+}
+
+/**
+ * Присоединение к игре
+ * @param {Object} options - Параметры игры (ключ)
+ * @returns {Promise} - Результат запроса
+ */
+export function joinGame(options) {
+    return api.post("/JoinGame", options);
 }
 
 /**

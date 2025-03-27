@@ -17,43 +17,36 @@ function Header() {
                         </Link>
                     </Typography>
 
-                    <Button color="inherit">
-                        <Link to="/offline" className={styles.link}>
-                            Offline
-                        </Link>
-                    </Button>
+                    <Link to="/offline" className={styles.link}>
+                        Offline
+                    </Link>
 
-                    <Button color="inherit">
-                        <Link to="/game" className={styles.link}>
-                            Create
-                        </Link>
-                    </Button>
+                    <Link to="/create" className={styles.link}>
+                        Create
+                    </Link>
 
-                    <Button color="inherit">
-                        <Link to="/join" className={styles.link}>
-                            Join
-                        </Link>
-                    </Button>
+                    <Link to="/join" className={styles.link}>
+                        Join
+                    </Link>
 
-                    <Button color="inherit">
-                        <Link to="/ai" className={styles.link}>
-                            AI
-                        </Link>
-                    </Button>
+
+                    <Link to="/ai" className={styles.link}>
+                        AI
+                    </Link>
+
                 </div>
 
                 <div className={styles.right}>
-                    <Button color="inherit">
-                        <Link to="/login" className={styles.link}>
-                            Login
-                        </Link>
-                    </Button>
 
-                    <Button color="inherit">
-                        <Link to="/register" className={styles.link}>
-                            Register
-                        </Link>
-                    </Button>
+                    <Link to="/login" className={styles.link}>
+                        Login
+                    </Link>
+
+
+                    <Link to="/register" className={styles.link}>
+                        Register
+                    </Link>
+
                 </div>
             </Toolbar>
         </AppBar>
