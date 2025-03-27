@@ -32,4 +32,13 @@ export function joinGame(gameCode, nickname) {
     });
 }
 
+/**
+ * Получение информации об игре
+ * @param gameCode
+ */
+export function getGameInfo(gameCode, ) {
+    return api.post("/getGameInfo", {
+        game_key: gameCode,
+    });
+}
 

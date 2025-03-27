@@ -10,9 +10,13 @@ function JoinGame() {
 
     const handleJoin = async () => {
         try {
-            const response = await joinGame(gameCode, nickname);
-            console.log(response);
-            navigate(`/game/${gameCode}`);
+            const response = await joinGame({
+                game_key: gameCode,
+                user_id: nickname,
+                role: "player",
+            });
+            console.log("Ответ от joinGame:", response);
+            navigate(`/game/${gameCode}`, { state: { playerColor: "w", playerId: nickname } });
         } catch (error) {
             console.error("Ошибка подключения к игре", error);
             navigate(`/game}`);

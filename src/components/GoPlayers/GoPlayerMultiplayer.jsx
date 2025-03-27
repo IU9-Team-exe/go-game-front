@@ -7,6 +7,8 @@ const GoPlayerMultiplayer = ({
                                  sgf = "(;FF[4]GM[1]SZ[19])",
                                  options = {},
                                  playerColor,
+                                 gameId,
+                                 playerId,
                              }) => {
     const containerRef = useRef(null);
     const playerRef = useRef(null);
@@ -49,10 +51,12 @@ const GoPlayerMultiplayer = ({
                         return;
                     }
                     const moveStr = convertCoords(move.x, move.y, player.kifu.size);
-                    const currentSgf = player.kifu.toSgf();
+
                     const message = {
-                        sgf: currentSgf,
-                        move: [moveColor, moveStr],
+                        color: moveColor === "b" ? "black" : "white",
+                        coordinates: moveStr,
+                        game_id: gameId,
+                        player_id: playerId,
                     };
 
                     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -63,7 +67,6 @@ const GoPlayerMultiplayer = ({
                 }
             });
 
-            // Инициализация WebSocket
             socketRef.current = new WebSocket("ws://123");
             socketRef.current.onopen = () => {
                 console.log("WebSocket соединение установлено");
@@ -75,14 +78,13 @@ const GoPlayerMultiplayer = ({
 
             playerRef.current = player;
 
-            // Очистка при размонтировании
             return () => {
                 if (socketRef.current) {
                     socketRef.current.close();
                 }
             };
         }
-    }, [width, height, sgf, options, playerColor]);
+    }, [width, height, sgf, options, playerColor, gameId, playerId]);
 
     return <div ref={containerRef} style={{ width, height }} />;
 };
