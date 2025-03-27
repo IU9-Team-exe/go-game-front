@@ -1,4 +1,4 @@
-import GoPlayer from "../../components/board/GoPlayer.jsx";
+import GoPlayerAI from "../../components/GoPlayers/GoPlayerAI.jsx";
 
 function AI() {
     const playerColor = "b";
@@ -6,7 +6,7 @@ function AI() {
     return (
         <div>
             <h2 style={{ textAlign: 'center'}}>Игра с KataGo</h2>
-            <GoPlayer mode="ai" playerColor={playerColor} />
+            <GoPlayerAI mode="ai" playerColor={playerColor} />
         </div>
     );
 }

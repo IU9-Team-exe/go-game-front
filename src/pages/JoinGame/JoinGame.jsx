@@ -15,6 +15,7 @@ function JoinGame() {
             navigate(`/game/${gameCode}`);
         } catch (error) {
             console.error("Ошибка подключения к игре", error);
+            navigate(`/game}`);
         }
     };
 
