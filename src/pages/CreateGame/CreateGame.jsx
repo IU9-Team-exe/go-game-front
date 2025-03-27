@@ -9,19 +9,7 @@ function CreateGame() {
 
     const handleCreate = async () => {
         try {
-            const payload = {
-                users: [
-                    {
-                        id: nickname,
-                        color: "black",
-                        role: "creator",
-                    },
-                ],
-                board_size: 19,
-                status: "waiting",
-                player_black: nickname,
-            };
-            const response = await newGame(payload);
+            const response = await newGame(nickname);
             console.log(response.data);
             navigate(`/game/${response.data.Body.unique_key}`);
         } catch (error) {

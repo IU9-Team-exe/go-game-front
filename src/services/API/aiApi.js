@@ -1,6 +1,11 @@
 import api from '../api';
 
-
-export function callAIMove(options) {
-    return api.post('/autoBotGenerateMove', options);
+/**
+ * Передача хода боту
+ * @param moves
+ */
+export function callAIMove(moves) {
+    return api.post('/autoBotGenerateMove', {
+        moves: moves
+    });
 }

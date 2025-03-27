@@ -149,12 +149,9 @@ const GoPlayer = ({
                     const currentSgf = player.kifuReader.kifu.toSgf();
                     const moves = extractMoves(currentSgf, 19);
 
-                    const payload = {
-                        moves,
-                    };
-                    console.log(payload);
+                    console.log(moves);
 
-                    callAIMove(payload)
+                    callAIMove(moves)
                         .then((response) => {
                             const { bot_move } = response.data;
                             if (!bot_move) {

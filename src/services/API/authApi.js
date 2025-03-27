@@ -1,11 +1,14 @@
 import api from "../api";
 
-const authAPI = {
-    login: (username, password) =>
-        api.post("/login", {
-            Username: username,
-            Password: password,
-        }),
-};
-
-export default authAPI;
+/**
+ * Логин
+ * @param username
+ * @param password
+ * @returns {Promise<axios.AxiosResponse<any>>}
+ */
+export function login(username, password) {
+    return api.post("/login", {
+        Username: username,
+        Password: password,
+    })
+}

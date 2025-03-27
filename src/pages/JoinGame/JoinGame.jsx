@@ -10,12 +10,7 @@ function JoinGame() {
 
     const handleJoin = async () => {
         try {
-            const payload = {
-                game_key: gameCode,
-                user_id: nickname,
-                role: "player",
-            };
-            const response = await joinGame(payload);
+            const response = await joinGame(gameCode, nickname);
             console.log(response);
             navigate(`/game/${gameCode}`);
         } catch (error) {
