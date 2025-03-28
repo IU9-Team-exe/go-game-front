@@ -11,9 +11,14 @@ const Login = () => {
 
     const { mutate, error, isLoading } = useMutation({
         mutationFn: ({ username, password }) => apiLogin(username, password),
-        onSuccess: (response) => {
-            login(response.data);
-            navigate("/");
+        onSuccess: (response, variables) => {
+            const { Status, Body } = response.data;
+            if (Status === 200) {
+                login({ username: variables.username });
+                navigate("/");
+            } else {
+                throw new Error(Body?.ErrorDescription || "Ошибка авторизации");
+            }
         },
         onError: (error) => {
             console.error("Ошибка при авторизации", error);
@@ -22,8 +27,8 @@ const Login = () => {
 
     const handleLogin = (formData) => {
         mutate({
-            username: formData.login,
-            password: formData.password
+            username: formData.username,
+            password: formData.password,
         });
     };
 

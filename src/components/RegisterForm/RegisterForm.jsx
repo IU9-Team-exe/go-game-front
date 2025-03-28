@@ -3,7 +3,7 @@ import styles from "./RegisterForm.module.css";
 
 const RegisterForm = ({ onSubmit, error, isLoading }) => {
     const [email, setEmail] = useState("");
-    const [nickname, setNickname] = useState("");
+    const [username, setUsername] = useState(""); // переименовано из nickname
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
 
@@ -13,7 +13,7 @@ const RegisterForm = ({ onSubmit, error, isLoading }) => {
             alert("Пароли не совпадают");
             return;
         }
-        onSubmit({ email, nickname, password });
+        onSubmit({ email, username, password });
     };
 
     return (
@@ -34,8 +34,8 @@ const RegisterForm = ({ onSubmit, error, isLoading }) => {
                 <input
                     type="text"
                     placeholder="Введите никнейм"
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                 />
             </label>
