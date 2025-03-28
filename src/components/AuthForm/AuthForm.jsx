@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import styles from "./AuthForm.module.css";
 
 const AuthForm = ({ onSubmit, error, isLoading }) => {
-    const [email, setEmail] = useState("");
+    const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit({ email, password });
+        onSubmit({ email: login, password });
     };
 
     return (
@@ -18,8 +18,8 @@ const AuthForm = ({ onSubmit, error, isLoading }) => {
                 <input
                     type="Username"
                     placeholder="Введите username"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={login}
+                    onChange={(e) => setLogin(e.target.value)}
                     required
                 />
             </label>
