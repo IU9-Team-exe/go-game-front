@@ -14,12 +14,10 @@ export function newGame() {
 /**
  * Присоединение к новой игре по коду
  * @param gameCode
- * @param nickname
  */
-export function joinGame(gameCode, nickname) {
+export function joinGame(gameCode) {
     return api.post("/JoinGame", {
-        game_key: gameCode,
-        user_id: nickname,
+        public_key: gameCode,
         role: "player",
     });
 }

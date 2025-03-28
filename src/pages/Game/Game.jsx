@@ -1,12 +1,11 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import GoPlayerMultiplayer from "../../components/GoPlayers/GoPlayerMultiplayer.jsx";
+import { useAuth } from "../../contexts/AuthContext";
 
 function Game() {
     const { gameKey } = useParams();
-    const location = useLocation();
-    const state = location.state || {};
-    const playerColor = state.playerColor || "b";
-    const playerId = state.playerId || "player";
+    const { user } = useAuth();
+    const playerColor = (user && user.playerColor) || "b";
 
     return (
         <div>
@@ -14,7 +13,6 @@ function Game() {
             <GoPlayerMultiplayer
                 playerColor={playerColor}
                 gameId={gameKey}
-                playerId={playerId}
             />
         </div>
     );

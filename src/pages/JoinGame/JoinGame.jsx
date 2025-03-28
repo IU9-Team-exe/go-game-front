@@ -17,8 +17,8 @@ function JoinGame() {
 
     const handleJoin = async () => {
         try {
-            await joinGame(gameCode, user.username);
-            navigate(`/game/${gameCode}`, { state: { playerColor: "w", playerId: user.username } });
+            await joinGame(gameCode);
+            navigate(`/game/${gameCode}`, { state: { playerColor: "w"} });
         } catch (error) {
             console.error("Ошибка подключения к игре", error);
             navigate(`/game}`);

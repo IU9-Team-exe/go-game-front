@@ -1,23 +1,25 @@
-import React, {useEffect, useRef} from "react";
-import {convertCoords, parseCoords} from "../../utils/conversionUtils";
+import React, { useEffect, useRef } from "react";
+import { convertCoords } from "../../utils/conversionUtils";
+import { useGame } from "../../contexts/GameContext";
 
 const GoPlayerMultiplayer = ({
                                  width = 800,
                                  height = 800,
-                                 sgf = "(;FF[4]GM[1]SZ[19])",
+                                 sgf: initialSgf = "(;FF[4]GM[1]SZ[19])",
                                  options = {},
                                  playerColor,
                                  gameId,
-                                 playerId,
                              }) => {
     const containerRef = useRef(null);
     const playerRef = useRef(null);
     const socketRef = useRef(null);
+    const { sgf, updateSgf } = useGame();
 
     useEffect(() => {
         if (window.WGo && window.WGo.Player) {
-            let playerOptions = {width, height, sgf, ...options};
-            playerOptions.layout = {top: [], bottom: [], left: [], right: []};
+            const currentSgf = sgf || initialSgf;
+            let playerOptions = { width, height, sgf: currentSgf, ...options };
+            playerOptions.layout = { top: [], bottom: [], left: [], right: [] };
             playerOptions.enableKeys = false;
 
             const player = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
@@ -55,8 +57,6 @@ const GoPlayerMultiplayer = ({
                     const message = {
                         color: moveColor === "b" ? "black" : "white",
                         coordinates: moveStr,
-                        game_id: gameId,
-                        player_id: playerId,
                     };
 
                     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -67,26 +67,20 @@ const GoPlayerMultiplayer = ({
                 }
             });
 
-            const socketUrl = `ws://localhost:8080/ws/game?game_id=${gameId}&player_id=${playerId}`;
+            const socketUrl = `ws://localhost:8080/api/startGame?game_id=${gameId}`;
             socketRef.current = new WebSocket(socketUrl);
             socketRef.current.onopen = () => {
-                console.log("WebSocket соединение установлено");
+                console.log("WS-соединение для игры установлено");
             };
             socketRef.current.onmessage = (event) => {
-                console.log("Сообщение от сервера:", event.data);
+                console.log("WS сообщение:", event.data);
                 try {
                     const data = JSON.parse(event.data);
-                    if (data.game_id === gameId && data.player_id !== playerId) {
-                        const {x, y} = parseCoords(data.coordinates, player.kifu.size);
-
-                        const stoneColor = data.color === "black" ? window.WGo.B : window.WGo.W;
-
-
-                        if (player.kifuReader && player.kifuReader.kifu && typeof player.kifuReader.kifu.addMove === "function") {
-                            player.kifuReader.kifu.addMove({x, y, c: stoneColor});
+                    if (data.sgf && data.move) {
+                        updateSgf(data.sgf);
+                        if (player.kifuReader && typeof player.kifuReader.kifu.fromSgf === "function") {
+                            player.kifuReader.kifu.fromSgf(data.sgf);
                             player.redraw();
-                        } else {
-                            originalPlay.call(editable, x, y);
                         }
                     }
                 } catch (err) {
@@ -106,7 +100,7 @@ const GoPlayerMultiplayer = ({
                 }
             };
         }
-    }, [width, height, sgf, options, playerColor, gameId, playerId]);
+    }, [width, height, initialSgf, options, playerColor, gameId, sgf, updateSgf]);
 
     return <div ref={containerRef} style={{width, height}}/>;
 };
