@@ -1,22 +1,24 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { joinGame } from "../../services/API/gameApi";
 import { useNavigate } from "react-router-dom";
 import styles from "./JoinGame.module.css";
+import {useAuth} from "../../contexts/AuthContext.jsx";
 
 function JoinGame() {
     const [gameCode, setGameCode] = useState("");
     const navigate = useNavigate();
-    const [nickname, setNickname] = useState("");
+    const { user } = useAuth();
+
+    useEffect(() => {
+        if (!user) {
+            navigate("/login");
+        }
+    }, [user, navigate]);
 
     const handleJoin = async () => {
         try {
-            const response = await joinGame({
-                game_key: gameCode,
-                user_id: nickname,
-                role: "player",
-            });
-            console.log("Ответ от joinGame:", response);
-            navigate(`/game/${gameCode}`, { state: { playerColor: "w", playerId: nickname } });
+            await joinGame(gameCode, user.username);
+            navigate(`/game/${gameCode}`, { state: { playerColor: "w", playerId: user.username } });
         } catch (error) {
             console.error("Ошибка подключения к игре", error);
             navigate(`/game}`);
@@ -31,13 +33,6 @@ function JoinGame() {
                 value={gameCode}
                 onChange={(e) => setGameCode(e.target.value)}
                 placeholder="Введите код"
-                className={styles.inputField}
-            />
-            <input
-                type="text"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                placeholder="Введите ник"
                 className={styles.inputField}
             />
 
