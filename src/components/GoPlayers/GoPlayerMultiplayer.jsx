@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { convertCoords } from "../../utils/conversionUtils";
+import React, {useEffect, useRef} from "react";
+import {convertCoords, parseCoords} from "../../utils/conversionUtils";
 
 const GoPlayerMultiplayer = ({
                                  width = 800,
@@ -16,8 +16,8 @@ const GoPlayerMultiplayer = ({
 
     useEffect(() => {
         if (window.WGo && window.WGo.Player) {
-            let playerOptions = { width, height, sgf, ...options };
-            playerOptions.layout = { top: [], bottom: [], left: [], right: [] };
+            let playerOptions = {width, height, sgf, ...options};
+            playerOptions.layout = {top: [], bottom: [], left: [], right: []};
             playerOptions.enableKeys = false;
 
             const player = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
@@ -67,13 +67,35 @@ const GoPlayerMultiplayer = ({
                 }
             });
 
-            socketRef.current = new WebSocket("ws://123");
+            const socketUrl = `ws://localhost:8080/ws/game?game_id=${gameId}&player_id=${playerId}`;
+            socketRef.current = new WebSocket(socketUrl);
             socketRef.current.onopen = () => {
                 console.log("WebSocket соединение установлено");
             };
             socketRef.current.onmessage = (event) => {
                 console.log("Сообщение от сервера:", event.data);
-                // TODO: обновлять SGF
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.game_id === gameId && data.player_id !== playerId) {
+                        const {x, y} = parseCoords(data.coordinates, player.kifu.size);
+
+                        const stoneColor = data.color === "black" ? window.WGo.B : window.WGo.W;
+
+
+                        if (player.kifuReader && player.kifuReader.kifu && typeof player.kifuReader.kifu.addMove === "function") {
+                            player.kifuReader.kifu.addMove({x, y, c: stoneColor});
+                            player.redraw();
+                        } else {
+                            originalPlay.call(editable, x, y);
+                        }
+                    }
+                } catch (err) {
+                    console.error("Ошибка обработки сообщения WS", err);
+                }
+            };
+
+            socketRef.current.onerror = (err) => {
+                console.error("WebSocket ошибка", err);
             };
 
             playerRef.current = player;
@@ -86,7 +108,7 @@ const GoPlayerMultiplayer = ({
         }
     }, [width, height, sgf, options, playerColor, gameId, playerId]);
 
-    return <div ref={containerRef} style={{ width, height }} />;
+    return <div ref={containerRef} style={{width, height}}/>;
 };
 
 export default GoPlayerMultiplayer;
