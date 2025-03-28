@@ -16,9 +16,8 @@ function CreateGame() {
 
     const handleCreate = async () => {
         try {
-            const response = await newGame(user.username);
-            console.log(response.data);
-            navigate(`/game/${response.data.Body.unique_key}`);
+            const response = await newGame();
+            navigate(`/game/${response.data.Body.public_key}`);
         } catch (error) {
             console.error("Ошибка создания игры", error);
             navigate("/game");

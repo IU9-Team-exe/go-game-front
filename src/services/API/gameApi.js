@@ -2,20 +2,12 @@ import api from "../api";
 
 /**
  * Создание новой игры
- * @param nickname
  */
-export function newGame(nickname) {
+export function newGame() {
     return api.post("/NewGame", {
-        users: [
-            {
-                id: nickname,
-                color: "black",
-                role: "creator",
-            },
-        ],
-        board_size: 19,
-        status: "waiting",
-        player_black: nickname,
+        "board_size": 19,
+        "is_creator_black": true,
+        "komi": 3.5,
     });
 }
 
