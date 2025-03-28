@@ -1,22 +1,86 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { convertCoords } from "../../utils/conversionUtils";
 import { useGame } from "../../contexts/GameContext";
+
+const WS_URL_BASE = "ws://localhost:8080/api/startGame";
 
 const GoPlayerMultiplayer = ({
                                  width = 800,
                                  height = 800,
                                  sgf: initialSgf = "(;FF[4]GM[1]SZ[19])",
                                  options = {},
-                                 playerColor,
                                  gameId,
                              }) => {
     const containerRef = useRef(null);
     const playerRef = useRef(null);
     const socketRef = useRef(null);
-    const { sgf, updateSgf } = useGame();
+    const reconnectTimeoutRef = useRef(null);
+    const { sgf, updateSgf, playerColor } = useGame();
+
+    const connectSocket = useCallback(() => {
+        const socketUrl = `${WS_URL_BASE}?game_id=${gameId}`;
+        let ws;
+        try {
+            ws = new WebSocket(socketUrl);
+        } catch (err) {
+            console.error("Ошибка создания WebSocket", err);
+            return;
+        }
+        ws.onopen = () => {
+            console.log("WS-соединение установлено");
+            socketRef.current = ws;
+        };
+        ws.onmessage = (event) => {
+            console.log("WS сообщение:", event.data);
+            try {
+                const trimmed = event.data.trim();
+                if (!trimmed.startsWith("{")) {
+                    console.log("Получено уведомление:", event.data);
+                    return;
+                }
+                const data = JSON.parse(event.data);
+                if (data.sgf && data.move) {
+                    updateSgf(data.sgf);
+                    if (
+                        playerRef.current &&
+                        playerRef.current.kifuReader &&
+                        typeof playerRef.current.kifuReader.kifu.fromSgf === "function"
+                    ) {
+                        playerRef.current.kifuReader.kifu.fromSgf(data.sgf);
+                        playerRef.current.redraw();
+                    }
+                }
+            } catch (err) {
+                console.error("Ошибка обработки WS сообщения", err);
+            }
+        };
+        ws.onerror = (err) => {
+            console.error("WS ошибка", err);
+        };
+        ws.onclose = (event) => {
+            console.warn("WS-соединение закрыто", event);
+            socketRef.current = null;
+            reconnectTimeoutRef.current = setTimeout(() => {
+                console.log("Попытка переподключения WS...");
+                connectSocket();
+            }, 3000);
+        };
+    }, [gameId, updateSgf]);
 
     useEffect(() => {
-        if (window.WGo && window.WGo.Player) {
+        connectSocket();
+        return () => {
+            if (reconnectTimeoutRef.current) {
+                clearTimeout(reconnectTimeoutRef.current);
+            }
+            if (socketRef.current) {
+                socketRef.current.close();
+            }
+        };
+    }, [connectSocket]);
+
+    useEffect(() => {
+        if (window.WGo && window.WGo.Player && containerRef.current) {
             const currentSgf = sgf || initialSgf;
             let playerOptions = { width, height, sgf: currentSgf, ...options };
             playerOptions.layout = { top: [], bottom: [], left: [], right: [] };
@@ -43,7 +107,6 @@ const GoPlayerMultiplayer = ({
             editable._ev_click = editable.play.bind(editable);
             player.board.addEventListener("click", editable._ev_click);
 
-            // Отслеживание обновлений и отправка хода через WebSocket
             player.addEventListener("update", (e) => {
                 if (e.change && e.change.add && e.change.add.length > 0) {
                     const move = e.change.add[0];
@@ -67,40 +130,9 @@ const GoPlayerMultiplayer = ({
                 }
             });
 
-            const socketUrl = `ws://localhost:8080/api/startGame?game_id=${gameId}`;
-            socketRef.current = new WebSocket(socketUrl);
-            socketRef.current.onopen = () => {
-                console.log("WS-соединение для игры установлено");
-            };
-            socketRef.current.onmessage = (event) => {
-                console.log("WS сообщение:", event.data);
-                try {
-                    const data = JSON.parse(event.data);
-                    if (data.sgf && data.move) {
-                        updateSgf(data.sgf);
-                        if (player.kifuReader && typeof player.kifuReader.kifu.fromSgf === "function") {
-                            player.kifuReader.kifu.fromSgf(data.sgf);
-                            player.redraw();
-                        }
-                    }
-                } catch (err) {
-                    console.error("Ошибка обработки сообщения WS", err);
-                }
-            };
-
-            socketRef.current.onerror = (err) => {
-                console.error("WebSocket ошибка", err);
-            };
-
             playerRef.current = player;
-
-            return () => {
-                if (socketRef.current) {
-                    socketRef.current.close();
-                }
-            };
         }
-    }, [width, height, initialSgf, options, playerColor, gameId, sgf, updateSgf]);
+    }, [width, height, initialSgf, options, playerColor, sgf]);
 
     return <div ref={containerRef} style={{width, height}}/>;
 };

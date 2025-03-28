@@ -1,13 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { joinGame } from "../../services/API/gameApi";
 import { useNavigate } from "react-router-dom";
 import styles from "./JoinGame.module.css";
-import {useAuth} from "../../contexts/AuthContext.jsx";
+import { useAuth } from "../../contexts/AuthContext.jsx";
+import { GameProvider, useGame } from "../../contexts/GameContext";
 
-function JoinGame() {
+function JoinGameContent() {
     const [gameCode, setGameCode] = useState("");
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { setPlayerColor } = useGame();
 
     useEffect(() => {
         if (!user) {
@@ -18,10 +20,11 @@ function JoinGame() {
     const handleJoin = async () => {
         try {
             await joinGame(gameCode);
-            navigate(`/game/${gameCode}`, { state: { playerColor: "w"} });
+            setPlayerColor("w");
+            navigate(`/game/${gameCode}`);
         } catch (error) {
             console.error("Ошибка подключения к игре", error);
-            navigate(`/game}`);
+            navigate("/game");
         }
     };
 
@@ -35,11 +38,18 @@ function JoinGame() {
                 placeholder="Введите код"
                 className={styles.inputField}
             />
-
             <button onClick={handleJoin} className={styles.joinButton}>
                 Подключиться
             </button>
         </div>
+    );
+}
+
+function JoinGame() {
+    return (
+        <GameProvider>
+            <JoinGameContent />
+        </GameProvider>
     );
 }
 
