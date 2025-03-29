@@ -37,7 +37,7 @@ export function getGameInfo(gameCode) {
  * @param gameCode
  */
 export function leaveGame(gameCode) {
-    return api.post("/getGameInfo", {
+    return api.post("/leaveGame", {
         public_key: gameCode,
     });
 }
