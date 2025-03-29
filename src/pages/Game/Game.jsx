@@ -1,26 +1,31 @@
-import {useNavigate, useParams} from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import GoPlayerMultiplayer from "../../components/GoPlayers/GoPlayerMultiplayer.jsx";
 import { GameProvider, useGame } from "../../contexts/GameContext";
 import React, { useEffect, useRef, useCallback } from "react";
 import styles from "../Game/Game.module.css";
-import {leaveGame} from "../../services/API/gameApi.js";
-import {useAuth} from "../../contexts/AuthContext.jsx";
+import { leaveGame } from "../../services/API/gameApi.js";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 
 const WS_URL_BASE = "ws://localhost:8080/api/startGame";
 
 function GameContent() {
     const { gameKey } = useParams();
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const { playerColor, setPlayerColor, updateSgf } = useGame();
     const socketRef = useRef(null);
-    const reconnectTimeoutRef = useRef(null);
-    const navigate = useNavigate();
-    const { user } = useAuth();
 
     useEffect(() => {
         if (!user) {
             navigate("/login");
         }
     }, [user, navigate]);
+
+    useEffect(() => {
+        if (!playerColor) {
+            setPlayerColor("b");
+        }
+    }, [playerColor, setPlayerColor]);
 
     const connectSocket = useCallback(() => {
         const socketUrl = `${WS_URL_BASE}?game_id=${gameKey}`;
@@ -57,30 +62,28 @@ function GameContent() {
         ws.onclose = (event) => {
             console.warn("WS-соединение закрыто", event);
             socketRef.current = null;
-            reconnectTimeoutRef.current = setTimeout(() => {
-                console.log("Попытка переподключения WS...");
-                connectSocket();
-            }, 3000);
         };
     }, [gameKey, updateSgf]);
 
     useEffect(() => {
-        if (!playerColor) {
-            setPlayerColor("b");
-        }
-    }, [playerColor, setPlayerColor]);
-
-    useEffect(() => {
         connectSocket();
         return () => {
-            if (reconnectTimeoutRef.current) {
-                clearTimeout(reconnectTimeoutRef.current);
-            }
             if (socketRef.current) {
                 socketRef.current.close();
             }
         };
     }, [connectSocket]);
+
+    const sendMove = useCallback(
+        (message) => {
+            if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+                socketRef.current.send(JSON.stringify(message));
+            } else {
+                console.warn("WS-соединение не установлено для отправки хода");
+            }
+        },
+        []
+    );
 
     const handleLeave = async () => {
         try {
@@ -93,13 +96,12 @@ function GameContent() {
 
     return (
         <div>
-            <h2 style={{textAlign: "center"}}>Игра: {gameKey}</h2>
-            <GoPlayerMultiplayer gameId={gameKey}/>
+            <h2 style={{ textAlign: "center" }}>Игра: {gameKey}</h2>
+            <GoPlayerMultiplayer gameId={gameKey} onSendMove={sendMove} />
             <button onClick={handleLeave} className={styles.leaveButton}>
                 Выйти
             </button>
         </div>
-
     );
 }
 
