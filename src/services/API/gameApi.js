@@ -26,9 +26,18 @@ export function joinGame(gameCode) {
  * Получение информации об игре
  * @param gameCode
  */
-export function getGameInfo(gameCode, ) {
+export function getGameInfo(gameCode) {
     return api.post("/getGameInfo", {
         game_key: gameCode,
     });
 }
 
+/**
+ * Выход из игры
+ * @param gameCode
+ */
+export function leaveGame(gameCode) {
+    return api.post("/getGameInfo", {
+        public_key: gameCode,
+    });
+}

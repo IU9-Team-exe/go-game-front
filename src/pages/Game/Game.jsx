@@ -1,7 +1,10 @@
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import GoPlayerMultiplayer from "../../components/GoPlayers/GoPlayerMultiplayer.jsx";
 import { GameProvider, useGame } from "../../contexts/GameContext";
-import { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
+import styles from "../Game/Game.module.css";
+import {leaveGame} from "../../services/API/gameApi.js";
+import {useAuth} from "../../contexts/AuthContext.jsx";
 
 const WS_URL_BASE = "ws://localhost:8080/api/startGame";
 
@@ -10,6 +13,14 @@ function GameContent() {
     const { playerColor, setPlayerColor, updateSgf } = useGame();
     const socketRef = useRef(null);
     const reconnectTimeoutRef = useRef(null);
+    const navigate = useNavigate();
+    const { user } = useAuth();
+
+    useEffect(() => {
+        if (!user) {
+            navigate("/login");
+        }
+    }, [user, navigate]);
 
     const connectSocket = useCallback(() => {
         const socketUrl = `${WS_URL_BASE}?game_id=${gameKey}`;
@@ -71,10 +82,22 @@ function GameContent() {
         };
     }, [connectSocket]);
 
+    const handleLeave = async () => {
+        try {
+            await leaveGame(gameKey);
+            navigate(`/`);
+        } catch (error) {
+            console.error("Ошибка выхода из игры", error);
+        }
+    };
+
     return (
         <div>
-            <h2 style={{ textAlign: "center" }}>Игра: {gameKey}</h2>
-            <GoPlayerMultiplayer gameId={gameKey} />
+            <h2 style={{textAlign: "center"}}>Игра: {gameKey}</h2>
+            <GoPlayerMultiplayer gameId={gameKey}/>
+            <button onClick={handleLeave} className={styles.leaveButton}>
+                Подключиться
+            </button>
         </div>
     );
 }
@@ -82,7 +105,7 @@ function GameContent() {
 function Game() {
     return (
         <GameProvider>
-            <GameContent />
+            <GameContent/>
         </GameProvider>
     );
 }
