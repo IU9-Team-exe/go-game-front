@@ -96,9 +96,10 @@ function GameContent() {
             <h2 style={{textAlign: "center"}}>Игра: {gameKey}</h2>
             <GoPlayerMultiplayer gameId={gameKey}/>
             <button onClick={handleLeave} className={styles.leaveButton}>
-                Подключиться
+                Выйти
             </button>
         </div>
+
     );
 }
 
