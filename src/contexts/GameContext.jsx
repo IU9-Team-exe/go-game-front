@@ -11,10 +11,6 @@ export const GameProvider = ({ children }) => {
         return localStorage.getItem("player_color") || null;
     });
 
-    const updateSgf = (newSgf) => {
-        setSgf(newSgf);
-    };
-
     useEffect(() => {
         localStorage.setItem("game_sgf", sgf);
     }, [sgf]);
@@ -25,11 +21,23 @@ export const GameProvider = ({ children }) => {
         }
     }, [playerColor]);
 
+    const updateSgf = (newSgf) => {
+        setSgf(newSgf);
+    };
+
     return (
-        <GameContext.Provider value={{ sgf, updateSgf, playerColor, setPlayerColor }}>
+        <GameContext.Provider
+            value={{
+                sgf,
+                updateSgf,
+                playerColor,
+                setPlayerColor,
+            }}
+        >
             {children}
         </GameContext.Provider>
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useGame = () => useContext(GameContext);

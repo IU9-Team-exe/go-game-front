@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import GoPlayerMultiplayer from "../../components/GoPlayers/GoPlayerMultiplayer.jsx";
 import { GameProvider, useGame } from "../../contexts/GameContext";
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import styles from "../Game/Game.module.css";
 import { leaveGame } from "../../services/API/gameApi.js";
 import { useAuth } from "../../contexts/AuthContext.jsx";
@@ -12,7 +12,10 @@ function GameContent() {
     const { gameKey } = useParams();
     const { user } = useAuth();
     const navigate = useNavigate();
-    const { playerColor, setPlayerColor, updateSgf } = useGame();
+    const { playerColor, setPlayerColor } = useGame();
+
+    const [incomingMove, setIncomingMove] = useState(null);
+
     const socketRef = useRef(null);
 
     useEffect(() => {
@@ -49,8 +52,9 @@ function GameContent() {
                     return;
                 }
                 const data = JSON.parse(event.data);
-                if (data.sgf && data.move) {
-                    updateSgf(data.sgf);
+
+                if (data.move) {
+                    setIncomingMove(data.move);
                 }
             } catch (err) {
                 console.error("Ошибка обработки WS сообщения", err);
@@ -62,8 +66,11 @@ function GameContent() {
         ws.onclose = (event) => {
             console.warn("WS-соединение закрыто", event);
             socketRef.current = null;
+            setTimeout(() => {
+                connectSocket();
+            }, 3000);
         };
-    }, [gameKey, updateSgf]);
+    }, [gameKey]);
 
     useEffect(() => {
         connectSocket();
@@ -97,7 +104,11 @@ function GameContent() {
     return (
         <div>
             <h2 style={{ textAlign: "center" }}>Игра: {gameKey}</h2>
-            <GoPlayerMultiplayer gameId={gameKey} onSendMove={sendMove} />
+            <GoPlayerMultiplayer
+                onSendMove={sendMove}
+                incomingMove={incomingMove}
+            />
+
             <button onClick={handleLeave} className={styles.leaveButton}>
                 Выйти
             </button>
