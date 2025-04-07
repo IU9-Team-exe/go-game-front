@@ -1,0 +1,11 @@
+.goContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* Пример современного градиентного фона. Если вам не нравится,
+       замените на нужный вам цвет или другой градиент */
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
