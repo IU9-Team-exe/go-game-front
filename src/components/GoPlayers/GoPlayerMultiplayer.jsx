@@ -18,7 +18,7 @@ const GoPlayerMultiplayer = ({
 
     useEffect(() => {
         if (window.WGo && window.WGo.Player && containerRef.current) {
-            // Создаём плеер только при первом рендере
+            containerRef.current.innerHTML = "";
             let playerOptions = {
                 width,
                 height,
@@ -56,13 +56,16 @@ const GoPlayerMultiplayer = ({
             }
             editable._ev_click = editable.play.bind(editable);
             player.board.addEventListener("click", editable._ev_click);
+            setTimeout(() => {
+                player.last();
+            }, 0);
         }
         return () => {
             if (playerRef.current) {
                 playerRef.current = null;
             }
         };
-    }, []);
+    }, [initialSgf]);
 
     useEffect(() => {
         if (!incomingMove) return;

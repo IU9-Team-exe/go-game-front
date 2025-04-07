@@ -29,3 +29,25 @@ export const extractMoves = (sgf, boardSize) => {
     }
     return moves;
 };
+
+const coordToSgf = (coord) => {
+    const letters = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
+    const letter = coord[0].toUpperCase();
+    const number = parseInt(coord.slice(1), 10);
+
+    const x = letters.indexOf(letter);
+    const y = 19 - number;
+    if (x < 0 || y < 0 || x >= 19 || y >= 19) return "";
+
+    const sgfX = String.fromCharCode("a".charCodeAt(0) + x);
+    const sgfY = String.fromCharCode("a".charCodeAt(0) + y);
+    return sgfX + sgfY;
+};
+
+export const fixSgfFormat = (sgfRaw) => {
+    return sgfRaw.replace(/;(black|white)\[([A-T]\d{1,2})\]/gi, (_, color, coord) => {
+        const sgfCoord = coordToSgf(coord);
+        const sgfColor = color.toLowerCase() === "black" ? "B" : "W";
+        return `;${sgfColor}[${sgfCoord}]`;
+    });
+};

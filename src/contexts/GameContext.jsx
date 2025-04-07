@@ -3,6 +3,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
+    const [gameInfo, setGameInfo] = useState(null);
+
     const [sgf, setSgf] = useState(() => {
         const storedSgf = localStorage.getItem("game_sgf");
         return storedSgf || "(;FF[4]GM[1]SZ[19])";
@@ -28,6 +30,8 @@ export const GameProvider = ({ children }) => {
     return (
         <GameContext.Provider
             value={{
+                gameInfo,
+                setGameInfo,
                 sgf,
                 updateSgf,
                 playerColor,

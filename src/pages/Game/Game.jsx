@@ -3,8 +3,9 @@ import GoPlayerMultiplayer from "../../components/GoPlayers/GoPlayerMultiplayer.
 import { GameProvider, useGame } from "../../contexts/GameContext";
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import styles from "../Game/Game.module.css";
-import { leaveGame } from "../../services/API/gameApi.js";
+import { getGameInfo, leaveGame } from "../../services/API/gameApi.js";
 import { useAuth } from "../../contexts/AuthContext.jsx";
+import {fixSgfFormat} from "../../utils/conversionUtils.js";
 
 const WS_URL_BASE = "ws://localhost:8080/api/startGame";
 
@@ -12,10 +13,18 @@ function GameContent() {
     const { gameKey } = useParams();
     const { user } = useAuth();
     const navigate = useNavigate();
-    const { playerColor, setPlayerColor } = useGame();
+
+    // Достаём из контекста:
+    const {
+        gameInfo,
+        setGameInfo,
+        sgf,
+        updateSgf,
+        playerColor,
+        setPlayerColor
+    } = useGame();
 
     const [incomingMove, setIncomingMove] = useState(null);
-
     const unmountedRef = useRef(false);
     const socketRef = useRef(null);
 
@@ -30,6 +39,27 @@ function GameContent() {
             setPlayerColor("b");
         }
     }, [playerColor, setPlayerColor]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await getGameInfo(gameKey);
+                if (response.data?.Status === 200) {
+                    const body = response.data.Body;
+                    setGameInfo(body);
+
+                    const rawSgf = (body?.sgf || "").trim();
+                    const cleanedSgf = fixSgfFormat(rawSgf || "(;FF[4]GM[1]SZ[19])");
+
+                    if (cleanedSgf !== sgf) {
+                        updateSgf(cleanedSgf);
+                    }
+                }
+            } catch (error) {
+                console.error("Ошибка getGameInfo:", error);
+            }
+        })();
+    }, [gameKey]);
 
     const connectSocket = useCallback(() => {
         const socketUrl = `${WS_URL_BASE}?game_id=${gameKey}`;
@@ -111,6 +141,7 @@ function GameContent() {
             <GoPlayerMultiplayer
                 onSendMove={sendMove}
                 incomingMove={incomingMove}
+                initialSgf={sgf}
             />
 
             <button onClick={handleLeave} className={styles.leaveButton}>
