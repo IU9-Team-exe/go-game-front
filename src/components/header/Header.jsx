@@ -42,6 +42,9 @@ const Header = () => {
                     <Link to="/ai" className={styles.link}>
                         AI
                     </Link>
+                    <Link to="/archive" className={styles.link}>
+                        Archive
+                    </Link>
                 </div>
                 <div className={styles.right}>
                     {user ? (

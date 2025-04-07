@@ -8,6 +8,7 @@ import JoinGame from "../pages/JoinGame/JoinGame.jsx";
 import Game from "../pages/Game/Game.jsx";
 import AI from "../pages/AI/AI.jsx";
 import CreateGame from "../pages/CreateGame/CreateGame.jsx";
+import ArchivePage from "../pages/Archive/Archive.jsx";
 
 export default function AppRouter() {
     return (
@@ -20,6 +21,7 @@ export default function AppRouter() {
             <Route path="/create" element={<CreateGame />} />
             <Route path="/game/:gameKey" element={<Game />} />
             <Route path="/ai" element={<AI />} />
+            <Route path="/archive" element={<ArchivePage />} />
             <Route path="*" element={<div>Страница не найдена</div>}/>
         </Routes>
     );

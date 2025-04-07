@@ -1,0 +1,33 @@
+.archiveContainer {
+    margin: 20px auto;
+    max-width: 1200px;
+    padding: 10px;
+}
+
+.filters {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.filterBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.gamesContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* 2 столбца */
+    gap: 20px;
+}
+
+.gamesPagination {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
