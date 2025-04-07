@@ -27,7 +27,7 @@ export function joinGame(gameCode) {
  * @param gameCode
  */
 export function getGameInfo(gameCode) {
-    return api.post("/getGameInfo", {
+    return api.post("/getGameByPublicKey", {
         game_key: gameCode,
     });
 }

@@ -16,6 +16,7 @@ function GameContent() {
 
     const [incomingMove, setIncomingMove] = useState(null);
 
+    const unmountedRef = useRef(false);
     const socketRef = useRef(null);
 
     useEffect(() => {
@@ -64,17 +65,20 @@ function GameContent() {
             console.error("WS ошибка", err);
         };
         ws.onclose = (event) => {
-            console.warn("WS-соединение закрыто", event);
+            console.warn("WS закрыт", event);
             socketRef.current = null;
-            setTimeout(() => {
-                connectSocket();
-            }, 3000);
+            if (!unmountedRef.current) {
+                setTimeout(() => {
+                    connectSocket();
+                }, 3000);
+            }
         };
     }, [gameKey]);
 
     useEffect(() => {
         connectSocket();
         return () => {
+            unmountedRef.current = true;
             if (socketRef.current) {
                 socketRef.current.close();
             }

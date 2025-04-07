@@ -59,7 +59,6 @@ const GoPlayerMultiplayer = ({
         }
         return () => {
             if (playerRef.current) {
-                playerRef.current.destroy();
                 playerRef.current = null;
             }
         };
