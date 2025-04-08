@@ -11,6 +11,7 @@ function ArchivePage() {
     const [names, setNames] = useState([]);
     const [namesPage, setNamesPage] = useState(0);
     const [namesTotalPages, setNamesTotalPages] = useState(0);
+    const [namesPerPage] = useState(20); // Количество имен на странице
 
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedName, setSelectedName] = useState("");
@@ -18,25 +19,33 @@ function ArchivePage() {
     const [games, setGames] = useState([]);
     const [archivePage, setArchivePage] = useState(0);
     const [archiveTotalPages, setArchiveTotalPages] = useState(0);
+    const [isLoadingGames, setIsLoadingGames] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         getYearsInArchive()
             .then((response) => {
-                setYears(response.data.years);
+                setYears(response.data.years.sort((a, b) => b.year - a.year)); // Сортируем года по убыванию
             })
-            .catch((err) => console.error(err));
-        loadNames(1);
+            .catch((err) => {
+                console.error(err);
+                setError("Не удалось загрузить список лет.");
+            });
+        loadNames(0); // Загружаем первую страницу имен
     }, []);
 
     const loadNames = (page) => {
-        getNamesInArchive(page)
+        getNamesInArchive(page, namesPerPage) // Передаем page и limit
             .then((response) => {
-                const { names, page, pages_total } = response.data;
+                const { names, page: currentPage, pages_total } = response.data;
                 setNames(names);
-                setNamesPage(page);
+                setNamesPage(currentPage); // API возвращает 0-based page? Проверяем/корректируем
                 setNamesTotalPages(pages_total);
             })
-            .catch((err) => console.error(err));
+            .catch((err) => {
+                 console.error(err);
+                 setError("Не удалось загрузить список игроков.");
+            });
     };
 
     const handleNamesPrev = () => {
@@ -50,36 +59,47 @@ function ArchivePage() {
         }
     };
 
+    // Пагинация для лет (локальная)
     const handleYearsPrev = () => {
-        if (yearsLocalPage > 0) {
-            setYearsLocalPage(yearsLocalPage - 1);
-        }
+        setYearsLocalPage((prev) => Math.max(0, prev - 1));
     };
     const handleYearsNext = () => {
         const maxLocalPages = Math.ceil(years.length / yearsPerPage);
-        if (yearsLocalPage < maxLocalPages - 1) {
-            setYearsLocalPage(yearsLocalPage + 1);
-        }
+        setYearsLocalPage((prev) => Math.min(maxLocalPages - 1, prev + 1));
     };
     const visibleYears = years.slice(
         yearsLocalPage * yearsPerPage,
-        yearsLocalPage * yearsPerPage + yearsPerPage
+        (yearsLocalPage + 1) * yearsPerPage
     );
+    const maxYearsLocalPages = Math.ceil(years.length / yearsPerPage);
 
+    // Загрузка игр
     const loadArchiveGames = (page = 0) => {
         if (!selectedYear && !selectedName) {
-            alert("Выберите год или имя игрока!");
+            setError("Выберите год или имя игрока для поиска.");
+            setGames([]); // Очищаем игры, если фильтры не выбраны
+            setArchiveTotalPages(0);
+            setArchivePage(0);
             return;
         }
+        setError(null); // Сбрасываем ошибку
+        setIsLoadingGames(true); // Устанавливаем флаг загрузки
 
         getArchive(selectedYear, selectedName, page)
             .then((response) => {
-                const { games, page, pages_total } = response.data;
-                setGames(games);
-                setArchivePage(page);
+                const { games: fetchedGames, page: currentPage, pages_total } = response.data;
+                setGames(fetchedGames || []); // Убедимся, что games это массив
+                setArchivePage(currentPage);
                 setArchiveTotalPages(pages_total);
             })
-            .catch((err) => console.error(err));
+            .catch((err) => {
+                console.error(err);
+                setError("Не удалось загрузить игры.");
+                setGames([]); // Очищаем игры при ошибке
+             })
+            .finally(() => {
+                setIsLoadingGames(false); // Снимаем флаг загрузки
+            });
     };
 
     const handleArchivePrev = () => {
@@ -93,87 +113,102 @@ function ArchivePage() {
         }
     };
 
+    // Вызывается при клике на кнопку "Показать игры"
     const handleShowGames = () => {
-        setArchivePage(0);
-        loadArchiveGames(0);
+        setArchivePage(0); // Сбрасываем страницу игр
+        loadArchiveGames(0); // Загружаем первую страницу
     };
 
     return (
-        <div className={styles.archiveContainer}>
-            <h2>Архив профессиональных игр</h2>
+        <div className={`${styles.archiveContainer} main-container`}> {/* Добавлен main-container */}
+            <h2>Архив профессиональных игр Го</h2>
 
+            {error && <p className={styles.error}>{error}</p>}
+
+            {/* Фильтры */}
             <div className={styles.filters}>
+                {/* Фильтр по годам */}
                 <div className={styles.filterBlock}>
-                    <label>Год:</label>
+                    <label htmlFor="year-select">Год:</label>
                     <select
+                        id="year-select"
                         value={selectedYear}
                         onChange={(e) => setSelectedYear(e.target.value)}
+                        className={styles.selectInput}
                     >
-                        <option value="">Не выбрано</option>
+                        <option value="">Все года</option>
                         {visibleYears.map((y) => (
                             <option key={y.year} value={y.year}>
-                                {y.year} (игр: {y.count_of_games})
+                                {y.year} ({y.count_of_games} игр)
                             </option>
                         ))}
                     </select>
-                    <div>
-                        <button onClick={handleYearsPrev}>Предыдущие</button>
-                        <button onClick={handleYearsNext}>Следующие</button>
-                    </div>
+                    {years.length > yearsPerPage && (
+                        <div className={styles.paginationControls}>
+                            <button onClick={handleYearsPrev} disabled={yearsLocalPage <= 0}>←</button>
+                            <span>{yearsLocalPage + 1} / {maxYearsLocalPages}</span>
+                            <button onClick={handleYearsNext} disabled={yearsLocalPage >= maxYearsLocalPages - 1}>→</button>
+                        </div>
+                    )}
                 </div>
 
+                {/* Фильтр по именам */}
                 <div className={styles.filterBlock}>
-                    <label>Имя игрока:</label>
+                    <label htmlFor="name-select">Игрок:</label>
                     <select
+                        id="name-select"
                         value={selectedName}
                         onChange={(e) => setSelectedName(e.target.value)}
+                         className={styles.selectInput}
                     >
-                        <option value="">Не выбрано</option>
+                        <option value="">Все игроки</option>
                         {names.map((player) => (
                             <option key={player.name} value={player.name}>
-                                {player.name} (игр: {player.count_of_games})
+                                {player.name} ({player.count_of_games} игр)
                             </option>
                         ))}
                     </select>
-                    <div>
-                        <button onClick={handleNamesPrev} disabled={namesPage <= 0}>
-                            ←
-                        </button>
-                        <span>{namesPage + 1} / {namesTotalPages}</span>
-                        <button
-                            onClick={handleNamesNext}
-                            disabled={namesPage >= namesTotalPages - 1}
-                        >
-                            →
-                        </button>
+                    {namesTotalPages > 1 && (
+                        <div className={styles.paginationControls}>
+                            <button onClick={handleNamesPrev} disabled={namesPage <= 0}>←</button>
+                            <span>{namesPage + 1} / {namesTotalPages}</span>
+                            <button onClick={handleNamesNext} disabled={namesPage >= namesTotalPages - 1}>→</button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Кнопка поиска */}
+                <button onClick={handleShowGames} className={styles.showButton} disabled={isLoadingGames}>
+                    {isLoadingGames ? "Загрузка..." : "Показать игры"}
+                </button>
+            </div>
+
+            {/* Контейнер с карточками игр */}
+             {isLoadingGames ? (
+                 <div className={styles.loadingIndicator}>Загрузка игр...</div>
+             ) : games.length > 0 ? (
+                <>
+                    <div className={styles.gamesContainer}>
+                        {games.map((game, index) => (
+                            <GameCard key={index} game={game} />
+                        ))}
                     </div>
-                </div>
-
-                <button onClick={handleShowGames}>Показать игры</button>
-            </div>
-
-            <div className={styles.gamesContainer}>
-                {games.map((game, index) => (
-                    <GameCard key={index} game={game} />
-                ))}
-            </div>
-
-            {games.length > 0 && (
-                <div className={styles.gamesPagination}>
-                    <button onClick={handleArchivePrev} disabled={archivePage <= 0}>
-                        Предыдущая
-                    </button>
-                    <span>
-            Страница {archivePage + 1} из {archiveTotalPages}
-          </span>
-                    <button
-                        onClick={handleArchiveNext}
-                        disabled={archivePage >= archiveTotalPages - 1}
-                    >
-                        Следующая
-                    </button>
-                </div>
-            )}
+                    {/* Пагинация игр */}
+                    {archiveTotalPages > 1 && (
+                         <div className={styles.gamesPagination}>
+                             <button onClick={handleArchivePrev} disabled={archivePage <= 0}>
+                                 Предыдущая
+                             </button>
+                             <span>Страница {archivePage + 1} из {archiveTotalPages}</span>
+                             <button onClick={handleArchiveNext} disabled={archivePage >= archiveTotalPages - 1}>
+                                 Следующая
+                             </button>
+                         </div>
+                     )}
+                 </>
+             ) : !isLoadingGames && (selectedYear || selectedName) ? (
+                 <p className={styles.noGamesMessage}>Игры по заданным фильтрам не найдены.</p>
+             ) : null}
         </div>
     );
 }

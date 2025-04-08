@@ -1,16 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap');
+
 :root {
   /* Шрифты */
-  --font-family-base: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-family-base: 'Noto Sans JP', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-family-serif: 'Noto Serif SC', serif;
   --font-size-base: 16px;
   --font-weight-normal: 400;
   --font-weight-bold: 700;
 
-  /* Цвета для светлой темы */
-  --color-primary: #646cff;
-  --color-primary-hover: #535bf2;
-  --color-secondary: #213547;
-  --color-background: #ffffff;
-  --color-text: rgba(0, 0, 0, 0.87);
+  /* Цвета темы */
+  --color-background: #f8f4e9; /* Светло-бежевый, как бумага для каллиграфии */
+  --color-text: #3a3226; /* Темно-коричневый, как тушь */
+  --color-primary: #a67c52; /* Древесный, как гобан */
+  --color-primary-dark: #78350f; /* Темно-янтарный для акцентов */
+  --color-primary-light: #e6d5b8; /* Светлое дерево/песок */
+  --color-secondary: #3a3226; /* Темная тушь */
+  --color-stone-black: #222222;
+  --color-stone-white: #ffffff;
+  --color-accent: #c0392b; /* Красный акцент, как печать */
+  --color-text-on-dark: #f8f4e9; /* Текст на темном фоне */
+  --color-text-on-light: #3a3226; /* Текст на светлом фоне */
+
+  /* Переменные для теней и границ */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --border-radius: 8px;
+  --border-color: rgba(58, 50, 38, 0.2); /* Полупрозрачный цвет туши */
 }
 
 /* Глобальные стили для документа */
@@ -18,7 +34,7 @@ body {
   font-family: var(--font-family-base), serif;
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-normal);
-  line-height: 1.5;
+  line-height: 1.6; /* Немного увеличим для лучшей читаемости */
   color: var(--color-text);
   background-color: var(--color-background);
   min-width: 320px;
@@ -28,45 +44,122 @@ body {
 
 /* Заголовки */
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-serif), serif; /* Используем Serif для заголовков */
   font-weight: var(--font-weight-bold);
-  line-height: 1.2;
+  line-height: 1.3;
+  color: var(--color-primary-dark); /* Темно-янтарный для заголовков */
+  margin-bottom: 0.8em;
 }
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+
 
 /* Стилизация ссылок */
 a {
   font-weight: 500;
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
   text-decoration: none;
+  transition: color 0.2s ease-in-out;
 }
 a:hover {
-  color: var(--color-primary-hover);
+  color: var(--color-accent);
+  text-decoration: underline;
 }
 
 /* Универсальные стили для кнопок */
 button {
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: inherit;
-  font-weight: inherit;
+  font-weight: var(--font-weight-bold); /* Сделаем текст кнопок жирным */
   font-family: inherit;
-  background-color: var(--color-secondary);
-  color: var(--color-background);
+  background-color: var(--color-primary-dark); /* Основной цвет кнопки */
+  color: var(--color-text-on-dark);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.25s, border-color 0.25s;
+  box-shadow: var(--shadow-sm);
 }
 button:hover {
-  border-color: var(--color-primary);
+  background-color: var(--color-primary); /* Светлее при наведении */
+  border-color: var(--color-secondary);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto -webkit-focus-ring-color; /* Стандартный фокус */
+}
+button:disabled {
+    background-color: #a0a0a0; /* Серый для неактивных кнопок */
+    color: #e0e0e0;
+    cursor: not-allowed;
+    box-shadow: none;
 }
 
-/* Поддержка тёмной темы */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #242424;
-    --color-text: rgba(255, 255, 255, 0.87);
-  }
+/* Стили для input */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="Username"], /* Добавим для единообразия с AuthForm */
+input[type="Password"], /* Добавим для единообразия с AuthForm */
+select {
+  padding: 0.6em 0.8em;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: #fff;
+  color: var(--color-text);
+  font-size: inherit;
+  font-family: inherit;
+  box-shadow: inset var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(166, 124, 82, 0.3); /* Голубое свечение при фокусе */
+}
+
+/* Класс для имитации фона гобана */
+.go-board-bg {
+    background-color: var(--color-primary-light); /* Цвет дерева */
+    background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0 V40 M0 20 H40" stroke="%233a3226" stroke-width="0.5" opacity="0.3"/><circle cx="10" cy="10" r="1.5" fill="%233a3226" opacity="0.4"/><circle cx="10" cy="30" r="1.5" fill="%233a3226" opacity="0.4"/><circle cx="30" cy="10" r="1.5" fill="%233a3226" opacity="0.4"/><circle cx="30" cy="30" r="1.5" fill="%233a3226" opacity="0.4"/><circle cx="20" cy="20" r="1.5" fill="%233a3226" opacity="0.4"/></svg>');
+    background-size: 40px 40px;
+}
+
+/* Классы для камней (можно использовать для декора) */
+.go-stone {
+    width: 2.5em;
+    height: 2.5em;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+}
+
+.go-stone-white {
+    background: radial-gradient(circle at 30% 30%, #ffffff, #e0e0e0);
+}
+
+.go-stone-black {
+    background: radial-gradient(circle at 30% 30%, #555555, #222222);
+}
+
+/* Контейнер для центрирования контента */
+.main-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+
+/* Поддержка тёмной темы (если понадобится в будущем) */
+/* @media (prefers-color-scheme: dark) { */
+/*   :root { */
+/*     --color-background: #242424; */
+/*     --color-text: rgba(255, 255, 255, 0.87); */
+/*   } */
+/* } */
