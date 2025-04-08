@@ -137,17 +137,20 @@ function GameContent() {
 
     return (
         <div>
-            <h2 style={{ textAlign: "center" }}>Игра: {gameKey}</h2>
+            <div className={styles.container}>
+                <h2>Игра: {gameKey}</h2>
+                <button onClick={handleLeave} className={styles.leaveButton}>
+                    Выйти
+                </button>
+            </div>
             <GoPlayerMultiplayer
                 onSendMove={sendMove}
                 incomingMove={incomingMove}
                 initialSgf={sgf}
             />
-
-            <button onClick={handleLeave} className={styles.leaveButton}>
-                Выйти
-            </button>
         </div>
+
+
     );
 }
 

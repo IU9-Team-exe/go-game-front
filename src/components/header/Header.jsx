@@ -49,7 +49,7 @@ const Header = () => {
                             Создать
                         </NavLink>
                         <NavLink to="/join" className={({ isActive }) => isActive ? `${styles.link} ${styles.activeLink}` : styles.link}>
-                            Войти
+                            Присоединиться
                         </NavLink>
                         <NavLink to="/ai" className={({ isActive }) => isActive ? `${styles.link} ${styles.activeLink}` : styles.link}>
                             Играть с AI
