@@ -1,10 +1,129 @@
 .gameCard {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 10px;
-    background-color: #fafafa;
+    background-color: rgba(255, 255, 255, 0.9); /* Полупрозрачный фон */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1rem 1.2rem; /* Увеличим паддинги */
+    box-shadow: var(--shadow-md);
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem; /* Отступы между секциями карточки */
 }
 
-.players, .info, .result {
-    margin-bottom: 6px;
+.gameCard:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+}
+
+.eventDate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--color-secondary);
+    opacity: 0.8;
+    border-bottom: 1px dashed var(--border-color); /* Разделитель */
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.event {
+    font-weight: 500;
+}
+
+.players {
+    display: flex;
+    flex-direction: column; /* Игроки друг под другом */
+    gap: 0.5rem; /* Отступ между игроками */
+    align-items: center; /* Центрируем блок */
+}
+
+.playerInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%; /* Растягиваем блок информации об игроке */
+    justify-content: center; /* Центрируем контент внутри блока */
+}
+
+.stone {
+    width: 1.2em; /* Размер камня */
+    height: 1.2em;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0; /* Предотвращаем сжатие камня */
+}
+
+.blackStone {
+    background: radial-gradient(circle at 30% 30%, #555555, #222222);
+}
+
+.whiteStone {
+    background: radial-gradient(circle at 30% 30%, #ffffff, #e0e0e0);
+    border: 1px solid #ccc; /* Небольшая граница для белого камня */
+}
+
+.playerName {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    flex-grow: 1; /* Позволяем имени занять доступное место */
+    text-align: center; /* Центрируем имя */
+    overflow: hidden; /* Обрезаем слишком длинные имена */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.playerRank {
+    font-size: 0.9em;
+    color: var(--color-secondary);
+    opacity: 0.9;
+}
+
+.vs {
+    font-family: var(--font-family-serif);
+    font-weight: bold;
+    color: var(--color-primary);
+    margin: 0.1rem 0; /* Небольшие отступы */
+}
+
+
+.details {
+    display: flex;
+    justify-content: space-around; /* Распределяем детали */
+    font-size: 0.9rem;
+    color: var(--color-secondary);
+    opacity: 0.9;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border-color); /* Разделитель */
+}
+
+.result {
+    font-weight: 500;
+    color: var(--color-primary-dark);
+    text-align: center; /* Центрируем результат */
+}
+
+.result strong {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-secondary);
+}
+
+.sgfLink {
+    display: inline-block; /* Чтобы кнопка не растягивалась */
+    margin: 0.5rem auto 0 auto; /* Отступы и центрирование */
+    padding: 0.4em 0.8em;
+    background-color: var(--color-primary);
+    color: var(--color-text-on-dark);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.sgfLink:hover {
+    background-color: var(--color-primary-dark);
+    color: var(--color-text-on-dark);
+    text-decoration: none;
 }

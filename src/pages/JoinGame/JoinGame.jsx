@@ -10,6 +10,8 @@ function JoinGameContent() {
     const navigate = useNavigate();
     const { user } = useAuth();
     const { setPlayerColor } = useGame();
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!user) {
@@ -17,34 +19,53 @@ function JoinGameContent() {
         }
     }, [user, navigate]);
 
-    const handleJoin = async () => {
+    const handleJoin = async (e) => {
+        e.preventDefault(); // Предотвращаем стандартную отправку формы
+        if (!gameCode.trim()) {
+            setError("Введите код игры.");
+            return;
+        }
+        setIsLoading(true);
+        setError(null);
         try {
             await joinGame(gameCode);
-            setPlayerColor("w");
+            setPlayerColor("w"); // Присоединившийся играет за белых
             navigate(`/game/${gameCode}`);
-        } catch (error) {
-            console.error("Ошибка подключения к игре", error);
-            navigate("/game");
+        } catch (err) {
+            console.error("Ошибка подключения к игре", err);
+            setError(err.response?.data?.Body?.ErrorDescription || err.message || "Не удалось подключиться к игре. Проверьте код или попробуйте позже.");
+            setIsLoading(false);
         }
+         // Не нужно setIsLoading(false) при успехе, т.к. происходит редирект
     };
 
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} main-container`}> {/* Добавлен main-container */}
             <h2>Подключиться к игре</h2>
-            <input
-                type="text"
-                value={gameCode}
-                onChange={(e) => setGameCode(e.target.value)}
-                placeholder="Введите код"
-                className={styles.inputField}
-            />
-            <button onClick={handleJoin} className={styles.joinButton}>
-                Подключиться
-            </button>
+            <p className={styles.description}>
+                Введите код игры, полученный от другого игрока, чтобы присоединиться.
+                Вы будете играть за белых.
+            </p>
+            <form onSubmit={handleJoin} className={styles.joinForm}>
+                <input
+                    type="text"
+                    value={gameCode}
+                    onChange={(e) => setGameCode(e.target.value)}
+                    placeholder="Код игры"
+                    className={styles.inputField}
+                    required
+                    disabled={isLoading}
+                />
+                <button type="submit" className={styles.joinButton} disabled={isLoading}>
+                    {isLoading ? "Подключение..." : "Подключиться"}
+                </button>
+            </form>
+            {error && <p className={styles.error}>{error}</p>}
         </div>
     );
 }
 
+// Обертка с GameProvider остается, так как JoinGameContent использует useGame
 function JoinGame() {
     return (
         <GameProvider>

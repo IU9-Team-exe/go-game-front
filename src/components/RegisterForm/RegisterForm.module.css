@@ -1,26 +1,13 @@
-.registerForm {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    margin: 40px auto;
-}
+/* Этот файл теперь пуст или может быть удален,
+   так как все стили берутся из AuthForm.module.css */
+/* @import url("../AuthForm/AuthForm.module.css"); <-- Можно оставить для ясности, но не обязательно */
 
-.registerForm h2 {
-    text-align: center;
-}
-
-.registerForm label {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-}
-
-.registerForm input {
-    padding: 8px;
+/* Если потребуются специфичные стили ТОЛЬКО для регистрации,
+   можно добавить их сюда с использованием уникального класса, например: */
+/*
+.specificRegisterStyle {
     margin-top: 5px;
 }
+*/
 
-.error {
-    color: red;
-    margin: 5px 0;
-}
+/* Но для полного соответствия дизайну авторизации, этот файл остается пустым */

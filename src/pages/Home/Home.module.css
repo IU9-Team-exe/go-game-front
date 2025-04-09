@@ -1,15 +1,264 @@
-.home-container {
-    padding: 2rem;
+/* Стили для всей страницы Home */
+.homePage {
+    padding: 2rem 0; /* Добавим отступы сверху/снизу для фона */
+    min-height: calc(100vh - 64px); /* Занимаем высоту экрана минус хедер (примерно) */
+}
+
+/* Общий контейнер для контента */
+.container {
+    max-width: 1100px; /* Увеличим максимальную ширину */
     margin: 0 auto;
-    max-width: 800px;
+    padding: 0 1rem; /* Отступы по бокам */
 }
 
-/* Отступы для абзацев */
-.home-container p {
+/* Hero Section */
+.heroSection {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.9); /* Полупрозрачный белый фон */
+    padding: 3rem 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 3rem;
+    overflow: hidden; /* Для эффекта кисти */
+}
+
+/* Эффект кисти (опционально, если SVG сложный) */
+.brushBorder {
+    border: 5px solid transparent; /* Прозрачная граница для позиционирования */
+    /* Если нужен SVG бордюр, его можно добавить через ::before/::after */
+    border-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M5,5 Q25,0 50,5 T95,5 Q100,25 95,50 T95,95 Q75,100 50,95 T5,95 Q0,75 5,50 T5,5" fill="none" stroke="%23a67c52" stroke-width="3"/></svg>') 5 stretch;
+}
+
+/* Эффект чернильной кляксы (опционально) */
+.inkSplash {
+    position: absolute;
+    top: -20px;
+    right: -30px;
+    width: 200px;
+    height: 200px;
+    background-image: url('data:image/svg+xml;utf8,<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M100,50 C120,30 150,40 160,70 C170,100 150,130 120,140 C90,150 60,130 50,100 C40,70 60,40 80,30 C90,25 95,35 100,50 Z" fill="%233a3226" opacity="0.08"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    z-index: 0;
+}
+
+.heroContent {
+    position: relative; /* Чтобы контент был над кляксой */
+    z-index: 1;
+}
+
+.mainTitle {
+    font-size: 2.8rem; /* Крупный заголовок */
+    color: var(--color-primary-dark);
     margin-bottom: 1rem;
+    font-family: var(--font-family-serif);
 }
 
-/* Небольшой отступ для заголовка */
-.home-container h1 {
-    margin-bottom: 1.5rem;
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--color-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.7;
+    max-width: 700px; /* Ограничим ширину подзаголовка */
+}
+
+.heroButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.button {
+    /* Глобальные стили для кнопок уже в index.css */
+    padding: 0.8em 1.5em;
+    font-size: 1rem;
+    display: inline-flex; /* Для иконок */
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.primaryButton {
+    background-color: var(--color-primary-dark);
+    color: var(--color-text-on-dark);
+}
+.primaryButton:hover {
+    background-color: var(--color-primary);
+}
+
+.secondaryButton {
+    background-color: var(--color-secondary);
+    color: var(--color-text-on-dark);
+}
+.secondaryButton:hover {
+    background-color: #5a5246;
+}
+
+/* Декорация камнями */
+.stonesDecoration {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+    gap: 1.5rem;
+}
+
+.stone {
+    width: 4rem; /* Размер декоративных камней */
+    height: 4rem;
+    border-radius: 50%; /* !!! ДОБАВЛЕНО СЮДА !!! */
+    /* Стили go-stone-black/white применяются из index.css для фона */
+    box-shadow: var(--shadow-md); /* Добавим тень */
+}
+
+/* Секция преимуществ */
+.featuresSection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Адаптивная сетка */
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.featureCard {
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid var(--border-color);
+}
+
+.featureCard:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.featureIcon {
+    margin-bottom: 1rem;
+    display: inline-block; /* Чтобы обертка подстраивалась под камень */
+}
+
+.iconStone {
+    width: 3.5rem; /* Размер камня-иконки */
+    height: 3.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto; /* Центрирование */
+    box-shadow: var(--shadow-sm);
+}
+
+.svgIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--color-text-on-dark); /* Цвет иконки на черном камне */
+}
+.svgIconDark {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--color-text-on-light); /* Цвет иконки на белом камне */
+}
+
+
+.featureTitle {
+    font-size: 1.4rem;
+    color: var(--color-primary-dark);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-family-serif);
+}
+
+.featureCard p {
+    font-size: 0.95rem;
+    color: var(--color-secondary);
+    line-height: 1.6;
+}
+
+/* Секция чата */
+.chatSection {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden; /* Чтобы скруглить углы iframe */
+    border: 1px solid var(--border-color);
+}
+
+.chatHeader {
+    background-color: var(--color-primary-dark);
+    color: var(--color-text-on-dark);
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.chatIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.8rem;
+}
+
+.chatTitle {
+    font-size: 1.3rem;
+    font-family: var(--font-family-serif);
+    color: var(--color-text-on-dark); /* Убедимся, что цвет правильный */
+    margin-bottom: 0; /* Убираем стандартный отступ заголовка */
+}
+
+
+.chatIframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+    display: block; /* Убираем лишние отступы под iframe */
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .mainTitle {
+        font-size: 2.2rem;
+    }
+    .subtitle {
+        font-size: 1rem;
+    }
+    .stone {
+        width: 3rem;
+        height: 3rem;
+    }
+    .featuresSection {
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+     .heroSection {
+        padding: 2rem 1rem;
+     }
+     .mainTitle {
+        font-size: 1.8rem;
+     }
+     .subtitle {
+        font-size: 0.95rem;
+     }
+     .heroButtons {
+         flex-direction: column; /* Кнопки друг под другом */
+         align-items: center;
+     }
+     .button {
+         width: 80%; /* Кнопки шире */
+         justify-content: center;
+     }
+     .stonesDecoration {
+        gap: 1rem;
+        flex-wrap: wrap; /* Перенос камней */
+     }
+     .stone {
+         width: 2.5rem;
+         height: 2.5rem;
+     }
+     .featureCard {
+         padding: 1rem;
+     }
+     .featureTitle {
+         font-size: 1.2rem;
+     }
 }

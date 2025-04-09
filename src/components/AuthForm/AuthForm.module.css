@@ -1,26 +1,68 @@
+.formContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(80vh - 64px); /* Примерная высота для центрирования */
+    padding: 2rem;
+    /* Можно добавить фон go-board-bg, если нужно */
+    /* background-color: var(--color-primary-light);
+    background-image: url('data:image/svg+xml;utf8,<svg ...>'); */
+}
+
 .authForm {
+    background-color: rgba(255, 255, 255, 0.9); /* Полупрозрачный фон формы */
+    padding: 2rem 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 400px; /* Максимальная ширина формы */
     display: flex;
     flex-direction: column;
-    width: 300px;
-    margin: 40px auto;
+    gap: 1.5rem; /* Отступы между элементами */
 }
 
 .authForm h2 {
     text-align: center;
+    color: var(--color-primary-dark);
+    margin-bottom: 0.5rem; /* Уменьшим отступ снизу */
+    font-family: var(--font-family-serif);
 }
 
-.authForm label {
-    margin-bottom: 10px;
+.inputGroup {
     display: flex;
     flex-direction: column;
+    gap: 0.5rem; /* Отступ между label и input */
 }
 
-.authForm input {
-    padding: 8px;
-    margin-top: 5px;
+.inputGroup label {
+    font-weight: 500;
+    color: var(--color-secondary);
 }
+
+/* Стили для input уже заданы глобально в index.css */
+/* .authForm input { ... } */
 
 .error {
-    color: red;
-    margin: 5px 0;
+    color: var(--color-accent); /* Красный цвет для ошибок */
+    text-align: center;
+    font-size: 0.9rem;
+    margin: -0.5rem 0 0.5rem 0; /* Скорректируем отступы */
+}
+
+.submitButton {
+    margin-top: 0.5rem; /* Небольшой отступ сверху */
+    padding: 0.8em 1.5em; /* Увеличим паддинги */
+    font-size: 1rem;
+    background-color: var(--color-primary-dark);
+    color: var(--color-text-on-dark);
+}
+
+.submitButton:hover {
+    background-color: var(--color-primary);
+}
+
+.submitButton:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
 }

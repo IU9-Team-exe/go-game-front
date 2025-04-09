@@ -1,33 +1,123 @@
 .archiveContainer {
-    margin: 20px auto;
-    max-width: 1200px;
-    padding: 10px;
+    /* Использует .main-container из index.css */
+    /* margin: 20px auto; */
+    /* max-width: 1200px; */
+    /* padding: 10px; */
+}
+
+.archiveContainer h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--color-primary-dark);
 }
 
 .filters {
     display: flex;
-    gap: 20px;
-    align-items: center;
-    margin-bottom: 20px;
+    flex-wrap: wrap; /* Перенос фильтров на маленьких экранах */
+    gap: 1.5rem; /* Отступы между блоками фильтров */
+    align-items: flex-end; /* Выравнивание по нижнему краю */
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.7); /* Легкий фон для фильтров */
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
 }
 
 .filterBlock {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 0.5rem;
+    flex-grow: 1; /* Позволяем блокам растягиваться */
+    min-width: 200px; /* Минимальная ширина блока */
+}
+
+.filterBlock label {
+    font-weight: 500;
+    color: var(--color-secondary);
+    margin-bottom: 0.2rem;
+}
+
+/* Стили для select и button наследуются из index.css */
+.selectInput {
+    width: 100%; /* Растягиваем select на всю ширину блока */
+}
+
+.showButton {
+    padding: 0.6em 1.5em; /* Сделаем кнопку поиска чуть крупнее */
+    align-self: flex-end; /* Прижимаем кнопку к низу */
+}
+
+.paginationControls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Равномерное распределение кнопок и текста */
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+.paginationControls span {
+    font-size: 0.9rem;
+    color: var(--color-secondary);
+}
+.paginationControls button {
+    padding: 0.3em 0.6em; /* Маленькие кнопки пагинации */
+    font-size: 0.9rem;
+    min-width: 30px; /* Минимальная ширина */
 }
 
 .gamesContainer {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    /* 2 столбца */
-    gap: 20px;
+    /* Адаптивная сетка: 1 колонка на мобильных, 2 на средних, 3 на больших */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem; /* Отступы между карточками */
 }
 
 .gamesPagination {
-    margin-top: 20px;
+    margin-top: 2rem;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 1rem;
     justify-content: center;
+}
+.gamesPagination span {
+    font-size: 1rem;
+    color: var(--color-secondary);
+}
+.gamesPagination button {
+    padding: 0.5em 1em;
+}
+
+.loadingIndicator,
+.noGamesMessage,
+.error {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.1rem;
+    color: var(--color-secondary);
+}
+
+.error {
+    color: var(--color-accent);
+    font-weight: bold;
+    background-color: rgba(192, 57, 43, 0.1);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+
+/* Адаптивность для фильтров */
+@media (max-width: 768px) {
+    .filters {
+        flex-direction: column;
+        align-items: stretch; /* Растягиваем блоки на всю ширину */
+    }
+    .showButton {
+        align-self: center; /* Центрируем кнопку */
+        margin-top: 1rem;
+        width: 50%; /* Ограничиваем ширину кнопки */
+    }
+     .gamesContainer {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
 }
