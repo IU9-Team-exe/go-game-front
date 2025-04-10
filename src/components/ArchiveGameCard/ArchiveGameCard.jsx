@@ -1,31 +1,30 @@
 import React from "react";
 import styles from "./ArchiveGameCard.module.css";
-import { convertCoords } from "../../utils/conversionUtils"; // Для отображения хода, если нужно
 
 function ArchiveGameCard({ game }) {
     const {
-        black_name, // Используем snake_case из API
-        black_rank,
-        white_name,
-        white_rank,
-        datetime, // Используем datetime
-        result,
-        event,
-        board_size,
-        komi,
-        // moves, // moves не всегда приходят, sgf надежнее
-        sgf_link // Используем sgf_link
+        BlackPlayer,
+        BlackRank,
+        WhitePlayer,
+        WhiteRank,
+        Date,
+        Result,
+        Event,
+        BoardSize,
+        Komi,
+        sgf_link,
+        Sgf // на случай, если ссылка приходит только как встроенный SGF
     } = game;
 
     // Форматирование результата
     const formatResult = (res) => {
-        if (!res || !res.win_color) return "N/A"; // Нет результата
-        const winner = res.win_color === "B" ? "Чёрные" : "Белые";
-        if (res.reason === "resign") return `${winner} (сдача)`;
-        if (res.reason === "time") return `${winner} (время)`;
-        if (res.reason === "score" && res.point_diff != null) return `${winner} +${res.point_diff}`;
-        if (res.point_diff != null) return `${winner} +${res.point_diff}`; // Если причина не указана, но есть очки
-        return winner; // Если только цвет победителя
+        if (!res || !res.WinColor) return "N/A"; // Нет результата
+        const winner = res.WinColor === "B" ? "Чёрные" : res.WinColor === "W" ? "Белые" : "Ничья";
+        if (res.Reason === "resign") return `${winner} (сдача)`;
+        if (res.Reason === "time") return `${winner} (время)`;
+        if (res.Reason === "score" && res.PointDiff != null) return `${winner} +${res.PointDiff}`;
+        if (res.PointDiff != null) return `${winner} +${res.PointDiff}`;
+        return winner;
     };
 
     // Форматирование даты
@@ -34,42 +33,48 @@ function ArchiveGameCard({ game }) {
         try {
             return new Date(dateString).toLocaleDateString("ru-RU");
         } catch (e) {
-            return dateString; // Возвращаем как есть, если не дата
+            return dateString;
         }
     };
 
     return (
         <div className={styles.gameCard}>
             <div className={styles.eventDate}>
-                <span className={styles.event}>{event || "Неизвестное событие"}</span>
-                <span className={styles.date}>{formatDate(datetime)}</span>
+                <span className={styles.event}>{Event || "Неизвестное событие"}</span>
+                <span className={styles.date}>{formatDate(Date)}</span>
             </div>
 
             <div className={styles.players}>
                 <div className={styles.playerInfo}>
                     <span className={`${styles.stone} ${styles.blackStone}`}></span>
-                    <span className={styles.playerName}>{black_name || "Игрок"}</span>
-                    <span className={styles.playerRank}>({black_rank || "?"})</span>
+                    <span className={styles.playerName}>{BlackPlayer || "Игрок"}</span>
+                    <span className={styles.playerRank}>({BlackRank || "?"})</span>
                 </div>
                 <div className={styles.vs}>vs</div>
                 <div className={styles.playerInfo}>
-                     <span className={`${styles.stone} ${styles.whiteStone}`}></span>
-                    <span className={styles.playerName}>{white_name || "Игрок"}</span>
-                    <span className={styles.playerRank}>({white_rank || "?"})</span>
+                    <span className={`${styles.stone} ${styles.whiteStone}`}></span>
+                    <span className={styles.playerName}>{WhitePlayer || "Игрок"}</span>
+                    <span className={styles.playerRank}>({WhiteRank || "?"})</span>
                 </div>
             </div>
 
             <div className={styles.details}>
-                <span>Доска: {board_size || 19}x{board_size || 19}</span>
-                <span>Коми: {komi != null ? komi : "N/A"}</span>
+                <span>Доска: {BoardSize || 19}x{BoardSize || 19}</span>
+                <span>Коми: {Komi != null ? Komi : "N/A"}</span>
             </div>
 
             <div className={styles.result}>
-                <strong>Результат:</strong> {formatResult(result)}
+                <strong>Результат:</strong> {formatResult(Result)}
             </div>
 
-            {sgf_link && (
-                <a href={sgf_link} target="_blank" rel="noopener noreferrer" className={styles.sgfLink}>
+            {(sgf_link || Sgf) && (
+                <a
+                    href={sgf_link || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.sgfLink}
+                    title="Скачать SGF"
+                >
                     Скачать SGF
                 </a>
             )}

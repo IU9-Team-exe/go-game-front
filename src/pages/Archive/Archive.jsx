@@ -5,39 +5,40 @@ import styles from "./Archive.module.css";
 
 function ArchivePage() {
     const [years, setYears] = useState([]);
-    const [yearsLocalPage, setYearsLocalPage] = useState(0);
+    const [yearsLocalPage, setYearsLocalPage] = useState(1);
     const [yearsPerPage] = useState(10);
 
     const [names, setNames] = useState([]);
-    const [namesPage, setNamesPage] = useState(0);
-    const [namesTotalPages, setNamesTotalPages] = useState(0);
+    const [namesPage, setNamesPage] = useState(1);
+    const [namesTotalPages, setNamesTotalPages] = useState(1);
     const [namesPerPage] = useState(20); // Количество имен на странице
 
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedName, setSelectedName] = useState("");
 
     const [games, setGames] = useState([]);
-    const [archivePage, setArchivePage] = useState(0);
-    const [archiveTotalPages, setArchiveTotalPages] = useState(0);
+    const [archivePage, setArchivePage] = useState(1);
+    const [archiveTotalPages, setArchiveTotalPages] = useState(1);
     const [isLoadingGames, setIsLoadingGames] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         getYearsInArchive()
             .then((response) => {
-                setYears(response.data.years.sort((a, b) => b.year - a.year)); // Сортируем года по убыванию
+                console.log(response);
+                setYears(response.data.Body.years);
             })
             .catch((err) => {
                 console.error(err);
                 setError("Не удалось загрузить список лет.");
             });
-        loadNames(0); // Загружаем первую страницу имен
+        loadNames(1); // Загружаем первую страницу имен
     }, []);
 
     const loadNames = (page) => {
         getNamesInArchive(page, namesPerPage) // Передаем page и limit
             .then((response) => {
-                const { names, page: currentPage, pages_total } = response.data;
+                const { names, page: currentPage, pages_total } = response.data.Body;
                 setNames(names);
                 setNamesPage(currentPage); // API возвращает 0-based page? Проверяем/корректируем
                 setNamesTotalPages(pages_total);
@@ -61,7 +62,7 @@ function ArchivePage() {
 
     // Пагинация для лет (локальная)
     const handleYearsPrev = () => {
-        setYearsLocalPage((prev) => Math.max(0, prev - 1));
+        setYearsLocalPage((prev) => Math.max(1, prev - 1));
     };
     const handleYearsNext = () => {
         const maxLocalPages = Math.ceil(years.length / yearsPerPage);
@@ -74,12 +75,12 @@ function ArchivePage() {
     const maxYearsLocalPages = Math.ceil(years.length / yearsPerPage);
 
     // Загрузка игр
-    const loadArchiveGames = (page = 0) => {
+    const loadArchiveGames = (page = 1) => {
         if (!selectedYear && !selectedName) {
             setError("Выберите год или имя игрока для поиска.");
             setGames([]); // Очищаем игры, если фильтры не выбраны
-            setArchiveTotalPages(0);
-            setArchivePage(0);
+            setArchiveTotalPages(1);
+            setArchivePage(1);
             return;
         }
         setError(null); // Сбрасываем ошибку
@@ -87,7 +88,7 @@ function ArchivePage() {
 
         getArchive(selectedYear, selectedName, page)
             .then((response) => {
-                const { games: fetchedGames, page: currentPage, pages_total } = response.data;
+                const { games: fetchedGames, page: currentPage, pages_total } = response.data.Body;
                 setGames(fetchedGames || []); // Убедимся, что games это массив
                 setArchivePage(currentPage);
                 setArchiveTotalPages(pages_total);
@@ -103,7 +104,7 @@ function ArchivePage() {
     };
 
     const handleArchivePrev = () => {
-        if (archivePage > 0) {
+        if (archivePage > 1) {
             loadArchiveGames(archivePage - 1);
         }
     };
@@ -115,8 +116,8 @@ function ArchivePage() {
 
     // Вызывается при клике на кнопку "Показать игры"
     const handleShowGames = () => {
-        setArchivePage(0); // Сбрасываем страницу игр
-        loadArchiveGames(0); // Загружаем первую страницу
+        setArchivePage(1); // Сбрасываем страницу игр
+        loadArchiveGames(1); // Загружаем первую страницу
     };
 
     return (
