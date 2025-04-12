@@ -102,6 +102,7 @@
     font-weight: 500;
     color: var(--color-primary-dark);
     text-align: center; /* Центрируем результат */
+    margin-top: 0.5rem; /* Add some space above result */
 }
 
 .result strong {
@@ -109,38 +110,61 @@
     color: var(--color-secondary);
 }
 
+/* Container for buttons */
+.buttonContainer {
+    display: flex;
+    justify-content: center; /* Center buttons */
+    gap: 0.8rem; /* Space between buttons */
+    margin-top: 1rem; /* Space above buttons */
+    flex-wrap: wrap; /* Allow wrapping if needed */
+}
+
+/* Common button styles */
+.viewGameButton,
+.analyzeButton,
 .sgfLink {
-    display: inline-block; /* Чтобы кнопка не растягивалась */
-    margin: 0.5rem auto 0 auto; /* Отступы и центрирование */
-    padding: 0.4em 0.8em;
-    background-color: var(--color-primary);
-    color: var(--color-text-on-dark);
+    display: inline-block;
+    padding: 0.4em 0.9em; /* Adjust padding */
     border-radius: 4px;
     font-size: 0.9rem;
     text-decoration: none;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, color 0.2s;
     text-align: center;
+    border: none; /* Remove default link border */
+    cursor: pointer;
+    font-family: var(--font-family-base);
+    font-weight: 500;
 }
 
-.sgfLink:hover {
-    background-color: var(--color-primary-dark);
-    color: var(--color-text-on-dark);
-    text-decoration: none;
-}
-
+/* Specific button colors */
 .viewGameButton {
-    display: inline-block;
-    margin: 0.5rem auto 0 auto;
-    padding: 0.4em 0.8em;
     background-color: var(--color-secondary);
     color: var(--color-text-on-dark);
-    border-radius: 4px;
-    font-size: 0.9rem;
+}
+.viewGameButton:hover {
+    background-color: #5a5246; /* Darker secondary */
+    color: var(--color-text-on-dark);
     text-decoration: none;
-    transition: background-color 0.2s;
-    text-align: center;
 }
 
-.viewGameButton:hover {
-    background-color: var(--color-secondary-dark, #5a5246);
+.analyzeButton {
+    background-color: var(--color-primary-dark);
+    color: var(--color-text-on-dark);
+}
+.analyzeButton:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-dark);
+    text-decoration: none;
+}
+
+.sgfLink {
+    background-color: var(--color-primary-light);
+    color: var(--color-text-on-light);
+    border: 1px solid var(--border-color);
+}
+.sgfLink:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-dark);
+    border-color: var(--color-primary-dark);
+    text-decoration: none;
 }

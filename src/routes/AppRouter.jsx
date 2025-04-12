@@ -1,5 +1,5 @@
 import React from "react";
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import { Routes, Route } from "react-router-dom"; // Removed BrowserRouter import
 import Home from "../pages/Home/Home";
 import Offline from "../pages/Offline/Offline.jsx";
 import Login from "../pages/Login/Login.jsx";
@@ -10,6 +10,7 @@ import AI from "../pages/AI/AI.jsx";
 import CreateGame from "../pages/CreateGame/CreateGame.jsx";
 import ArchivePage from "../pages/Archive/Archive.jsx";
 import ArchiveGame from "../pages/ArchiveGame/ArchiveGame.jsx";
+import AnalyzeGamePage from "../pages/AnalyzeGame/AnalyzeGame.jsx"; // Import the new page
 
 export default function AppRouter() {
     return (
@@ -24,7 +25,10 @@ export default function AppRouter() {
             <Route path="/ai" element={<AI />} />
             <Route path="/archive" element={<ArchivePage />} />
             <Route path="/archive/game/:gameId" element={<ArchiveGame />} />
-            <Route path="*" element={<div>Страница не найдена</div>}/>
+            {/* Add route for analysis */}
+            <Route path="/analyze/:gameId" element={<AnalyzeGamePage />} />
+            {/* Fallback route */}
+            <Route path="*" element={<div style={{textAlign: 'center', padding: '2rem', fontSize: '1.2rem'}}>Страница не найдена (404)</div>}/>
         </Routes>
     );
 }

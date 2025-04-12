@@ -1,0 +1,103 @@
+.container {
+    /* Uses .main-container from index.css */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.title {
+    text-align: center;
+    color: var(--color-primary-dark);
+    font-family: var(--font-family-serif);
+    margin-bottom: 0.5rem;
+}
+
+.gameInfo {
+    text-align: center;
+    color: var(--color-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    max-width: 80%;
+    line-height: 1.4;
+}
+
+.playerContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%; /* Ensure container takes width */
+    /* Let the player component determine its own size via useResponsiveBoardSize */
+    /* max-width: 90vh; /* Remove fixed max-width, let player size itself */
+    margin-bottom: 1.5rem;
+}
+
+.analysisControls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    width: fit-content; /* Make container fit content */
+    max-width: 90%;
+}
+.analysisControls span {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+.analyzeButton {
+    /* Inherits global button styles */
+    padding: 0.6em 1.2em;
+    background-color: var(--color-primary-dark);
+    color: var(--color-text-on-dark);
+}
+.analyzeButton:hover:not(:disabled) {
+    background-color: var(--color-primary);
+}
+.analyzeButton:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+.quota {
+    font-size: 0.9rem;
+    color: var(--color-secondary);
+    background-color: var(--color-primary-light);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+}
+
+/* Explanation Box is now handled by Modal */
+
+.message,
+.error {
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.1rem;
+    color: var(--color-secondary);
+    margin-top: 1rem;
+    border-radius: var(--border-radius);
+    max-width: 700px;
+    width: 90%;
+}
+
+.error {
+    color: var(--color-accent);
+    background-color: rgba(192, 57, 43, 0.1); /* Lighter red background */
+    border: 1px solid rgba(192, 57, 43, 0.4); /* Softer red border */
+}
+
+.message {
+     background-color: rgba(230, 213, 184, 0.2); /* Light beige background for messages */
+     border: 1px solid var(--border-color);
+}

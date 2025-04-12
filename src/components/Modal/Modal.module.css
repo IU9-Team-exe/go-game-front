@@ -1,0 +1,109 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's on top */
+}
+
+.modalContent {
+    background-color: var(--color-background); /* Light background */
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    border: 1px solid var(--border-color);
+    animation: fadeIn 0.3s ease-out; /* Simple fade-in animation */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.closeButton {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--color-secondary);
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    line-height: 1;
+    transition: color 0.2s;
+}
+.closeButton:hover {
+    color: var(--color-accent);
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.chillGuyIcon {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+}
+
+.modalTitle {
+    font-family: var(--font-family-serif);
+    color: var(--color-primary-dark);
+    margin: 0; /* Reset default margin */
+    font-size: 1.5rem;
+}
+
+.modalBody {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text);
+    max-height: 300px; /* Limit height and allow scrolling */
+    overflow-y: auto;
+    padding-right: 0.5rem; /* Space for scrollbar */
+}
+
+/* Custom scrollbar (optional) */
+.modalBody::-webkit-scrollbar {
+    width: 8px;
+}
+.modalBody::-webkit-scrollbar-track {
+    background: var(--color-primary-light);
+    border-radius: 4px;
+}
+.modalBody::-webkit-scrollbar-thumb {
+    background-color: var(--color-primary);
+    border-radius: 4px;
+}
+.modalBody::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-primary-dark);
+}
+
+
+.modalFooter {
+    text-align: right;
+}
+
+.okButton {
+    /* Inherits base button styles */
+    background-color: var(--color-primary-dark);
+    color: var(--color-text-on-dark);
+    padding: 0.6em 1.5em;
+}
+.okButton:hover {
+    background-color: var(--color-primary);
+}

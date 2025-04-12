@@ -1,8 +1,8 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./ArchiveGameCard.module.css";
 
-function ArchiveGameCard({game}) {
+function ArchiveGameCard({ game }) {
     const {
         game_id,
         BlackPlayer,
@@ -68,23 +68,35 @@ function ArchiveGameCard({game}) {
             </div>
 
             {Sgf && (
-                <>
-                    <a
-                        href={Sgf}
-                        download="sgf.txt"
-                        className={styles.sgfLink}
-                        title="Скачать SGF"
-                    >
-                        Скачать SGF
-                    </a>
+                // Wrap buttons in a container for better layout
+                <div className={styles.buttonContainer}>
                     <Link
                         to={`/archive/game/${game_id}`}
                         className={styles.viewGameButton}
                         title="Посмотреть партию"
                     >
-                        Посмотреть партию
+                        Смотреть
                     </Link>
-                </>
+                     {/* New Analyze Button */}
+                    <Link
+                        to={`/analyze/${game_id}`}
+                        className={styles.analyzeButton}
+                        title="Анализировать с ИИ"
+                    >
+                        Анализ
+                    </Link>
+                    <a
+                        href={Sgf} // Assuming Sgf contains the actual SGF content or a URL to it
+                        download={`${game_id || 'game'}.sgf`} // Better download name
+                        className={styles.sgfLink}
+                        title="Скачать SGF"
+                        // If Sgf is content, create a Blob URL:
+                        // href={URL.createObjectURL(new Blob([Sgf], { type: 'application/x-go-sgf' }))}
+                        // onClick={(e) => { /* Revoke URL after click if needed */ }}
+                    >
+                        SGF
+                    </a>
+                </div>
             )}
         </div>
     );
