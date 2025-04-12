@@ -3,8 +3,8 @@ import { convertCoords, parseCoords } from "../../utils/conversionUtils";
 import {useGame} from "../../contexts/GameContext.jsx";
 
 const GoPlayerMultiplayer = ({
-                                 width = 800,
-                                 height = 800,
+                                 width = 700,
+                                 height = 700,
                                  initialSgf = "(;FF[4]GM[1]SZ[19])",
                                  options = {},
                                  onSendMove,

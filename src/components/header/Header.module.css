@@ -1,15 +1,24 @@
+/* Стили для AppBar (хедер) */
+.appBar {
+    background-color: var(--color-primary-dark) !important; /* Темно-янтарный */
+    color: var(--color-text-on-dark) !important; /* Светлый текст */
+    box-shadow: var(--shadow-lg);
+    font-family: var(--font-family-base);
+}
+
 /* Стили для Toolbar */
 .toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 1rem;
+    padding: 0.5rem 1.5rem; /* Немного больше паддинги */
+    flex-wrap: wrap; /* Позволяем переносить элементы на маленьких экранах */
 }
 
 .left {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem; /* Увеличим отступ */
 }
 
 .right {
@@ -18,21 +27,175 @@
     gap: 1rem;
 }
 
-/* Стили для заголовка */
+/* Стили для логотипа */
+.logoLink {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.goStoneIconContainer {
+    width: 36px; /* Размер иконки */
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--color-stone-black); /* Черный камень */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px; /* Отступ для внутреннего камня */
+    box-shadow: var(--shadow-sm);
+}
+
+.goStoneIconOuter {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--color-stone-white); /* Белый камень */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+}
+
+.goStoneIconInner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--color-stone-black); /* Центральная точка */
+}
+
+
 .title {
-    font-weight: bold;
+    font-family: var(--font-family-serif) !important; /* Serif для названия */
+    font-weight: bold !important;
+    font-size: 1.5rem !important; /* Немного увеличим */
+    color: var(--color-text-on-dark);
+}
+
+/* Стили для навигации */
+.navigation {
+     display: flex;
+     gap: 1.2rem; /* Отступ между ссылками */
 }
 
 /* Стили для ссылок */
 .link {
-    color: inherit;
+    color: var(--color-text-on-dark);
     text-decoration: none;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+    font-weight: 500;
 }
 
 .link:hover,
-.link:focus,
-.link:visited,
-.link:active {
+.link:focus {
+    background-color: rgba(248, 244, 233, 0.1); /* Легкий фон при наведении */
+    color: #fff; /* Ярче при наведении */
     text-decoration: none;
-    color: inherit;
+}
+
+.activeLink {
+    background-color: rgba(248, 244, 233, 0.2); /* Активная ссылка */
+    font-weight: var(--font-weight-bold);
+}
+
+/* Стили для кнопок (если не используются MUI Button) */
+.button {
+    border-radius: var(--border-radius);
+    border: 1px solid transparent;
+    padding: 0.5em 1em; /* Немного меньше паддинги */
+    font-size: 0.9rem; /* Чуть меньше шрифт */
+    font-weight: var(--font-weight-bold);
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.25s, border-color 0.25s;
+    box-shadow: var(--shadow-sm);
+}
+
+.loginButton {
+    background-color: var(--color-primary); /* Деревянный */
+    color: var(--color-text-on-dark);
+    border: 1px solid var(--color-primary-dark);
+}
+.loginButton:hover {
+    background-color: #c79d6f; /* Светлее деревянный */
+    border-color: var(--color-secondary);
+}
+
+.registerButton {
+    background-color: var(--color-secondary); /* Темная тушь */
+    color: var(--color-text-on-dark);
+    border: 1px solid var(--color-primary);
+}
+.registerButton:hover {
+    background-color: #5a5246; /* Светлее тушь */
+     border-color: var(--color-primary-dark);
+}
+
+.logoutButton {
+     background-color: transparent;
+     color: var(--color-text-on-dark);
+     border: 1px solid var(--color-text-on-dark);
+}
+
+.logoutButton:hover {
+     background-color: rgba(248, 244, 233, 0.1);
+     border-color: #fff;
+}
+
+/* Отображение имени пользователя */
+.nickname {
+    color: var(--color-text-on-dark);
+    font-weight: 500;
+    margin-right: 0.5rem; /* Отступ справа от имени */
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+    .left {
+        margin-bottom: 1rem;
+        flex-wrap: wrap; /* Позволяем переносить лого и навигацию */
+         gap: 1rem;
+    }
+    .navigation {
+        gap: 0.8rem; /* Уменьшаем отступы */
+        margin-top: 0.5rem; /* Отступ сверху для навигации */
+    }
+    .right {
+        width: 100%;
+        justify-content: flex-end; /* Кнопки справа */
+    }
+    .title {
+        font-size: 1.3rem !important;
+    }
+    .link {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .left {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+    .navigation {
+        width: 100%;
+        justify-content: space-around; /* Распределяем ссылки */
+    }
+    .right {
+       margin-top: 1rem;
+       justify-content: center; /* Центрируем кнопки */
+    }
+    .button {
+        padding: 0.4em 0.8em;
+    }
 }

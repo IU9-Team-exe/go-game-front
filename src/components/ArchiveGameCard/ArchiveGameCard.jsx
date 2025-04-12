@@ -3,55 +3,81 @@ import styles from "./ArchiveGameCard.module.css";
 
 function ArchiveGameCard({ game }) {
     const {
-        blackPlayer,
-        blackRank,
-        whitePlayer,
-        whiteRank,
-        date,
-        result,
-        event,
-        boardSize,
-        komi,
-        moves,
-        sgf
+        BlackPlayer,
+        BlackRank,
+        WhitePlayer,
+        WhiteRank,
+        Date,
+        Result,
+        Event,
+        BoardSize,
+        Komi,
+        sgf_link,
+        Sgf // на случай, если ссылка приходит только как встроенный SGF
     } = game;
+
+    // Форматирование результата
+    const formatResult = (res) => {
+        if (!res || !res.WinColor) return "N/A"; // Нет результата
+        const winner = res.WinColor === "B" ? "Чёрные" : res.WinColor === "W" ? "Белые" : "Ничья";
+        if (res.Reason === "resign") return `${winner} (сдача)`;
+        if (res.Reason === "time") return `${winner} (время)`;
+        if (res.Reason === "score" && res.PointDiff != null) return `${winner} +${res.PointDiff}`;
+        if (res.PointDiff != null) return `${winner} +${res.PointDiff}`;
+        return winner;
+    };
+
+    // Форматирование даты
+    const formatDate = (dateString) => {
+        if (!dateString) return "N/A";
+        try {
+            return new Date(dateString).toLocaleDateString("ru-RU");
+        } catch (e) {
+            return dateString;
+        }
+    };
 
     return (
         <div className={styles.gameCard}>
-            <div className={styles.players}>
-                <div>
-                    <strong>Чёрные:</strong> {blackPlayer} ({blackRank})
-                </div>
-                <div>
-                    <strong>Белые:</strong> {whitePlayer} ({whiteRank})
-                </div>
-            </div>
-            <div className={styles.info}>
-                <div>
-                    <strong>Событие:</strong> {event}
-                </div>
-                <div>
-                    <strong>Дата:</strong> {date}
-                </div>
-                <div>
-                    <strong>Размер доски:</strong> {boardSize}
-                </div>
-                <div>
-                    <strong>Коми:</strong> {komi}
-                </div>
-            </div>
-            <div className={styles.result}>
-                <strong>Результат:</strong>{" "}
-                {result?.winColor === "B" ? "Чёрные" : "Белые"} +
-                {result?.pointDiff} очков
+            <div className={styles.eventDate}>
+                <span className={styles.event}>{Event || "Неизвестное событие"}</span>
+                <span className={styles.date}>{formatDate(Date)}</span>
             </div>
 
-            {sgf && (
-                <a href={sgf} target="_blank" rel="noreferrer">
+            <div className={styles.players}>
+                <div className={styles.playerInfo}>
+                    <span className={`${styles.stone} ${styles.blackStone}`}></span>
+                    <span className={styles.playerName}>{BlackPlayer || "Игрок"}</span>
+                    <span className={styles.playerRank}>({BlackRank || "?"})</span>
+                </div>
+                <div className={styles.vs}>vs</div>
+                <div className={styles.playerInfo}>
+                    <span className={`${styles.stone} ${styles.whiteStone}`}></span>
+                    <span className={styles.playerName}>{WhitePlayer || "Игрок"}</span>
+                    <span className={styles.playerRank}>({WhiteRank || "?"})</span>
+                </div>
+            </div>
+
+            <div className={styles.details}>
+                <span>Доска: {BoardSize || 19}x{BoardSize || 19}</span>
+                <span>Коми: {Komi != null ? Komi : "N/A"}</span>
+            </div>
+
+            <div className={styles.result}>
+                <strong>Результат:</strong> {formatResult(Result)}
+            </div>
+
+            {(sgf_link || Sgf) && (
+                <a
+                    href={sgf_link || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.sgfLink}
+                    title="Скачать SGF"
+                >
                     Скачать SGF
                 </a>
             )}
-
         </div>
     );
 }
