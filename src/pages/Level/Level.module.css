@@ -1,0 +1,57 @@
+.container {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.tasksList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.taskCard {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    text-align: left;
+}
+
+.sgf {
+    font-size: 0.8rem;
+    background: #f1f1f1;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    overflow-x: auto;
+}
+
+.pagination {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pagination button {
+    padding: 0.5em 1em;
+    font-weight: var(--font-weight-bold);
+    border: none;
+    background-color: var(--color-primary-dark);
+    color: var(--color-text-on-dark);
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    transition: background-color 0.25s;
+}
+
+.pagination button:hover {
+    background-color: var(--color-primary);
+}
+
+.pagination button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}
