@@ -127,3 +127,20 @@
     color: var(--color-text-on-dark);
     text-decoration: none;
 }
+
+.viewGameButton {
+    display: inline-block;
+    margin: 0.5rem auto 0 auto;
+    padding: 0.4em 0.8em;
+    background-color: var(--color-secondary);
+    color: var(--color-text-on-dark);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.viewGameButton:hover {
+    background-color: var(--color-secondary-dark, #5a5246);
+}
