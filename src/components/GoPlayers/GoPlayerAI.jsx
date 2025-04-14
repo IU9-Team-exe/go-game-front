@@ -1,15 +1,17 @@
-import React, { useEffect, useRef } from "react";
-import { callAIMove } from "../../services/API/aiApi";
-import { parseCoords, extractMoves } from "../../utils/conversionUtils";
+import React, {useEffect, useRef} from "react";
+import {callAIMove} from "../../services/API/aiApi";
+import {parseCoords, extractMoves} from "../../utils/conversionUtils";
+import {useResponsiveBoardSize} from "../../utils/useResponsiveBoardSize.js";
 
-const GoPlayerAI = ({ width = 800, height = 800, sgf = "(;FF[4]GM[1]SZ[19])", options = {} }) => {
+const GoPlayerAI = ({sgf = "(;FF[4]GM[1]SZ[19])", options = {}}) => {
     const containerRef = useRef(null);
     const playerRef = useRef(null);
+    const boardSize = useResponsiveBoardSize(20);
 
     useEffect(() => {
         if (window.WGo && window.WGo.Player) {
-            let playerOptions = { width, height, sgf, ...options };
-            playerOptions.layout = { top: [], bottom: [], left: [], right: [] };
+            const playerOptions = {width: boardSize, height: boardSize, sgf, ...options};
+            playerOptions.layout = {top: [], bottom: [], left: [], right: []};
             playerOptions.enableKeys = false;
 
             const player = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
@@ -17,7 +19,6 @@ const GoPlayerAI = ({ width = 800, height = 800, sgf = "(;FF[4]GM[1]SZ[19])", op
             const editable = new window.WGo.Player.Editable(player, player.board);
             editable.set(true);
 
-            // Переопределяем play для интеграции хода ИИ
             const originalPlay = editable.play;
             editable.play = function (x, y) {
                 const currentTurn = this.player.kifuReader.game.turn === window.WGo.B ? "b" : "w";
@@ -33,12 +34,12 @@ const GoPlayerAI = ({ width = 800, height = 800, sgf = "(;FF[4]GM[1]SZ[19])", op
 
                 callAIMove(moves)
                     .then((response) => {
-                        const { bot_move } = response.data;
+                        const {bot_move} = response.data;
                         if (!bot_move) {
                             console.error("Сервер не вернул bot_move");
                             return;
                         }
-                        const { x: botX, y: botY } = parseCoords(bot_move.coordinates, player.kifu.size);
+                        const {x: botX, y: botY} = parseCoords(bot_move.coordinates, player.kifu.size);
                         originalPlay.call(this, botX, botY);
                     })
                     .catch((err) => {
@@ -54,9 +55,27 @@ const GoPlayerAI = ({ width = 800, height = 800, sgf = "(;FF[4]GM[1]SZ[19])", op
 
             playerRef.current = player;
         }
-    }, [width, height, sgf, options]);
+    }, [boardSize, sgf, options]);
 
-    return <div ref={containerRef} style={{ width, height }} />;
+    useEffect(() => {
+        const handleWheel = (e) => e.preventDefault();
+        const container = containerRef.current;
+        if (container) {
+            container.addEventListener("wheel", handleWheel, {passive: false});
+        }
+        return () => {
+            if (container) {
+                container.removeEventListener("wheel", handleWheel, {passive: false});
+            }
+        };
+    }, []);
+
+    return (
+        <div
+            ref={containerRef}
+            style={{width: boardSize, height: boardSize, overflow: "hidden"}}
+        />
+    );
 };
 
 export default GoPlayerAI;

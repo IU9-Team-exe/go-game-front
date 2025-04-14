@@ -1,0 +1,202 @@
+/* src/components/AICharacterExplanation/AICharacterExplanation.module.css */
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    /* Выравниваем группу персонаж+бабл по центру по горизонтали и к низу по вертикали */
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 1000;
+    padding: 20px;
+    cursor: pointer;
+    animation: fadeInOverlay 0.3s ease-out forwards; /* Анимация остаётся */
+}
+
+/* Анимация появления overlay */
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.characterContainer {
+    position: relative; /* Был relative, оставляем */
+    display: flex;
+    /* Выравниваем картинку и бабл по ВЕРХУ картинки */
+    align-items: flex-start; /* ИЗМЕНЕНО с flex-end */
+    max-width: 90%;
+    cursor: default;
+    /* Добавим небольшой отступ снизу, чтобы персонаж не прилипал */
+    margin-bottom: 10px;
+}
+
+.characterImage {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+    object-position: center bottom;
+    /* Убираем отрицательный margin, добавляем положительный для отступа */
+    margin-right: 10px; /* ИЗМЕНЕНО */
+    z-index: 1;
+    border-radius: 10px 10px 0 0;
+    display: block;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: slideUpFadeInCharacter 0.4s 0.2s ease-out forwards;
+}
+
+/* Анимация появления персонажа */
+ @keyframes slideUpFadeInCharacter {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+ }
+
+
+.speechBubble {
+    position: relative;
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    padding: 1.5rem 2rem 1.5rem 1.5rem;
+    min-width: 250px;
+    max-width: 450px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    /* Убираем margin-bottom, позиционирование теперь через flex */
+    /* margin-bottom: 20px; */
+    z-index: 0;
+    color: var(--color-text);
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+    animation: popInBubble 0.3s 0.4s ease-out forwards;
+     /* Добавим небольшой отступ сверху, чтобы выровнять с "головой" */
+     margin-top: 20px; /* Подбирайте значение по высоте вашей картинки */
+}
+
+/* Анимация появления бабла */
+@keyframes popInBubble {
+   from {
+       opacity: 0;
+       transform: scale(0.9) translateY(10px);
+   }
+   to {
+       opacity: 1;
+       transform: scale(1) translateY(0);
+   }
+}
+
+
+/* Speech bubble tail - ПЕРЕМЕЩАЕМ НАВЕРХ */
+.speechBubble::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    /* top: 15px; */ /* Располагаем примерно посередине или ближе к верху */
+    top: 50%;      /* Вертикально по центру */
+    margin-top: -20px; /* Сдвигаем вверх на половину высоты хвоста */
+    width: 0;
+    height: 0;
+    border: 20px solid transparent;
+    border-right-color: var(--color-background);
+    border-left: 0;
+    /* border-bottom: 0; */ /* Убираем нижний */
+    border-top: 0; /* Добавляем */
+    margin-left: -20px;
+    filter: drop-shadow(-1px 1px 1px rgba(0,0,0,0.1));
+}
+/* Optional: Adjust tail border to simulate main border */
+.speechBubble::before {
+    content: '';
+    position: absolute;
+    left: 0;
+     /* top: 14px; */ /* Slightly offset for border effect */
+    top: 50%;       /* Вертикально по центру */
+    margin-top: -21px; /* Сдвигаем вверх на половину высоты хвоста + 1px */
+    width: 0;
+    height: 0;
+    border: 21px solid transparent; /* Slightly larger */
+    border-right-color: var(--border-color); /* Match bubble border */
+    border-left: 0;
+    /* border-bottom: 0; */
+    border-top: 0;
+    margin-left: -22px;
+    z-index: -1; /* Behind the main tail */
+}
+
+
+.explanationText {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.errorText {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 1rem;
+    color: var(--color-accent);
+    font-weight: bold;
+}
+
+.closeButtonBubble {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: var(--color-secondary);
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+
+.closeButtonBubble:hover {
+    color: var(--color-accent);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .characterContainer {
+        align-items: center; /* Можно вернуть центрирование на маленьких экранах */
+    }
+    .characterImage {
+        width: 100px;
+        height: 130px;
+        margin-right: 5px; /* Уменьшаем отступ */
+    }
+    .speechBubble {
+        min-width: 180px;
+        padding: 1rem 1.5rem 1rem 1rem;
+        margin-top: 10px; /* Уменьшаем отступ */
+    }
+    .explanationText, .errorText {
+        font-size: 0.9rem;
+    }
+
+    /* На маленьких экранах хвост можно вернуть вниз */
+    .speechBubble::after {
+       top: auto;
+       bottom: 15px;
+       margin-top: 0;
+       border-top: 0;
+       border-bottom: 0; /* Убедимся, что сброшено */
+    }
+    .speechBubble::before {
+       top: auto;
+       bottom: 14px;
+       margin-top: 0;
+       border-top: 0;
+       border-bottom: 0;
+    }
+
+}

@@ -1,8 +1,10 @@
 import React from "react";
+import {Link} from "react-router-dom";
 import styles from "./ArchiveGameCard.module.css";
 
-function ArchiveGameCard({ game }) {
+function ArchiveGameCard({game}) {
     const {
+        game_id,
         BlackPlayer,
         BlackRank,
         WhitePlayer,
@@ -12,13 +14,11 @@ function ArchiveGameCard({ game }) {
         Event,
         BoardSize,
         Komi,
-        sgf_link,
-        Sgf // на случай, если ссылка приходит только как встроенный SGF
+        Sgf
     } = game;
 
-    // Форматирование результата
     const formatResult = (res) => {
-        if (!res || !res.WinColor) return "N/A"; // Нет результата
+        if (!res || !res.WinColor) return "N/A";
         const winner = res.WinColor === "B" ? "Чёрные" : res.WinColor === "W" ? "Белые" : "Ничья";
         if (res.Reason === "resign") return `${winner} (сдача)`;
         if (res.Reason === "time") return `${winner} (время)`;
@@ -67,16 +67,24 @@ function ArchiveGameCard({ game }) {
                 <strong>Результат:</strong> {formatResult(Result)}
             </div>
 
-            {(sgf_link || Sgf) && (
-                <a
-                    href={sgf_link || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.sgfLink}
-                    title="Скачать SGF"
-                >
-                    Скачать SGF
-                </a>
+            {Sgf && (
+                <>
+                    <a
+                        href={Sgf}
+                        download="sgf.txt"
+                        className={styles.sgfLink}
+                        title="Скачать SGF"
+                    >
+                        Скачать SGF
+                    </a>
+                    <Link
+                        to={`/archive/game/${game_id}`}
+                        className={styles.viewGameButton}
+                        title="Посмотреть партию"
+                    >
+                        Посмотреть партию
+                    </Link>
+                </>
             )}
         </div>
     );

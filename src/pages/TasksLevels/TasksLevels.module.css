@@ -1,0 +1,43 @@
+.container {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.levelsList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.levelItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+
+.levelButton {
+    background-color: var(--color-primary-dark);
+    color: var(--color-text-on-dark);
+    border: none;
+    padding: 0.6em 1em;
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: background-color 0.25s;
+}
+
+.levelButton:hover {
+    background-color: var(--color-primary);
+}
+
+.taskInfo {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--color-secondary);
+}

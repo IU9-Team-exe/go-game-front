@@ -26,3 +26,12 @@ export function getYearsInArchive() {
 export function getArchive(year, name, page) {
     return api.get(`/getArchive?year=${year}&name=${name}&page=${page}`)
 }
+
+
+/**
+ * Получение информации об игре из архива
+ * @param {string} gameId – идентификатор игры
+ */
+export function getGameFromArchiveById(gameId) {
+    return api.post(`/getGameFromArchiveById`, {game_id: gameId});
+}

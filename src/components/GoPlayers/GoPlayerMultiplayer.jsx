@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from "react";
-import { convertCoords, parseCoords } from "../../utils/conversionUtils";
+import React, {useEffect, useRef} from "react";
+import {convertCoords, parseCoords} from "../../utils/conversionUtils";
 import {useGame} from "../../contexts/GameContext.jsx";
+import {useResponsiveBoardSize} from "../../utils/useResponsiveBoardSize.js";
 
 const GoPlayerMultiplayer = ({
-                                 width = 700,
-                                 height = 700,
                                  initialSgf = "(;FF[4]GM[1]SZ[19])",
                                  options = {},
                                  onSendMove,
@@ -14,18 +13,19 @@ const GoPlayerMultiplayer = ({
     const playerRef = useRef(null);
     const editableRef = useRef(null);
     const originalPlayRef = useRef(null);
-    const { playerColor } = useGame();
+    const {playerColor} = useGame();
+    const boardSize = useResponsiveBoardSize(20);
 
     useEffect(() => {
         if (window.WGo && window.WGo.Player && containerRef.current) {
             containerRef.current.innerHTML = "";
-            let playerOptions = {
-                width,
-                height,
+            const playerOptions = {
+                width: boardSize,
+                height: boardSize,
                 sgf: initialSgf,
                 ...options,
             };
-            playerOptions.layout = { top: [], bottom: [], left: [], right: [] };
+            playerOptions.layout = {top: [], bottom: [], left: [], right: []};
             playerOptions.enableKeys = false;
 
             const player = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
@@ -65,20 +65,38 @@ const GoPlayerMultiplayer = ({
                 playerRef.current = null;
             }
         };
-    }, [initialSgf]);
+    }, [initialSgf, boardSize, options, playerColor, onSendMove]);
+
+    useEffect(() => {
+        const handleWheel = (e) => e.preventDefault();
+        const container = containerRef.current;
+        if (container) {
+            container.addEventListener("wheel", handleWheel, {passive: false});
+        }
+        return () => {
+            if (container) {
+                container.removeEventListener("wheel", handleWheel, {passive: false});
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if (!incomingMove) return;
         if (!editableRef.current || !originalPlayRef.current) return;
 
-        const { color, coordinates } = incomingMove;
+        const {color, coordinates} = incomingMove;
         const size = playerRef.current?.kifu?.size || 19;
-        const { x, y } = parseCoords(coordinates, size);
+        const {x, y} = parseCoords(coordinates, size);
         const wgoColor = color === "black" ? window.WGo.B : window.WGo.W;
         originalPlayRef.current.call(editableRef.current, x, y, wgoColor);
     }, [incomingMove]);
 
-    return <div ref={containerRef} style={{width, height}}/>;
+    return (
+        <div
+            ref={containerRef}
+            style={{width: boardSize, height: boardSize, overflow: "hidden"}}
+        />
+    );
 };
 
 export default GoPlayerMultiplayer;
