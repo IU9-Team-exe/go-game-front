@@ -1,0 +1,6 @@
+/* src/pages/Offline/Offline.module.css (Пример) */
+.offlineContainer {
+    padding: 20px; /* Отступы вокруг плеера */
+    max-width: 1200px; /* Ограничение ширины для больших экранов */
+    margin: 0 auto; /* Центрирование */
+}
