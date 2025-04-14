@@ -20,6 +20,7 @@
 .playerContainer {
     display: flex;
     justify-content: center;
+    margin-bottom: 1rem; /* Add margin below the player */
 }
 
 .loading,
@@ -31,4 +32,89 @@
 
 .error {
     color: var(--color-accent);
+}
+
+/* Styles for Explanation Section */
+.explanationSection {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.explanationButton {
+    padding: 0.6em 1.2em;
+    font-size: 1rem;
+    font-weight: var(--font-weight-bold);
+    background-color: var(--color-secondary);
+    color: var(--color-text-on-dark);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.explanationButton:hover:not(:disabled) {
+    background-color: var(--color-primary-dark); /* Darker on hover */
+}
+
+.explanationButton:disabled {
+    background-color: #a0a0a0;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Simple Dialog Styles */
+.explanationDialogOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+.explanationDialog {
+    background-color: var(--color-background);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 500px;
+    width: 90%;
+    position: relative; /* For close button positioning */
+    color: var(--color-text);
+}
+
+.explanationDialog h3 {
+    margin-top: 0;
+    color: var(--color-primary-dark);
+}
+
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--color-secondary);
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.closeButton:hover {
+    color: var(--color-accent);
+}
+
+.errorText {
+    color: var(--color-accent);
+    font-weight: bold;
+}
+
+.explanationText {
+    line-height: 1.6;
+    margin-top: 1rem;
 }
