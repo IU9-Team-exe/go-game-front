@@ -169,3 +169,32 @@
     line-height: 1.6;
     margin-top: 1rem;
 }
+
+/* src/pages/ArchiveGame/ArchiveGame.module.css */
+/* ... (все предыдущие стили) ... */
+
+/* Контейнер для фиксированной кнопки */
+.fixedButtonContainer {
+    position: fixed; /* Фиксируем относительно окна браузера */
+    bottom: 0;       /* Прижимаем к низу */
+    left: 0;
+    right: 0;
+    padding: 15px 20px; /* Отступы внутри контейнера */
+    /* Полупрозрачный фон для отделения от контента */
+    background: linear-gradient(to top, rgba(248, 244, 233, 0.9), rgba(248, 244, 233, 0));
+    text-align: center; /* Центрируем кнопку */
+    z-index: 900; /* Выше доски, но ниже оверлеев */
+    pointer-events: none; /* Позволяет кликать "сквозь" фон контейнера */
+}
+
+/* Делаем саму кнопку снова кликабельной */
+.fixedButtonContainer .explanationButton {
+    pointer-events: auto;
+}
+
+/* Добавляем нижний отступ основному контейнеру, чтобы контент не уходил под кнопку */
+.container {
+    margin: 20px auto;
+    padding: 20px;
+    padding-bottom: 80px; /* Отступ = высота кнопки + паддинги контейнера кнопки */
+}

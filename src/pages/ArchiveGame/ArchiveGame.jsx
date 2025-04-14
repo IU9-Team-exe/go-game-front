@@ -11,13 +11,13 @@ const ArchiveGame = () => {
     const [sgf, setSgf] = useState("(;FF[4]GM[1]SZ[19])");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [currentMoveNumber, setCurrentMoveNumber] = useState(0); // Initialize to 0
+    const [currentMoveNumber, setCurrentMoveNumber] = useState(0);
     const [aiExplanation, setAiExplanation] = useState(null);
     const [isFetchingExplanation, setIsFetchingExplanation] = useState(false);
     const [explanationError, setExplanationError] = useState(null);
-    const [showExplanation, setShowExplanation] = useState(false); // Renamed state
-    const [explanationMode, setExplanationMode] = useState('dialog'); // 'dialog' or 'character'
-    const [characterType, setCharacterType] = useState('chillGuy'); // 'chillGuy' or 'animeGirl'
+    const [showExplanation, setShowExplanation] = useState(false);
+    const [explanationMode, setExplanationMode] = useState('dialog');
+    const [characterType, setCharacterType] = useState('chillGuy');
 
     useEffect(() => {
         setIsLoading(true);
@@ -25,7 +25,7 @@ const ArchiveGame = () => {
         setGameInfo(null);
         setSgf("(;FF[4]GM[1]SZ[19])");
         setCurrentMoveNumber(0);
-        setShowExplanation(false); // Reset explanation visibility
+        setShowExplanation(false);
 
         getGameFromArchiveById(gameId)
             .then((response) => {
@@ -51,7 +51,7 @@ const ArchiveGame = () => {
             setCurrentMoveNumber(moveNum);
             setAiExplanation(null);
             setExplanationError(null);
-            setShowExplanation(false); // Hide explanation on move change
+            setShowExplanation(false);
         }
     };
 
@@ -66,12 +66,10 @@ const ArchiveGame = () => {
         setAiExplanation(null);
         setShowExplanation(false);
 
-        const requestUrl = `http://localhost:8080/api/getMoveExplanation`;
-
         try {
-            const response = await fetch(requestUrl, {
+            const response = await fetch("http://localhost:8080/api/getMoveExplanation", {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     game_archive_id: gameId,
                     move_seq_number: currentMoveNumber
@@ -79,29 +77,31 @@ const ArchiveGame = () => {
             });
 
             if (!response.ok) {
-                 let errorMsg = `HTTP error! status: ${response.status}`;
-                 try {
+                let errorMsg = `HTTP error! status: ${response.status}`;
+                try {
                     const errorBody = await response.json();
                     errorMsg = errorBody?.Body?.ErrorDescription || errorMsg;
-                 } catch (parseError) { console.warn("Could not parse error response body:", parseError); }
-                 if (response.status === 0 || response.type === 'opaque' || response.type === 'error') {
-                     errorMsg = "Network error or CORS issue. Check console and backend CORS configuration.";
-                 }
-                 throw new Error(errorMsg);
+                } catch (parseError) {
+                    console.warn("Could not parse error response body:", parseError);
+                }
+                if (response.status === 0 || response.type === 'opaque' || response.type === 'error') {
+                    errorMsg = "Network error or CORS issue. Check console and backend CORS configuration.";
+                }
+                throw new Error(errorMsg);
             }
 
             const data = await response.json();
 
             if (data?.Status === 200 && data?.Body?.llm_response) {
                 setAiExplanation(data.Body.llm_response);
-                setShowExplanation(true); // Show explanation UI
+                setShowExplanation(true);
             } else {
                 throw new Error(data?.Body?.ErrorDescription || "Не удалось получить объяснение хода от сервера.");
             }
         } catch (err) {
             console.error("Ошибка при запросе объяснения хода:", err);
-             setExplanationError(`Ошибка: ${err.message || "Не удалось связаться с сервером."}. Проверьте консоль для деталей.`);
-            setShowExplanation(true); // Show explanation UI (to display error)
+            setExplanationError(`Ошибка: ${err.message || "Не удалось связаться с сервером."}. Проверьте консоль для деталей.`);
+            setShowExplanation(true);
         } finally {
             setIsFetchingExplanation(false);
         }
@@ -111,92 +111,73 @@ const ArchiveGame = () => {
         setShowExplanation(false);
     }
 
-    if (isLoading) {
-        return <div className={styles.loading}>Загрузка игры...</div>;
-    }
-
-    if (error) {
-        return <div className={styles.error}>{error}</div>;
-    }
-
-    if (!gameInfo) {
-        return <div className={styles.loading}>Загрузка информации об игре...</div>;
-    }
+    if (isLoading) return <div className={styles.loading}>Загрузка игры...</div>;
+    if (error) return <div className={styles.error}>{error}</div>;
+    if (!gameInfo) return <div className={styles.loading}>Загрузка информации об игре...</div>;
 
     return (
         <div className={`${styles.container} main-container`}>
             <h2 className={styles.title}>Архивная партия</h2>
-            {gameInfo && (
-                 <div className={styles.gameDetails}>
-                     <p>
-                         <strong>Игроки:</strong> {gameInfo.BlackPlayer} vs {gameInfo.WhitePlayer}
-                     </p>
-                     <p>
-                         <strong>Дата:</strong> {new Date(gameInfo.Date).toLocaleDateString("ru-RU")}
-                     </p>
-                     {gameInfo.Event && (
-                         <p>
-                             <strong>Событие:</strong> {gameInfo.Event}
-                         </p>
-                     )}
-                 </div>
-             )}
+            <div className={styles.gameDetails}>
+                <p><strong>Игроки:</strong> {gameInfo.BlackPlayer} vs {gameInfo.WhitePlayer}</p>
+                <p><strong>Дата:</strong> {new Date(gameInfo.Date).toLocaleDateString("ru-RU")}</p>
+                {gameInfo.Event && <p><strong>Событие:</strong> {gameInfo.Event}</p>}
+            </div>
+
             <div className={styles.playerContainer}>
                 <GoPlayerArchive key={sgf} sgf={sgf} onMoveChange={handleMoveChange} />
             </div>
 
-             {/* Settings/Controls Area */}
-             <div className={styles.controlsArea}>
-                 {/* Explanation Button */}
-                 {currentMoveNumber > 0 && (
-                     <button
-                         onClick={handleGetExplanation}
-                         disabled={isFetchingExplanation}
-                         className={styles.explanationButton}
-                     >
-                         {isFetchingExplanation ? "Запрос ИИ..." : `Объяснить ход #${currentMoveNumber}`}
-                     </button>
-                 )}
+            <div className={styles.controlsArea}>
+                <div className={styles.modeToggle}>
+                    <span className={styles.toggleLabel}>Вид объяснения:</span>
+                    <button
+                        onClick={() => setExplanationMode('dialog')}
+                        className={`${styles.toggleButton} ${explanationMode === 'dialog' ? styles.activeToggle : ''}`}
+                    >
+                        Окно
+                    </button>
+                    <button
+                        onClick={() => setExplanationMode('character')}
+                        className={`${styles.toggleButton} ${explanationMode === 'character' ? styles.activeToggle : ''}`}
+                    >
+                        Персонаж
+                    </button>
+                </div>
 
-                 {/* Explanation Mode Toggle */}
-                 <div className={styles.modeToggle}>
-                     <span className={styles.toggleLabel}>Вид объяснения:</span>
-                     <button
-                         onClick={() => setExplanationMode('dialog')}
-                         className={`${styles.toggleButton} ${explanationMode === 'dialog' ? styles.activeToggle : ''}`}
-                     >
-                         Окно
-                     </button>
-                     <button
-                         onClick={() => setExplanationMode('character')}
-                         className={`${styles.toggleButton} ${explanationMode === 'character' ? styles.activeToggle : ''}`}
-                     >
-                         Персонаж
-                     </button>
-                 </div>
+                {explanationMode === 'character' && (
+                    <div className={styles.characterSelector}>
+                        <span className={styles.toggleLabel}>Персонаж:</span>
+                        <button
+                            onClick={() => setCharacterType('chillGuy')}
+                            className={`${styles.toggleButton} ${characterType === 'chillGuy' ? styles.activeToggle : ''}`}
+                        >
+                            Chill Guy
+                        </button>
+                        <button
+                            onClick={() => setCharacterType('animeGirl')}
+                            className={`${styles.toggleButton} ${characterType === 'animeGirl' ? styles.activeToggle : ''}`}
+                        >
+                            Anime Девушка
+                        </button>
+                    </div>
+                )}
+            </div>
 
-                 {/* Character Type Selector (only if mode is character) */}
-                 {explanationMode === 'character' && (
-                      <div className={styles.characterSelector}>
-                           <span className={styles.toggleLabel}>Персонаж:</span>
-                           <button
-                               onClick={() => setCharacterType('chillGuy')}
-                               className={`${styles.toggleButton} ${characterType === 'chillGuy' ? styles.activeToggle : ''}`}
-                           >
-                                Chill Guy
-                           </button>
-                           <button
-                              onClick={() => setCharacterType('animeGirl')}
-                              className={`${styles.toggleButton} ${characterType === 'animeGirl' ? styles.activeToggle : ''}`}
-                           >
-                              Anime Девушка
-                           </button>
-                      </div>
-                 )}
-             </div>
+            {/* --- КНОПКА ОБЪЯСНЕНИЯ ОТДЕЛЬНО --- */}
+            {currentMoveNumber > 0 && (
+                <div className={styles.fixedButtonContainer}>
+                    <button
+                        onClick={handleGetExplanation}
+                        disabled={isFetchingExplanation}
+                        className={styles.explanationButton}
+                    >
+                        {isFetchingExplanation ? "Запрос ИИ..." : `Объяснить ход #${currentMoveNumber}`}
+                    </button>
+                </div>
+            )}
 
-
-            {/* Conditional Explanation Display */}
+            {/* ОТОБРАЖЕНИЕ ОБЪЯСНЕНИЯ */}
             {showExplanation && explanationMode === 'dialog' && (
                 <div className={styles.explanationDialogOverlay} onClick={closeExplanation}>
                     <div className={styles.explanationDialog} onClick={(e) => e.stopPropagation()}>
@@ -204,7 +185,7 @@ const ArchiveGame = () => {
                         <h3>Объяснение хода #{currentMoveNumber} от ИИ</h3>
                         {explanationError && <p className={styles.errorText}>{explanationError}</p>}
                         {aiExplanation && <p className={styles.explanationText}>{aiExplanation}</p>}
-                         {!explanationError && !aiExplanation && isFetchingExplanation && <p>Загрузка...</p>}
+                        {!explanationError && !aiExplanation && isFetchingExplanation && <p>Загрузка...</p>}
                     </div>
                 </div>
             )}
