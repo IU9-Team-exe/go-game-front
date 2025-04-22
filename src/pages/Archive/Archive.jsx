@@ -5,8 +5,6 @@ import styles from "./Archive.module.css";
 
 function ArchivePage() {
     const [years, setYears] = useState([]);
-    const [yearsLocalPage, setYearsLocalPage] = useState(1);
-    const [yearsPerPage] = useState(10);
 
     const [names, setNames] = useState([]);
     const [namesPage, setNamesPage] = useState(1);
@@ -59,19 +57,6 @@ function ArchivePage() {
             loadNames(namesPage + 1);
         }
     };
-
-    const handleYearsPrev = () => {
-        setYearsLocalPage((prev) => Math.max(1, prev - 1));
-    };
-    const handleYearsNext = () => {
-        const maxLocalPages = Math.ceil(years.length / yearsPerPage);
-        setYearsLocalPage((prev) => Math.min(maxLocalPages, prev + 1));
-    };
-    const visibleYears = years.slice(
-        (yearsLocalPage - 1) * yearsPerPage,
-        yearsLocalPage * yearsPerPage
-    );
-    const maxYearsLocalPages = Math.ceil(years.length / yearsPerPage);
 
     const loadArchiveGames = (page = 1) => {
         if (!selectedYear && !selectedName) {
@@ -133,25 +118,12 @@ function ArchivePage() {
                         className={styles.selectInput}
                     >
                         <option value="">Все года</option>
-                        {visibleYears.map((y) => (
+                        {years.map((y) => (
                             <option key={y.year} value={y.year}>
                                 {y.year} ({y.count_of_games} игр)
                             </option>
                         ))}
                     </select>
-                    {years.length > yearsPerPage && (
-                        <div className={styles.paginationControls}>
-                            <button onClick={handleYearsPrev} disabled={yearsLocalPage <= 1}>
-                                ←
-                            </button>
-                            <span>
-                                {yearsLocalPage} / {maxYearsLocalPages}
-                            </span>
-                            <button onClick={handleYearsNext} disabled={yearsLocalPage >= maxYearsLocalPages}>
-                                →
-                            </button>
-                        </div>
-                    )}
                 </div>
 
                 <div className={styles.filterBlock}>
