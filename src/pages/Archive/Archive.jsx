@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {getNamesInArchive, getYearsInArchive, getArchive} from "../../services/API/archiveApi";
 import GameCard from "../../components/ArchiveGameCard/ArchiveGameCard";
 import styles from "./Archive.module.css";
@@ -10,6 +10,7 @@ function ArchivePage() {
     const [namesPage, setNamesPage] = useState(1);
     const [namesTotalPages, setNamesTotalPages] = useState(1);
     const [namesPerPage] = useState(20);
+    const [isLoadingNames, setIsLoadingNames] = useState(false);
 
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedName, setSelectedName] = useState("");
@@ -20,41 +21,44 @@ function ArchivePage() {
     const [isLoadingGames, setIsLoadingGames] = useState(false);
     const [error, setError] = useState(null);
 
+    const selectRef = useRef(null);
+
     useEffect(() => {
         getYearsInArchive()
-            .then((response) => {
-                setYears(response.data.Body.years || []);
-            })
-            .catch((err) => {
-                console.error(err);
-                setError("Не удалось загрузить список лет.");
-            });
-
+            .then(response => setYears(response.data.Body.years || []))
+            .catch(() => setError("Не удалось загрузить список лет."));
         loadNames(1);
     }, []);
 
-    const loadNames = (page) => {
+    const loadNames = (page, append = false) => {
+        if (isLoadingNames || page > namesTotalPages) return;
+        setIsLoadingNames(true);
         getNamesInArchive(page, namesPerPage)
-            .then((response) => {
-                const {names, page: currentPage, pages_total} = response.data.Body;
-                setNames(names || []);
-                setNamesPage(currentPage);
+            .then(response => {
+                const {names: fetched, page: current, pages_total} = response.data.Body;
+                setNames(prev => append ? [...prev, ...(fetched || [])] : (fetched || []));
+                setNamesPage(current);
                 setNamesTotalPages(pages_total);
             })
-            .catch((err) => {
-                console.error(err);
-                setError("Не удалось загрузить список игроков.");
-            });
+            .catch(() => setError("Не удалось загрузить список игроков."))
+            .finally(() => setIsLoadingNames(false));
     };
 
-    const handleNamesPrev = () => {
-        if (namesPage > 1) {
-            loadNames(namesPage - 1);
-        }
-    };
-    const handleNamesNext = () => {
-        if (namesPage < namesTotalPages) {
-            loadNames(namesPage + 1);
+    const handleNameChange = (e) => {
+        const value = e.target.value;
+        if (value === "__LOAD_MORE__") {
+            // load next page, do not update selectedName
+            if (namesPage < namesTotalPages) {
+                loadNames(namesPage + 1, true);
+            }
+            // ensure select value stays at previous selectedName
+            setTimeout(() => {
+                if (selectRef.current) {
+                    selectRef.current.value = selectedName;
+                }
+            }, 0);
+        } else {
+            setSelectedName(value);
         }
     };
 
@@ -68,44 +72,20 @@ function ArchivePage() {
         }
         setError(null);
         setIsLoadingGames(true);
-
         getArchive(selectedYear, selectedName, page)
-            .then((response) => {
-                const {games: fetchedGames, page: currentPage, pages_total} = response.data.Body;
-                setGames(fetchedGames || []);
-                setArchivePage(currentPage);
+            .then(response => {
+                const {games: fetched, page: current, pages_total} = response.data.Body;
+                setGames(fetched || []);
+                setArchivePage(current);
                 setArchiveTotalPages(pages_total);
             })
-            .catch((err) => {
-                console.error(err);
-                setError("Не удалось загрузить игры.");
-                setGames([]);
-            })
-            .finally(() => {
-                setIsLoadingGames(false);
-            });
-    };
-
-    const handleArchivePrev = () => {
-        if (archivePage > 1) {
-            loadArchiveGames(archivePage - 1);
-        }
-    };
-    const handleArchiveNext = () => {
-        if (archivePage < archiveTotalPages) {
-            loadArchiveGames(archivePage + 1);
-        }
-    };
-
-    const handleShowGames = () => {
-        setArchivePage(1);
-        loadArchiveGames(1);
+            .catch(() => setError("Не удалось загрузить игры."))
+            .finally(() => setIsLoadingGames(false));
     };
 
     return (
         <div className={`${styles.archiveContainer} main-container`}>
             <h2>Архив профессиональных игр Го</h2>
-
             {error && <p className={styles.error}>{error}</p>}
 
             <div className={styles.filters}>
@@ -114,11 +94,11 @@ function ArchivePage() {
                     <select
                         id="year-select"
                         value={selectedYear}
-                        onChange={(e) => setSelectedYear(e.target.value)}
+                        onChange={e => setSelectedYear(e.target.value)}
                         className={styles.selectInput}
                     >
                         <option value="">Все года</option>
-                        {years.map((y) => (
+                        {years.map(y => (
                             <option key={y.year} value={y.year}>
                                 {y.year} ({y.count_of_games} игр)
                             </option>
@@ -130,63 +110,61 @@ function ArchivePage() {
                     <label htmlFor="name-select">Игрок:</label>
                     <select
                         id="name-select"
+                        ref={selectRef}
                         value={selectedName}
-                        onChange={(e) => setSelectedName(e.target.value)}
+                        onChange={handleNameChange}
                         className={styles.selectInput}
                     >
                         <option value="">Все игроки</option>
-                        {names.map((player) => (
+                        {names.map(player => (
                             <option key={player.name} value={player.name}>
                                 {player.name} ({player.count_of_games} игр)
                             </option>
                         ))}
+                        {namesPage < namesTotalPages && (
+                            <option value="__LOAD_MORE__" disabled={isLoadingNames}>
+                                {isLoadingNames ? "Загрузка…" : "Загрузить игроков…"}
+                            </option>
+                        )}
                     </select>
-                    {namesTotalPages > 1 && (
-                        <div className={styles.paginationControls}>
-                            <button onClick={handleNamesPrev} disabled={namesPage <= 1}>
-                                ←
-                            </button>
-                            <span>
-                                {namesPage} / {namesTotalPages}
-                            </span>
-                            <button onClick={handleNamesNext} disabled={namesPage >= namesTotalPages}>
-                                →
-                            </button>
-                        </div>
-                    )}
                 </div>
 
-                <button onClick={handleShowGames} className={styles.showButton} disabled={isLoadingGames}>
+                <button
+                    onClick={() => loadArchiveGames(1)}
+                    className={styles.showButton}
+                    disabled={isLoadingGames}
+                >
                     {isLoadingGames ? "Загрузка..." : "Показать игры"}
                 </button>
             </div>
 
             {isLoadingGames ? (
                 <div className={styles.loadingIndicator}>Загрузка игр...</div>
-            ) : games.length > 0 ? (
-                <>
-                    <div className={styles.gamesContainer}>
-                        {games.map((game, index) => (
-                            <GameCard key={index} game={game}/>
-                        ))}
-                    </div>
-                    {archiveTotalPages > 1 && (
-                        <div className={styles.gamesPagination}>
-                            <button onClick={handleArchivePrev} disabled={archivePage <= 1}>
-                                Предыдущая
-                            </button>
-                            <span>
-                                Страница {archivePage} из {archiveTotalPages}
-                            </span>
-                            <button onClick={handleArchiveNext} disabled={archivePage >= archiveTotalPages}>
-                                Следующая
-                            </button>
+            ) : (
+                games.length > 0 && (
+                    <>
+                        <div className={styles.gamesContainer}>
+                            {games.map((game, idx) => (
+                                <GameCard key={idx} game={game}/>
+                            ))}
                         </div>
-                    )}
-                </>
-            ) : !isLoadingGames && (selectedYear || selectedName) ? (
-                <p className={styles.noGamesMessage}>Игры по заданным фильтрам не найдены.</p>
-            ) : null}
+                        {archiveTotalPages > 1 && (
+                            <div className={styles.gamesPagination}>
+                                <button onClick={() => loadArchiveGames(archivePage - 1)} disabled={archivePage <= 1}>
+                                    Предыдущая
+                                </button>
+                                <span>
+                  Страница {archivePage} из {archiveTotalPages}
+                </span>
+                                <button onClick={() => loadArchiveGames(archivePage + 1)}
+                                        disabled={archivePage >= archiveTotalPages}>
+                                    Следующая
+                                </button>
+                            </div>
+                        )}
+                    </>
+                )
+            )}
         </div>
     );
 }
