@@ -1,0 +1,200 @@
+.container {
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--color-primary-dark);
+    font-family: var(--font-family-serif);
+}
+
+.gameDetails {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    color: var(--color-secondary);
+}
+
+.playerContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem; /* Add margin below the player */
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+}
+
+.error {
+    color: var(--color-accent);
+}
+
+/* Styles for Controls Area */
+.controlsArea {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem; /* Spacing between control groups */
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.6); /* Slight background */
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+/* Styles for Explanation Section (Button is now inside controlsArea) */
+.explanationButton {
+    padding: 0.6em 1.2em;
+    font-size: 1rem;
+    font-weight: var(--font-weight-bold);
+    background-color: var(--color-secondary);
+    color: var(--color-text-on-dark);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+    flex-shrink: 0; /* Prevent button from shrinking too much */
+}
+
+.explanationButton:hover:not(:disabled) {
+    background-color: var(--color-primary-dark); /* Darker on hover */
+}
+
+.explanationButton:disabled {
+    background-color: #a0a0a0;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Styles for Mode Toggle and Character Selector */
+.modeToggle, .characterSelector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.toggleLabel {
+    font-size: 0.9rem;
+    color: var(--color-secondary);
+    margin-right: 0.3rem;
+    font-weight: 500;
+}
+
+.toggleButton {
+    padding: 0.4em 0.8em;
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    background-color: rgba(255, 255, 255, 0.7);
+    color: var(--color-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.toggleButton:hover {
+    background-color: rgba(230, 213, 184, 0.5); /* Light wood hover */
+    border-color: var(--color-primary);
+}
+
+.toggleButton.activeToggle {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-dark);
+    border-color: var(--color-primary-dark);
+    font-weight: bold;
+}
+
+
+/* Dialog Styles (keep as before) */
+.explanationDialogOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    cursor: pointer; /* Close on overlay click */
+}
+
+.explanationDialog {
+    background-color: var(--color-background);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    color: var(--color-text);
+    cursor: default; /* Reset cursor */
+}
+
+.explanationDialog h3 {
+    margin-top: 0;
+    color: var(--color-primary-dark);
+}
+
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--color-secondary);
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.closeButton:hover {
+    color: var(--color-accent);
+}
+
+.errorText {
+    color: var(--color-accent);
+    font-weight: bold;
+}
+
+.explanationText {
+    line-height: 1.6;
+    margin-top: 1rem;
+}
+
+/* src/pages/ArchiveGame/ArchiveGame.module.css */
+/* ... (все предыдущие стили) ... */
+
+/* Контейнер для фиксированной кнопки */
+.fixedButtonContainer {
+    position: fixed; /* Фиксируем относительно окна браузера */
+    bottom: 0;       /* Прижимаем к низу */
+    left: 0;
+    right: 0;
+    padding: 15px 20px; /* Отступы внутри контейнера */
+    /* Полупрозрачный фон для отделения от контента */
+    background: linear-gradient(to top, rgba(248, 244, 233, 0.9), rgba(248, 244, 233, 0));
+    text-align: center; /* Центрируем кнопку */
+    z-index: 900; /* Выше доски, но ниже оверлеев */
+    pointer-events: none; /* Позволяет кликать "сквозь" фон контейнера */
+}
+
+/* Делаем саму кнопку снова кликабельной */
+.fixedButtonContainer .explanationButton {
+    pointer-events: auto;
+}
+
+/* Добавляем нижний отступ основному контейнеру, чтобы контент не уходил под кнопку */
+.container {
+    margin: 20px auto;
+    padding: 20px;
+    padding-bottom: 80px; /* Отступ = высота кнопки + паддинги контейнера кнопки */
+}

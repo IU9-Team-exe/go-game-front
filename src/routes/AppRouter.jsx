@@ -9,6 +9,9 @@ import Game from "../pages/Game/Game.jsx";
 import AI from "../pages/AI/AI.jsx";
 import CreateGame from "../pages/CreateGame/CreateGame.jsx";
 import ArchivePage from "../pages/Archive/Archive.jsx";
+import ArchiveGame from "../pages/ArchiveGame/ArchiveGame.jsx";
+import TasksLevels from "../pages/TasksLevels/TasksLevels.jsx";
+import Level from "../pages/Level/Level.jsx";
 
 export default function AppRouter() {
     return (
@@ -22,6 +25,9 @@ export default function AppRouter() {
             <Route path="/game/:gameKey" element={<Game />} />
             <Route path="/ai" element={<AI />} />
             <Route path="/archive" element={<ArchivePage />} />
+            <Route path="/archive/game/:gameId" element={<ArchiveGame />} />
+            <Route path="/tasks/levels" element={<TasksLevels />} />
+            <Route path="/tasks/level/:level" element={<Level />} />
             <Route path="*" element={<div>Страница не найдена</div>}/>
         </Routes>
     );
