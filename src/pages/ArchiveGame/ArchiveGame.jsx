@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getGameFromArchiveById } from "../../services/API/archiveApi";
+import { getMoveExplanation } from "../../services/API/gameApi.js";
 import styles from "./ArchiveGame.module.css";
 import GoPlayerArchive from "../../components/GoPlayers/GoPlayerArchive.jsx";
 import AICharacterExplanation from "../../components/AICharacterExplanation/AICharacterExplanation";
@@ -67,14 +68,7 @@ const ArchiveGame = () => {
         setShowExplanation(false);
 
         try {
-            const response = await fetch("http://localhost:8080/api/getMoveExplanation", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    game_archive_id: gameId,
-                    move_seq_number: currentMoveNumber
-                })
-            });
+            const response = await getMoveExplanation(gameId, currentMoveNumber);
 
             if (!response.ok) {
                 let errorMsg = `HTTP error! status: ${response.status}`;

@@ -33,6 +33,18 @@ export function getGameInfo(gameCode) {
 }
 
 /**
+ * Анализ хода
+ * @param gameId
+ * @param currentMoveNumber
+ */
+export function getMoveExplanation(gameId, currentMoveNumber) {
+    return api.post("/getMoveExplanation", {
+        game_archive_id: gameId,
+        move_seq_number: currentMoveNumber
+    })
+}
+
+/**
  * Выход из игры
  * @param gameCode
  */
