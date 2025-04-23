@@ -1,0 +1,7 @@
+# Примеры переменных
+
+VITE_API_BASE_URL="http://localhost:8080/api"
+
+VITE_WS_URL_BASE="ws://localhost:8080/api/startGame"
+
+

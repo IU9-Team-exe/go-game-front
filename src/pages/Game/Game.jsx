@@ -7,7 +7,7 @@ import { getGameInfo, leaveGame } from "../../services/API/gameApi.js";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 import {fixSgfFormat} from "../../utils/conversionUtils.js";
 
-const WS_URL_BASE = "ws://localhost:8080/api/startGame";
+const WS_URL_BASE = import.meta.env.VITE_WS_URL_BASE;
 
 function GameContent() {
     const { gameKey } = useParams();
