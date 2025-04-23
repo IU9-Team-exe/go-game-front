@@ -7,7 +7,7 @@ export function useResponsiveBoardSize(margin = 20) {
 
     useEffect(() => {
         const updateSize = () => {
-            const newSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9) - margin;
+            const newSize = Math.min(window.innerWidth * 0.75, window.innerHeight * 0.75) - margin;
             setBoardSize(newSize);
         };
 

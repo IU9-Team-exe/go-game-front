@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useCallback, useState } from "react";
 import styles from "../Game/Game.module.css";
 import { getGameInfo, leaveGame } from "../../services/API/gameApi.js";
 import { useAuth } from "../../contexts/AuthContext.jsx";
-import {fixSgfFormat} from "../../utils/conversionUtils.js";
+import { fixSgfFormat } from "../../utils/conversionUtils.js";
 
 const WS_URL_BASE = import.meta.env.VITE_WS_URL_BASE;
 
@@ -14,7 +14,6 @@ function GameContent() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    // Достаём из контекста:
     const {
         gameInfo,
         setGameInfo,
@@ -25,6 +24,7 @@ function GameContent() {
     } = useGame();
 
     const [incomingMove, setIncomingMove] = useState(null);
+    const [moveError, setMoveError] = useState(null);
     const unmountedRef = useRef(false);
     const socketRef = useRef(null);
 
@@ -49,10 +49,9 @@ function GameContent() {
                     setGameInfo(body);
 
                     const rawSgf = (body?.sgf || "").trim();
-                    const cleanedSgf = fixSgfFormat(rawSgf || "(;FF[4]GM[1]SZ[19])");
-
-                    if (cleanedSgf !== sgf) {
-                        updateSgf(cleanedSgf);
+                    const cleaned = fixSgfFormat(rawSgf || "(;FF[4]GM[1]SZ[19])");
+                    if (cleaned !== sgf) {
+                        updateSgf(cleaned);
                     }
                 }
             } catch (error) {
@@ -77,14 +76,28 @@ function GameContent() {
         ws.onmessage = (event) => {
             console.log("WS сообщение:", event.data);
             try {
-                const trimmed = event.data.trim();
-                if (!trimmed.startsWith("{")) {
+                const text = event.data.trim();
+                if (!text.startsWith("{")) {
                     console.log("Получено уведомление:", event.data);
                     return;
                 }
-                const data = JSON.parse(event.data);
+                const data = JSON.parse(text);
+
+                if (data.move_info) {
+                    const info = data.move_info;
+                    if (!info.IsMoveCorrect) {
+                        setMoveError(info.Error);
+                        return;
+                    }
+                    setMoveError(null);
+                    const cleaned = fixSgfFormat(info.NewSgf || "(;FF[4]GM[1]SZ[19])");
+                    updateSgf(cleaned);
+                    setIncomingMove(data.move);
+                    return;
+                }
 
                 if (data.move) {
+                    setMoveError(null);
                     setIncomingMove(data.move);
                 }
             } catch (err) {
@@ -98,12 +111,10 @@ function GameContent() {
             console.warn("WS закрыт", event);
             socketRef.current = null;
             if (!unmountedRef.current) {
-                setTimeout(() => {
-                    connectSocket();
-                }, 3000);
+                setTimeout(connectSocket, 3000);
             }
         };
-    }, [gameKey]);
+    }, [gameKey, updateSgf]);
 
     useEffect(() => {
         connectSocket();
@@ -129,7 +140,7 @@ function GameContent() {
     const handleLeave = async () => {
         try {
             await leaveGame(gameKey);
-            navigate(`/`);
+            navigate("/");
         } catch (error) {
             console.error("Ошибка выхода из игры", error);
         }
@@ -143,23 +154,29 @@ function GameContent() {
                     Выйти
                 </button>
             </div>
+
+            {moveError && (
+                <div
+                    className={styles.error}
+                    style={{ textAlign: "center", marginBottom: "1rem" }}
+                >
+                    Ошибка хода: {moveError}
+                </div>
+            )}
+
             <GoPlayerMultiplayer
                 onSendMove={sendMove}
                 incomingMove={incomingMove}
                 initialSgf={sgf}
             />
         </div>
-
-
     );
 }
 
-function Game() {
+export default function Game() {
     return (
         <GameProvider>
-            <GameContent/>
+            <GameContent />
         </GameProvider>
     );
 }
-
-export default Game;
