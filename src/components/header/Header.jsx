@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import styles from "./Header.module.css";
 import { useAuth } from "../../contexts/AuthContext";
 import { logout as apiLogout } from "../../services/API/authApi";
+import {newBotGame} from "../../services/API/aiApi.js";
 
 const GoStoneIcon = () => (
     <div className={styles.goStoneIconContainer}>
@@ -25,6 +26,14 @@ const Header = () => {
             console.error("Ошибка при выходе:", error);
         } finally {
             contextLogout();
+        }
+    };
+
+    const handleCreateBotGame = async () => {
+        try {
+            await newBotGame();
+        } catch (error) {
+            console.error("Ошибка при создании игры:", error);
         }
     };
 
@@ -48,7 +57,7 @@ const Header = () => {
                         <NavLink to="/join" className={({ isActive }) => isActive ? `${styles.link} ${styles.activeLink}` : styles.link}>
                             Присоединиться
                         </NavLink>
-                        <NavLink to="/ai" className={({ isActive }) => isActive ? `${styles.link} ${styles.activeLink}` : styles.link}>
+                        <NavLink to="/ai" onClick={handleCreateBotGame} className={({ isActive }) => isActive ? `${styles.link} ${styles.activeLink}` : styles.link}>
                             Играть с AI
                         </NavLink>
                         <NavLink to="/tasks/levels" className={({ isActive }) => isActive ? `${styles.link} ${styles.activeLink}` : styles.link}>

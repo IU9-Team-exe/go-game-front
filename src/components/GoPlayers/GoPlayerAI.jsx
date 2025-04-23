@@ -1,73 +1,108 @@
-import React, {useEffect, useRef} from "react";
-import {callAIMove} from "../../services/API/aiApi";
-import {parseCoords, extractMoves} from "../../utils/conversionUtils";
+import React, {useEffect, useRef, useState} from "react";
+import {newBotGame, generateMove} from "../../services/API/aiApi";
+import {convertCoords} from "../../utils/conversionUtils";
 import {useResponsiveBoardSize} from "../../utils/useResponsiveBoardSize.js";
 
-const GoPlayerAI = ({sgf = "(;FF[4]GM[1]SZ[19])", options = {}}) => {
+const GoPlayerAI = ({options = {}}) => {
     const containerRef = useRef(null);
     const playerRef = useRef(null);
+    const editableRef = useRef(null);
+    const originalPlayRef = useRef(null);
     const boardSize = useResponsiveBoardSize(20);
 
+    const [sgfState, setSgfState] = useState("(;FF[4]GM[1]SZ[19])");
+
     useEffect(() => {
-        if (window.WGo && window.WGo.Player) {
-            const playerOptions = {width: boardSize, height: boardSize, sgf, ...options};
-            playerOptions.layout = {top: [], bottom: [], left: [], right: []};
-            playerOptions.enableKeys = false;
-
-            const player = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
-            player.setCoordinates(true);
-            const editable = new window.WGo.Player.Editable(player, player.board);
-            editable.set(true);
-
-            const originalPlay = editable.play;
-            editable.play = function (x, y) {
-                const currentTurn = this.player.kifuReader.game.turn === window.WGo.B ? "b" : "w";
-                if (currentTurn !== "b") {
-                    console.warn("Ход не разрешен: не ваша очередь.");
-                    return;
+        newBotGame()
+            .then((resp) => {
+                if (resp.data.Status === 200 && resp.data.Body.sgf) {
+                    setSgfState(resp.data.Body.sgf);
                 }
-                originalPlay.call(this, x, y);
+            })
+            .catch((err) => console.error("Ошибка создания игры с ботом:", err));
+    }, []);
 
-                const currentSgf = player.kifuReader.kifu.toSgf();
-                const moves = extractMoves(currentSgf, player.kifu.size);
-                console.log(moves);
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container || !window.WGo || !window.WGo.Player) return;
 
-                callAIMove(moves)
-                    .then((response) => {
-                        const {bot_move} = response.data;
-                        if (!bot_move) {
-                            console.error("Сервер не вернул bot_move");
-                            return;
-                        }
-                        const {x: botX, y: botY} = parseCoords(bot_move.coordinates, player.kifu.size);
-                        originalPlay.call(this, botX, botY);
-                    })
-                    .catch((err) => {
-                        console.error("Ошибка получения хода от ИИ:", err);
-                    });
+        container.innerHTML = "";
+
+        const playerOptions = {
+            width: boardSize,
+            height: boardSize,
+            sgf: sgfState,
+            ...options,
+        };
+        playerOptions.layout = {top: [], bottom: [], left: [], right: []};
+        playerOptions.enableKeys = false;
+
+        const player = new window.WGo.BasicPlayer(container, playerOptions);
+        player.setCoordinates(true);
+
+        const editable = new window.WGo.Player.Editable(player, player.board);
+        editable.set(true);
+
+        playerRef.current = player;
+        editableRef.current = editable;
+
+        const originalPlay = editable.play;
+        originalPlayRef.current = originalPlay;
+
+        editable.play = function (x, y) {
+            const currentTurn =
+                this.player.kifuReader.game.turn === window.WGo.B ? "b" : "w";
+            if (currentTurn !== "b") {
+                console.warn("Ход не разрешён: не ваша очередь.");
+                return;
+            }
+            originalPlay.call(this, x, y);
+
+            const move = {
+                color: "B",
+                coordinates: convertCoords(x, y, player.kifu.size),
             };
 
-            if (editable._ev_click) {
+            generateMove(move)
+                .then((resp) => {
+                    if (resp.data.Status === 200 && resp.data.Body.sgf) {
+                        setSgfState(resp.data.Body.sgf);
+                    } else {
+                        console.error("Неверный ответ от /generateMove:", resp.data);
+                    }
+                })
+                .catch((err) => {
+                    console.error("Ошибка получения хода от ИИ:", err);
+                });
+        };
+
+        if (editable._ev_click) {
+            player.board.removeEventListener("click", editable._ev_click);
+        }
+        editable._ev_click = editable.play.bind(editable);
+        player.board.addEventListener("click", editable._ev_click);
+
+        setTimeout(() => {
+            player.last();
+        }, 0);
+
+        return () => {
+            if (player.board && editable._ev_click) {
                 player.board.removeEventListener("click", editable._ev_click);
             }
-            editable._ev_click = editable.play.bind(editable);
-            player.board.addEventListener("click", editable._ev_click);
-
-            playerRef.current = player;
-        }
-    }, [boardSize, sgf, options]);
+            container.innerHTML = "";
+            playerRef.current = null;
+            editableRef.current = null;
+            originalPlayRef.current = null;
+        };
+    }, [sgfState, boardSize, options]);
 
     useEffect(() => {
-        const handleWheel = (e) => e.preventDefault();
         const container = containerRef.current;
-        if (container) {
-            container.addEventListener("wheel", handleWheel, {passive: false});
-        }
-        return () => {
-            if (container) {
-                container.removeEventListener("wheel", handleWheel, {passive: false});
-            }
-        };
+        if (!container) return;
+        const block = (e) => e.preventDefault();
+        container.addEventListener("wheel", block, {passive: false});
+        return () => container.removeEventListener("wheel", block);
     }, []);
 
     return (

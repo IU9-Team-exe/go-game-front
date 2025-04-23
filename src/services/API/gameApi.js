@@ -33,7 +33,7 @@ export function getGameInfo(gameCode) {
 }
 
 /**
- * Анализ хода
+ * Анализ хода архивной игры
  * @param gameId
  * @param currentMoveNumber
  */
