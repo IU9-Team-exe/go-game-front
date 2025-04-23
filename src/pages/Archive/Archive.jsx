@@ -1,9 +1,15 @@
-import React, {useEffect, useState, useRef} from "react";
-import {getNamesInArchive, getYearsInArchive, getArchive} from "../../services/API/archiveApi";
+import React, { useEffect, useState, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
+import { getNamesInArchive, getYearsInArchive, getArchive } from "../../services/API/archiveApi";
 import GameCard from "../../components/ArchiveGameCard/ArchiveGameCard";
 import styles from "./Archive.module.css";
 
 function ArchivePage() {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialYear = searchParams.get("year") || "";
+    const initialName = searchParams.get("name") || "";
+    const initialPage = parseInt(searchParams.get("page"), 10) || 1;
+
     const [years, setYears] = useState([]);
 
     const [names, setNames] = useState([]);
@@ -12,11 +18,11 @@ function ArchivePage() {
     const [namesPerPage] = useState(20);
     const [isLoadingNames, setIsLoadingNames] = useState(false);
 
-    const [selectedYear, setSelectedYear] = useState("");
-    const [selectedName, setSelectedName] = useState("");
+    const [selectedYear, setSelectedYear] = useState(initialYear);
+    const [selectedName, setSelectedName] = useState(initialName);
 
     const [games, setGames] = useState([]);
-    const [archivePage, setArchivePage] = useState(1);
+    const [archivePage, setArchivePage] = useState(initialPage);
     const [archiveTotalPages, setArchiveTotalPages] = useState(1);
     const [isLoadingGames, setIsLoadingGames] = useState(false);
     const [error, setError] = useState(null);
@@ -25,9 +31,12 @@ function ArchivePage() {
 
     useEffect(() => {
         getYearsInArchive()
-            .then(response => setYears(response.data.Body.years || []))
+            .then(response => setYears(response.data.Body.years.reverse() || []))
             .catch(() => setError("Не удалось загрузить список лет."));
         loadNames(1);
+        if (initialYear || initialName) {
+            loadArchiveGames(initialPage);
+        }
     }, []);
 
     const loadNames = (page, append = false) => {
@@ -35,7 +44,7 @@ function ArchivePage() {
         setIsLoadingNames(true);
         getNamesInArchive(page, namesPerPage)
             .then(response => {
-                const {names: fetched, page: current, pages_total} = response.data.Body;
+                const { names: fetched, page: current, pages_total } = response.data.Body;
                 setNames(prev => append ? [...prev, ...(fetched || [])] : (fetched || []));
                 setNamesPage(current);
                 setNamesTotalPages(pages_total);
@@ -47,11 +56,9 @@ function ArchivePage() {
     const handleNameChange = (e) => {
         const value = e.target.value;
         if (value === "__LOAD_MORE__") {
-            // load next page, do not update selectedName
             if (namesPage < namesTotalPages) {
                 loadNames(namesPage + 1, true);
             }
-            // ensure select value stays at previous selectedName
             setTimeout(() => {
                 if (selectRef.current) {
                     selectRef.current.value = selectedName;
@@ -72,20 +79,46 @@ function ArchivePage() {
         }
         setError(null);
         setIsLoadingGames(true);
+
         getArchive(selectedYear, selectedName, page)
             .then(response => {
-                const {games: fetched, page: current, pages_total} = response.data.Body;
+                const { games: fetched, page: current, pages_total } = response.data.Body;
                 setGames(fetched || []);
                 setArchivePage(current);
                 setArchiveTotalPages(pages_total);
+                const params = {};
+                if (selectedYear) params.year = selectedYear;
+                if (selectedName) params.name = selectedName;
+                params.page = String(current);
+                setSearchParams(params);
             })
-            .catch(() => setError("Не удалось загрузить игры."))
+            .catch(() => {
+                setError("Не удалось загрузить игры.");
+                setGames([]);
+            })
             .finally(() => setIsLoadingGames(false));
+    };
+
+    const handleArchivePrev = () => {
+        if (archivePage > 1) {
+            loadArchiveGames(archivePage - 1);
+        }
+    };
+
+    const handleArchiveNext = () => {
+        if (archivePage < archiveTotalPages) {
+            loadArchiveGames(archivePage + 1);
+        }
+    };
+
+    const handleShowGames = () => {
+        loadArchiveGames(1);
     };
 
     return (
         <div className={`${styles.archiveContainer} main-container`}>
             <h2>Архив профессиональных игр Го</h2>
+
             {error && <p className={styles.error}>{error}</p>}
 
             <div className={styles.filters}>
@@ -130,7 +163,7 @@ function ArchivePage() {
                 </div>
 
                 <button
-                    onClick={() => loadArchiveGames(1)}
+                    onClick={handleShowGames}
                     className={styles.showButton}
                     disabled={isLoadingGames}
                 >
@@ -141,28 +174,31 @@ function ArchivePage() {
             {isLoadingGames ? (
                 <div className={styles.loadingIndicator}>Загрузка игр...</div>
             ) : (
-                games.length > 0 && (
+                games.length > 0 ? (
                     <>
                         <div className={styles.gamesContainer}>
                             {games.map((game, idx) => (
-                                <GameCard key={idx} game={game}/>
+                                <GameCard key={idx} game={game} />
                             ))}
                         </div>
                         {archiveTotalPages > 1 && (
                             <div className={styles.gamesPagination}>
-                                <button onClick={() => loadArchiveGames(archivePage - 1)} disabled={archivePage <= 1}>
+                                <button onClick={handleArchivePrev} disabled={archivePage <= 1}>
                                     Предыдущая
                                 </button>
                                 <span>
-                  Страница {archivePage} из {archiveTotalPages}
-                </span>
-                                <button onClick={() => loadArchiveGames(archivePage + 1)}
-                                        disabled={archivePage >= archiveTotalPages}>
+                                    Страница {archivePage} из {archiveTotalPages}
+                                </span>
+                                <button onClick={handleArchiveNext} disabled={archivePage >= archiveTotalPages}>
                                     Следующая
                                 </button>
                             </div>
                         )}
                     </>
+                ) : (
+                    !isLoadingGames && (selectedYear || selectedName) && (
+                        <p className={styles.noGamesMessage}>Игры по заданным фильтрам не найдены.</p>
+                    )
                 )
             )}
         </div>
