@@ -1,55 +1,56 @@
-import React from 'react';
-import styles from './AnalysisDialog.module.css';
+// src/components/AnalysisDialog/AnalysisDialog.jsx
+import React from "react";
+import styles from "./AnalysisDialog.module.css";
 
 export default function AnalysisDialog({analysis, onClose}) {
-    const {rootInfo, moveInfos, ownership, policy, turnNumber} = analysis || {};
+    // Если анализ ещё не пришёл или в нём нет Body — не рендерим ничего
+    if (!analysis || !analysis.Body) return null;
+
+    const {
+        moveInfos = [],
+        rootInfo = {},
+        turnNumber = "-"
+    } = analysis.Body;
+
+    const {
+        currentPlayer = "-",
+        scoreLead = 0,
+        winrate = 0
+    } = rootInfo;
 
     return (
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.dialog} onClick={e => e.stopPropagation()}>
                 <button className={styles.closeButton} onClick={onClose}>✕</button>
-                <h3>Анализ партии</h3>
-                <div className={styles.content}>
+                <h3>Анализ игры</h3>
+                <div className={styles.summary}>
                     <p><strong>Номер хода:</strong> {turnNumber}</p>
-                    <p><strong>Текущий игрок:</strong> {rootInfo.currentPlayer}</p>
-
-                    <h4>Информация о корне</h4>
-                    <ul>
-                        {rootInfo && Object.entries(rootInfo).map(([key, value]) => (
-                            <li key={key}><strong>{key}:</strong> {String(value)}</li>
-                        ))}
-                    </ul>
-
-                    <h4>Топ ходы</h4>
-                    <table className={styles.table}>
-                        <thead>
-                        <tr>
-                            <th>Порядок</th>
-                            <th>Ход</th>
-                            <th>Визиты</th>
-                            <th>Winrate</th>
-                            <th>ScoreLead</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {moveInfos.map(mi => (
-                            <tr key={mi.order}>
-                                <td>{mi.order}</td>
-                                <td>{mi.move}</td>
-                                <td>{mi.visits}</td>
-                                <td>{(mi.winrate * 100).toFixed(1)}%</td>
-                                <td>{mi.scoreLead}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-
-                    <h4>Политика</h4>
-                    <p>{policy.join(', ')}</p>
-
-                    <h4>Владение</h4>
-                    <p>{ownership.join(', ')}</p>
+                    <p>
+                        <strong>Ходит:</strong> {currentPlayer === "B" ? "Чёрные" : currentPlayer === "W" ? "Белые" : currentPlayer}
+                    </p>
+                    <p><strong>Перевес:</strong> {scoreLead.toFixed(1)}</p>
+                    <p><strong>Шанс победы:</strong> {(winrate * 100).toFixed(1)}%</p>
                 </div>
+                <table className={styles.table}>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Ход</th>
+                        <th>Win%</th>
+                        <th>PV</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {moveInfos.map((info, idx) => (
+                        <tr key={info.order}>
+                            <td>{idx + 1}</td>
+                            <td>{info.move}</td>
+                            <td>{(info.winrate * 100).toFixed(1)}%</td>
+                            <td>{info.pv?.join(" → ")}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
