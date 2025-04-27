@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { joinGame } from "../../services/API/gameApi";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {joinGame, leaveGame} from "../../services/API/gameApi";
+import {useNavigate} from "react-router-dom";
 import styles from "./JoinGame.module.css";
-import { useAuth } from "../../contexts/AuthContext.jsx";
-import { GameProvider, useGame } from "../../contexts/GameContext";
+import {useAuth} from "../../contexts/AuthContext.jsx";
+import {GameProvider, useGame} from "../../contexts/GameContext";
 
 function JoinGameContent() {
     const [gameCode, setGameCode] = useState("");
     const navigate = useNavigate();
-    const { user } = useAuth();
-    const { setPlayerColor } = useGame();
+    const {user} = useAuth();
+    const {setPlayerColor} = useGame();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -28,15 +28,18 @@ function JoinGameContent() {
         setIsLoading(true);
         setError(null);
         try {
-            await joinGame(gameCode);
-            setPlayerColor("w"); // Присоединившийся играет за белых
+            const response = await joinGame(gameCode);
+            const oldGameCode = response.data?.Body?.currGameKey;
+            if (oldGameCode) {
+                await leaveGame(gameCode);
+            }
+            setPlayerColor("w");
             navigate(`/game/${gameCode}`);
         } catch (err) {
             console.error("Ошибка подключения к игре", err);
             setError(err.response?.data?.Body?.ErrorDescription || err.message || "Не удалось подключиться к игре. Проверьте код или попробуйте позже.");
             setIsLoading(false);
         }
-         // Не нужно setIsLoading(false) при успехе, т.к. происходит редирект
     };
 
     return (
@@ -65,11 +68,10 @@ function JoinGameContent() {
     );
 }
 
-// Обертка с GameProvider остается, так как JoinGameContent использует useGame
 function JoinGame() {
     return (
         <GameProvider>
-            <JoinGameContent />
+            <JoinGameContent/>
         </GameProvider>
     );
 }

@@ -23,7 +23,7 @@ function CreateGame() {
         setError(null);
         try {
             const response = await newGame(); // Параметры по умолчанию на бэке
-            const gameKey = response.data?.Body?.public_key;
+            const gameKey = response.data?.Body?.public_key || response.data?.Body?.currGameKey;
             if (gameKey) {
                 setPlayerColor("b"); // Создатель всегда начинает за черных
                 navigate(`/game/${gameKey}`);
