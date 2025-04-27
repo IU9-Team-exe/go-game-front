@@ -1,10 +1,8 @@
-// src/components/AnalysisDialog/AnalysisDialog.jsx
 import React from "react";
 import styles from "./AnalysisDialog.module.css";
 
-export default function AnalysisDialog({analysis, onClose}) {
-    // Если анализ ещё не пришёл или в нём нет Body — не рендерим ничего
-    if (!analysis || !analysis.Body) return null;
+export default function AnalysisDialog({ analysis, onClose }) {
+    if (!analysis?.Body) return null;
 
     const {
         moveInfos = [],
@@ -21,13 +19,19 @@ export default function AnalysisDialog({analysis, onClose}) {
     return (
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.dialog} onClick={e => e.stopPropagation()}>
-                <button className={styles.closeButton} onClick={onClose}>✕</button>
+                <button
+                    type="button"
+                    className={styles.closeIcon}
+                    onClick={onClose}
+                    aria-label="Закрыть"
+                >
+                    ×
+                </button>
+
                 <h3>Анализ игры</h3>
                 <div className={styles.summary}>
                     <p><strong>Номер хода:</strong> {turnNumber}</p>
-                    <p>
-                        <strong>Ходит:</strong> {currentPlayer === "B" ? "Чёрные" : currentPlayer === "W" ? "Белые" : currentPlayer}
-                    </p>
+                    <p><strong>Ходит:</strong> {currentPlayer === "B" ? "Чёрные" : currentPlayer === "W" ? "Белые" : currentPlayer}</p>
                     <p><strong>Перевес:</strong> {scoreLead.toFixed(1)}</p>
                     <p><strong>Шанс победы:</strong> {(winrate * 100).toFixed(1)}%</p>
                 </div>

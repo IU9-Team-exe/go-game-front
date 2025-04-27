@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getGameFromArchiveById } from "../../services/API/archiveApi";
+import React, {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import {getGameFromArchiveById} from "../../services/API/archiveApi";
 import {analyseCurrent, getMoveExplanation} from "../../services/API/gameApi.js";
 import styles from "./ArchiveGame.module.css";
 import GoPlayerArchive from "../../components/GoPlayers/GoPlayerArchive.jsx";
@@ -8,7 +8,7 @@ import AICharacterExplanation from "../../components/AICharacterExplanation/AICh
 import AnalysisDialog from "../../components/AnalysisDialog/AnalysisDialog.jsx";
 
 const ArchiveGame = () => {
-    const { gameId } = useParams();
+    const {gameId} = useParams();
     const [gameInfo, setGameInfo] = useState(null);
     const [sgf, setSgf] = useState("(;FF[4]GM[1]SZ[19])");
     const [error, setError] = useState(null);
@@ -126,6 +126,11 @@ const ArchiveGame = () => {
         }
     };
 
+    const closeAnalyse = () => {
+        setIsAnalysisOpen(false);
+        setAnalysis(null);
+    };
+
 
     if (isLoading) return <div className={styles.loading}>Загрузка игры...</div>;
     if (error) return <div className={styles.error}>{error}</div>;
@@ -141,7 +146,7 @@ const ArchiveGame = () => {
             </div>
 
             <div className={styles.playerContainer}>
-                <GoPlayerArchive key={sgf} sgf={sgf} onMoveChange={handleMoveChange} />
+                <GoPlayerArchive key={sgf} sgf={sgf} onMoveChange={handleMoveChange}/>
             </div>
 
             <div className={styles.controlsArea}>
@@ -188,8 +193,11 @@ const ArchiveGame = () => {
                         disabled={isFetchingExplanation}
                         className={styles.explanationButton}
                     >
-                        {isFetchingExplanation ? "Запрос ИИ..." : `Объяснить ход #${currentMoveNumber}`}
+                        {isFetchingExplanation
+                            ? "Запрос ИИ..."
+                            : `Объяснить ход #${currentMoveNumber}`}
                     </button>
+
                     <button
                         onClick={handleAnalyse}
                         disabled={isAnalysing}
@@ -197,13 +205,6 @@ const ArchiveGame = () => {
                     >
                         {isAnalysing ? "Анализ..." : "Анализ игры"}
                     </button>
-                    {isAnalysisOpen && (
-                        <AnalysisDialog
-                            analysis={analysis}
-                            onClose={() => setIsAnalysisOpen(false)}
-                        />
-                    )}
-
                 </div>
             )}
 
@@ -226,6 +227,13 @@ const ArchiveGame = () => {
                     error={explanationError}
                     characterType={characterType}
                     onClose={closeExplanation}
+                />
+            )}
+
+            {isAnalysisOpen && (
+                <AnalysisDialog
+                    analysis={analysis}
+                    onClose={closeAnalyse}
                 />
             )}
         </div>
