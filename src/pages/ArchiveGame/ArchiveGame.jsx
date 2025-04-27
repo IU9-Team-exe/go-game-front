@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getGameFromArchiveById } from "../../services/API/archiveApi";
-import { getMoveExplanation } from "../../services/API/gameApi.js";
+import {analyseCurrent, getMoveExplanation} from "../../services/API/gameApi.js";
 import styles from "./ArchiveGame.module.css";
 import GoPlayerArchive from "../../components/GoPlayers/GoPlayerArchive.jsx";
 import AICharacterExplanation from "../../components/AICharacterExplanation/AICharacterExplanation";
+import AnalysisDialog from "../../components/AnalysisDialog/AnalysisDialog.jsx";
 
 const ArchiveGame = () => {
     const { gameId } = useParams();
@@ -19,6 +20,10 @@ const ArchiveGame = () => {
     const [showExplanation, setShowExplanation] = useState(false);
     const [explanationMode, setExplanationMode] = useState('dialog');
     const [characterType, setCharacterType] = useState('chillGuy');
+    const [analysis, setAnalysis] = useState(null);
+    const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
+    const [isAnalysing, setIsAnalysing] = useState(false);
+
 
     useEffect(() => {
         setIsLoading(true);
@@ -105,6 +110,23 @@ const ArchiveGame = () => {
         setShowExplanation(false);
     }
 
+    const handleAnalyse = async () => {
+        setIsAnalysing(true);
+        try {
+            const resp = await analyseCurrent(gameId);
+            const status = resp.data.Status;
+            if (status === 200) {
+                setAnalysis(resp.data);
+                setIsAnalysisOpen(true);
+            }
+        } catch (e) {
+            console.error("Ошибка анализа игры:", e);
+        } finally {
+            setIsAnalysing(false);
+        }
+    };
+
+
     if (isLoading) return <div className={styles.loading}>Загрузка игры...</div>;
     if (error) return <div className={styles.error}>{error}</div>;
     if (!gameInfo) return <div className={styles.loading}>Загрузка информации об игре...</div>;
@@ -168,6 +190,20 @@ const ArchiveGame = () => {
                     >
                         {isFetchingExplanation ? "Запрос ИИ..." : `Объяснить ход #${currentMoveNumber}`}
                     </button>
+                    <button
+                        onClick={handleAnalyse}
+                        disabled={isAnalysing}
+                        className={styles.explanationButton}
+                    >
+                        {isAnalysing ? "Анализ..." : "Анализ игры"}
+                    </button>
+                    {isAnalysisOpen && (
+                        <AnalysisDialog
+                            analysis={analysis}
+                            onClose={() => setIsAnalysisOpen(false)}
+                        />
+                    )}
+
                 </div>
             )}
 

@@ -45,6 +45,14 @@ export function getMoveExplanation(gameId, currentMoveNumber) {
 }
 
 /**
+ * Анализ игры
+ * @param gameId
+ */
+export function analyseCurrent(gameId) {
+    return api.get(`/analyseCurrent?secret_key=${gameId}`)
+}
+
+/**
  * Выход из игры
  * @param gameCode
  */
