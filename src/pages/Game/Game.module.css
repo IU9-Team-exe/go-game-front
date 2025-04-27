@@ -8,3 +8,9 @@
     cursor: pointer;
     margin-bottom: 20px;
 }
+
+.info {
+    font-size: 1rem;
+    color: var(--color-secondary);
+    margin: 0.5rem 0 1rem;
+}

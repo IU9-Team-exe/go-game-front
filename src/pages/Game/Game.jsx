@@ -41,7 +41,9 @@ function GameContent() {
     }, [playerColor, setPlayerColor]);
 
     useEffect(() => {
-        (async () => {
+        let intervalId;
+
+        const fetchGameInfo = async () => {
             try {
                 const response = await getGameInfo(gameKey);
                 if (response.data?.Status === 200) {
@@ -57,7 +59,12 @@ function GameContent() {
             } catch (error) {
                 console.error("Ошибка getGameInfo:", error);
             }
-        })();
+        };
+
+        fetchGameInfo();
+        intervalId = setInterval(fetchGameInfo, 5000);
+
+        return () => clearInterval(intervalId);
     }, [gameKey]);
 
     const connectSocket = useCallback(() => {
@@ -146,10 +153,20 @@ function GameContent() {
         }
     };
 
+    const myColor = playerColor === "b" ? "black" : "white";
+
+    const opponent = gameInfo?.users?.find(u => u.color !== myColor);
+    const opponentNickname = opponent?.nickname ?? "ожидание";
+
     return (
         <div>
             <div className={styles.container}>
                 <h2>Игра: {gameKey}</h2>
+
+                <p className={styles.info}>
+                    Оппонент: <strong>{opponentNickname}</strong>
+                </p>
+
                 <button onClick={handleLeave} className={styles.leaveButton}>
                     Выйти
                 </button>
@@ -158,7 +175,7 @@ function GameContent() {
             {moveError && (
                 <div
                     className={styles.error}
-                    style={{ textAlign: "center", marginBottom: "1rem" }}
+                    style={{textAlign: "center", marginBottom: "1rem"}}
                 >
                     Ошибка хода: {moveError}
                 </div>
@@ -176,7 +193,7 @@ function GameContent() {
 export default function Game() {
     return (
         <GameProvider>
-            <GameContent />
+            <GameContent/>
         </GameProvider>
     );
 }
