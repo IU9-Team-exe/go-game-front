@@ -12,6 +12,7 @@ import ArchivePage from "../pages/Archive/Archive.jsx";
 import ArchiveGame from "../pages/ArchiveGame/ArchiveGame.jsx";
 import TasksLevels from "../pages/TasksLevels/TasksLevels.jsx";
 import Level from "../pages/Level/Level.jsx";
+import TaskPage from "../pages/Task/Task.jsx";
 
 export default function AppRouter() {
     return (
@@ -28,6 +29,7 @@ export default function AppRouter() {
             <Route path="/archive/game/:gameId" element={<ArchiveGame />} />
             <Route path="/tasks/levels" element={<TasksLevels />} />
             <Route path="/tasks/level/:level" element={<Level />} />
+            <Route path="/task/:taskNumber" element={<TaskPage />} />
             <Route path="*" element={<div>Страница не найдена</div>}/>
         </Routes>
     );

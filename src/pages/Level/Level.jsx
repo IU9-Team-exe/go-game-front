@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { getAvailableGamesForUser } from "../../services/API/tasksApi";
+import React, {useState, useEffect} from "react";
+import {useParams, useNavigate} from "react-router-dom";
+import {useAuth} from "../../contexts/AuthContext";
+import {getAvailableGamesForUser} from "../../services/API/tasksApi";
 import styles from "./Level.module.css";
 
 const Level = () => {
-    const { level } = useParams();
-    const { user } = useAuth();
+    const {level} = useParams();
+    const {user} = useAuth();
     const userID = user.id;
+    const navigate = useNavigate();
 
     const [page, setPage] = useState(1);
     const [tasks, setTasks] = useState([]);
@@ -47,13 +48,25 @@ const Level = () => {
             {!loading && tasks.length > 0 && (
                 <div className={styles.tasksList}>
                     {tasks.map((task) => (
-                        <div key={task.task_number} className={styles.taskCard}>
+                        <div
+                            key={task.task_number}
+                            className={styles.taskCard}
+                            onClick={() =>
+                                navigate(`/task/${task.task_number}`, {
+                                    state: {
+                                        sgf: task.task_sgf,
+                                        taskNumber: task.task_number,
+                                        taskLevel: level
+                                    }
+                                })
+                            }
+                            style={{cursor: "pointer"}}
+                        >
                             <p>
                                 <strong>Задача #{task.task_number}</strong>
                             </p>
                             <p>Уровень: {task.task_level}</p>
                             <p>Статус: {task.task_status}</p>
-                            <pre className={styles.sgf}>{task.task_sgf}</pre>
                         </div>
                     ))}
                 </div>
