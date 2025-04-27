@@ -1,9 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {createContext, useContext, useState, useEffect} from "react";
 
 const GameContext = createContext();
 
-export const GameProvider = ({ children }) => {
+export const GameProvider = ({children}) => {
     const [gameInfo, setGameInfo] = useState(null);
+    const [gameKey, setGameKey] = useState(() => {
+        return localStorage.getItem("game_key") || null;
+    });
 
     const [sgf, setSgf] = useState(() => {
         const storedSgf = localStorage.getItem("game_sgf");
@@ -12,6 +15,12 @@ export const GameProvider = ({ children }) => {
     const [playerColor, setPlayerColor] = useState(() => {
         return localStorage.getItem("player_color") || null;
     });
+
+    useEffect(() => {
+        if (gameKey) {
+            localStorage.setItem("game_key", gameKey);
+        }
+    }, [gameKey]);
 
     useEffect(() => {
         localStorage.setItem("game_sgf", sgf);
@@ -32,6 +41,8 @@ export const GameProvider = ({ children }) => {
             value={{
                 gameInfo,
                 setGameInfo,
+                gameKey,
+                setGameKey,
                 sgf,
                 updateSgf,
                 playerColor,

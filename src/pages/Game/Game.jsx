@@ -152,9 +152,10 @@ function GameContent() {
     const handleLeave = async () => {
         try {
             await leaveGame(gameKey);
-            navigate("/");
         } catch (error) {
             console.error("Ошибка выхода из игры", error);
+        } finally {
+            navigate("/");
         }
     };
 
