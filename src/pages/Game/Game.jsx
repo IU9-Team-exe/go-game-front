@@ -1,17 +1,18 @@
-import { useParams, useNavigate } from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import GoPlayerMultiplayer from "../../components/GoPlayers/GoPlayerMultiplayer.jsx";
-import { GameProvider, useGame } from "../../contexts/GameContext";
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import {GameProvider, useGame} from "../../contexts/GameContext";
+import React, {useEffect, useRef, useCallback, useState} from "react";
 import styles from "../Game/Game.module.css";
-import { getGameInfo, leaveGame } from "../../services/API/gameApi.js";
-import { useAuth } from "../../contexts/AuthContext.jsx";
-import { fixSgfFormat } from "../../utils/conversionUtils.js";
+import {analyseCurrent, getGameInfo, leaveGame} from "../../services/API/gameApi.js";
+import {useAuth} from "../../contexts/AuthContext.jsx";
+import {fixSgfFormat} from "../../utils/conversionUtils.js";
+import AnalysisDialog from "../../components/AnalysisDialog/AnalysisDialog.jsx";
 
 const WS_URL_BASE = import.meta.env.VITE_WS_URL_BASE;
 
 function GameContent() {
-    const { gameKey } = useParams();
-    const { user } = useAuth();
+    const {gameKey} = useParams();
+    const {user} = useAuth();
     const navigate = useNavigate();
 
     const {
@@ -27,6 +28,10 @@ function GameContent() {
     const [moveError, setMoveError] = useState(null);
     const unmountedRef = useRef(false);
     const socketRef = useRef(null);
+
+    const [analysis, setAnalysis] = useState(null);
+    const [isAnalysing, setIsAnalysing] = useState(false);
+    const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
 
     useEffect(() => {
         if (!user) {
@@ -153,6 +158,22 @@ function GameContent() {
         }
     };
 
+    const handleAnalyse = async () => {
+        setIsAnalysing(true);
+        try {
+            const resp = await analyseCurrent(gameKey);
+            const status = resp.data.Status;
+            if (status === 200) {
+                setAnalysis(resp.data);
+                setIsAnalysisOpen(true);
+            }
+        } catch (error) {
+            console.error("Ошибка анализа игры:", error);
+        } finally {
+            setIsAnalysing(false);
+        }
+    };
+
     const myColor = playerColor === "b" ? "black" : "white";
 
     const opponent = gameInfo?.users?.find(u => u.color !== myColor);
@@ -161,31 +182,31 @@ function GameContent() {
     return (
         <div>
             <div className={styles.container}>
-                <h2>Игра: {gameKey}</h2>
-
+                <h2>Код игры: {gameKey}</h2>
                 <p className={styles.info}>
                     Оппонент: <strong>{opponentNickname}</strong>
                 </p>
-
-                <button onClick={handleLeave} className={styles.leaveButton}>
-                    Выйти
-                </button>
+                <div className={styles.buttonsRow}>
+                    <button onClick={handleLeave} className={styles.leaveButton}>
+                        Выйти
+                    </button>
+                    <button
+                        onClick={handleAnalyse}
+                        disabled={isAnalysing}
+                        className={styles.analyseButton}
+                    >
+                        {isAnalysing ? "Анализ..." : "Анализ игры"}
+                    </button>
+                </div>
             </div>
 
-            {moveError && (
-                <div
-                    className={styles.error}
-                    style={{textAlign: "center", marginBottom: "1rem"}}
-                >
-                    Ошибка хода: {moveError}
-                </div>
-            )}
+            {moveError && <div className={styles.error}>Ошибка хода: {moveError}</div>}
+            <GoPlayerMultiplayer onSendMove={() => {
+            }} incomingMove={incomingMove} initialSgf={sgf}/>
 
-            <GoPlayerMultiplayer
-                onSendMove={sendMove}
-                incomingMove={incomingMove}
-                initialSgf={sgf}
-            />
+            {isAnalysisOpen && (
+                <AnalysisDialog analysis={analysis} onClose={() => setIsAnalysisOpen(false)}/>
+            )}
         </div>
     );
 }
