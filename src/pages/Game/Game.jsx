@@ -202,8 +202,7 @@ function GameContent() {
             </div>
 
             {moveError && <div className={styles.error}>Ошибка хода: {moveError}</div>}
-            <GoPlayerMultiplayer onSendMove={() => {
-            }} incomingMove={incomingMove} initialSgf={sgf}/>
+            <GoPlayerMultiplayer onSendMove={sendMove} incomingMove={incomingMove} initialSgf={sgf}/>
 
             {isAnalysisOpen && (
                 <AnalysisDialog analysis={analysis} onClose={() => setIsAnalysisOpen(false)}/>
