@@ -1,0 +1,42 @@
+.offlineContainer {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.offlineTitle {
+    font-family: 'Noto Serif SC', serif;
+    color: #3a3226;
+    font-size: 28px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.offlineDescription {
+    text-align: center;
+    color: #6a5c4c;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.goPlayerWrapper {
+    margin: 0 auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+    .offlineContainer {
+        padding: 10px;
+    }
+    
+    .offlineTitle {
+        font-size: 24px;
+    }
+    
+    .offlineDescription {
+        margin-bottom: 20px;
+    }
+}

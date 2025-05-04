@@ -34,6 +34,9 @@
 	  position: relative;
 	  -webkit-tap-highlight-color: rgba(0,0,0,0);
 	  -webkit-tap-highlight-color: transparent;
+	  background-color: #f5f0e5; /* Светлый фон для всего плеера */
+	  border-radius: 8px; /* Скругленные углы */
+	  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Мягкая тень */
   }
 
   .wgo-player-main:after {
@@ -82,7 +85,8 @@
 	  display: flex; /* Для центрирования доски, если она меньше контейнера */
 	  justify-content: center;
 	  align-items: center;
-	  padding: 10px; /* Небольшой отступ вокруг доски */
+	  padding: 15px; /* Увеличиваем отступ вокруг доски */
+	  background: linear-gradient(135deg, #f5f0e5, #ece5d6); /* Градиентный фон */
   }
 
   .wgo-board {
@@ -94,7 +98,7 @@
 	  border-left: 1px solid #f0e7d7; /* Чуть светлее слева */
 	  border-bottom: 3px solid #a67c52; /* Темная толстая снизу */
 	  border-right: 3px solid #a67c52; /* Темная толстая справа */
-	  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1); /* Тень */
+	  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1); /* Улучшенная тень */
 	  border-radius: 5px; /* Небольшое скругление */
 	  /* background-image: url('/path/to/wood-texture.jpg'); /* Опционально: деревянная текстура */
 	  /* background-size: cover; */
@@ -105,18 +109,19 @@
   /*--- Стили для боксов (Info, Comments) ----------------------------------------------*/
 
   .wgo-box-wrapper {
-	  background: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый фон */
+	  background: rgba(255, 255, 255, 0.9); /* Почти белый фон */
 	  border: 1px solid rgba(58, 50, 38, 0.15); /* Граница цветом туши */
-	  border-radius: 5px; /* Скругление */
-	  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Легкая тень */
+	  border-radius: 8px; /* Увеличиваем скругление */
+	  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06); /* Улучшенная тень */
 	  box-sizing: border-box;
 	  -moz-box-sizing: border-box;
-	  margin-bottom: 10px; /* Отступ снизу */
+	  margin-bottom: 12px; /* Увеличенный отступ снизу */
+	  overflow: hidden; /* Чтобы скругленные углы работали */
   }
 
   .wgo-box-title {
 	  margin: 0; /* Убираем стандартные отступы */
-	  padding: 8px 12px; /* Паддинги */
+	  padding: 10px 14px; /* Увеличиваем паддинги */
 	  line-height: 1.4; /* Выравнивание */
 	  font-weight: bold;
 	  font-size: 1.1em; /* Размер шрифта заголовка */
@@ -126,8 +131,6 @@
 	  border-bottom: 1px solid rgba(58, 50, 38, 0.1); /* Разделитель */
 	  color: #3a3226; /* Цвет туши */
 	  font-family: 'Noto Serif SC', serif; /* Серифный шрифт для заголовков */
-	  border-top-left-radius: 5px;
-	  border-top-right-radius: 5px;
   }
 
   /*--- /Стили для боксов ---------------------------------------------------------------*/
@@ -158,25 +161,30 @@
   }
 
   .wgo-player-info {
-	  padding: 8px 10px; /* Паддинги */
+	  padding: 10px 12px; /* Увеличиваем паддинги */
 	  display: flex; /* Используем flex для выравнивания */
 	  justify-content: space-around; /* Распределяем блоки */
-	  gap: 5px;
+	  gap: 8px; /* Увеличиваем промежуток */
   }
 
   .wgo-player-info-box-wrapper {
-	  /* width: 33.3%; - убираем, пусть flex решает */
-	  display: inline-block; /* Оставляем */
+	  flex: 1; /* Равное распределение пространства */
+	  display: inline-block;
   }
 
   .wgo-player-info-box {
-	  padding: 4px 6px; /* Паддинги внутри */
+	  padding: 6px 8px; /* Увеличиваем паддинги внутри */
 	  margin: 0; /* Убираем лишние отступы */
 	  border: 1px solid rgba(58, 50, 38, 0.1); /* Граница */
-	  background-color: rgba(255, 255, 255, 0.4); /* Фон */
-	  border-radius: 3px;
-	  font-size: 0.9em; /* Уменьшаем шрифт */
+	  background-color: rgba(255, 255, 255, 0.7); /* Немного прозрачный фон */
+	  border-radius: 5px; /* Увеличиваем радиус */
+	  font-size: 0.95em; /* Немного уменьшаем шрифт */
 	  text-align: center;
+	  transition: background-color 0.2s; /* Анимация при наведении */
+  }
+
+  .wgo-player-info-box:hover {
+	  background-color: rgba(255, 255, 255, 0.9); /* Эффект при наведении */
   }
 
   .wgo-player-info-title {
@@ -184,13 +192,12 @@
 	  font-weight: 500;
 	  color: #777; /* Серый цвет для подписи */
 	  overflow: hidden;
-	  margin-bottom: 2px;
+	  margin-bottom: 3px; /* Увеличиваем отступ */
   }
 
   .wgo-player-info-value {
 	  font-weight: bold;
   }
-
 
   /* Модификации для разных расположений (оставляем как есть) */
 
@@ -322,188 +329,36 @@
 
   .wgo-comments-wrapper {
 	  overflow: hidden; /* Убираем auto, чтобы не было двойного скролла */
-	  margin: 0;
+	  margin: 0 auto;
+	  width: 100%;
 	  height: 100%;
-	  position: relative;
 	  box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  position: relative;
   }
 
   .wgo-comments-content {
-	  padding: 8px 10px;
-	  border: 0; /* Убираем внутреннюю границу */
-	  background-color: transparent; /* Фон от родителя */
-	  border-radius: 0; /* Убираем скругление */
-	  overflow-y: auto; /* Скролл здесь */
-	  height: calc(100% - 38px); /* Высота минус заголовок (примерно) */
-	  position: absolute; /* Позиционируем для правильной высоты */
-	  top: 38px; /* Ниже заголовка */
-	  left: 0;
-	  right: 0;
-	  bottom: 0;
+	  padding: 12px; /* Увеличиваем паддинг */
+	  font-size: 0.95em; /* Немного меньше шрифт */
+	  overflow-y: auto;
+	  height: calc(100% - 40px); /* С учетом высоты заголовка */
+	  background-color: rgba(255, 255, 255, 0.5); /* Полупрозрачный фон */
+	  border-radius: 0 0 8px 8px; /* Скругление нижних углов */
   }
 
+  /* Улучшенный блок для комментариев */
   .wgo-comments-content p {
-	  font-size: 0.95em; /* Читаемый размер */
-	  margin: 0.6em 0;
-	  line-height: 1.6;
+	  margin: 0.5em 0;
+	  padding: 8px 10px;
+	  background-color: rgba(250, 250, 250, 0.8);
+	  border-radius: 6px;
+	  border-left: 3px solid #d4c5a8; /* Декоративная полоса слева */
   }
 
-  .wgo-help, .wgo-notification {
-	  padding: 5px 10px;
-	  margin-bottom: 8px;
-	  border-radius: 4px;
-	  font-size: 0.9em;
-  }
-
-  .wgo-help {
-	  background-color: rgba(230, 213, 184, 0.8); /* Светло-древесный фон */
-	  border: 1px solid rgba(166, 124, 82, 0.5);
-  }
-
-  .wgo-notification {
-	  background-color: rgba(58, 50, 38, 0.9); /* Темный фон туши */
-	  color: #f8f4e9; /* Светлый текст */
-	  border: 1px solid rgba(248, 244, 233, 0.3);
-  }
-
-
-  .wgo-commentbox .wgo-box-title {
-	  background-repeat: no-repeat;
-	  background-position: right 10px center; /* Позиция иконки */
-	  background-size: 18px; /* Размер иконки */
-	  padding-right: 35px; /* Место для иконки */
-  }
-
-  /* Стили для иконок заголовка комментариев */
-  .wgo-commentbox .wgo-box-title::after {
-	  content: '\e800'; /* Иконка комментария по умолчанию */
-	  position: absolute; /* Абсолютное позиционирование */
-	  right: 10px;
-	  top: 50%;
-	  transform: translateY(-50%);
-	  font-weight: normal;
-	  font-size: 1em; /* Размер иконки */
-	  width: 20px;
-	  text-align: center;
-	  color: inherit; /* Наследуем цвет */
-  }
-
-  /* Иконка для информации об игре */
-  .wgo-commentbox.wgo-gameinfo .wgo-box-title::after {
-	  content: '\e801';
-  }
-
-  /* Имя комментатора */
   .wgo-comments-nick {
-	  color: var(--color-primary-dark); /* Цвет заголовков */
+	  color: #6a5c4c; /* Темно-коричневый цвет для имени */
 	  font-weight: bold;
 	  margin-right: 5px;
-  }
-
-  /* Ссылка на ход */
-  a.wgo-move-link {
-	  text-decoration: none;
-	  border-bottom: 1px dashed var(--color-primary); /* Пунктирное подчеркивание */
-	  color: var(--color-primary-dark);
-	  font-weight: bold;
-  }
-  a.wgo-move-link:hover {
-	  border-bottom-style: solid;
-	  color: var(--color-accent);
-  }
-
-  /* Модификации для разных расположений (right/left) */
-
-  .wgo-player-right .wgo-comments-content, .wgo-player-left .wgo-comments-content {
-	  position: absolute;
-	  left: 1px; /* Отступы от краев родителя */
-	  right: 1px;
-	  bottom: 1px;
-	  top: 38px; /* Ниже заголовка */
-	  height: auto; /* Авто высота */
-  }
-
-  .wgo-player-right .wgo-commentbox, .wgo-player-left .wgo-commentbox {
-	  position: absolute;
-	  bottom: 0;
-	  right: 10px;
-	  left: 10px;
-	  top: 100px; /* Примерный отступ сверху, если InfoBox фиксированной высоты */
-	  /* Если InfoBox не фиксированный, то нужно будет вычислять top или использовать flex/grid */
-  }
-
-  /* Модификации для расположений top/bottom (требуют корректировки) */
-
-  /* Если комментарии сверху или снизу, их нужно сделать горизонтальными или ограничить высоту */
-  .wgo-player-top .wgo-comments-wrapper, .wgo-player-bottom .wgo-comments-wrapper {
-	  margin-top: 10px;
-	  height: 150px; /* Ограничиваем высоту */
-	  width: 100%;
-  }
-
-  .wgo-player-top .wgo-comments-content, .wgo-player-bottom .wgo-comments-content {
-	  position: static; /* Убираем абсолютное позиционирование */
-	  height: calc(100% - 38px); /* Пересчитываем высоту */
-	  overflow-y: auto;
-  }
-
-  /* Убираем поворот заголовка, делаем его обычным */
-  .wgo-player-top .wgo-commentbox .wgo-box-title, .wgo-player-bottom .wgo-commentbox .wgo-box-title {
-	  transform: none;
-	  -ms-transform: none;
-	  -webkit-transform: none;
-	  position: static;
-  }
-
-
-  /* Таблица информации об игре */
-
-  .wgo-commentbox .wgo-info-list {
-	  display: table;
-	  width: 100%;
-	  border-collapse: collapse; /* Убираем двойные границы */
-	  margin-top: 5px;
-  }
-
-  .wgo-commentbox .wgo-info-title {
-	  display: table-caption;
-	  font-weight: bold; /* Жирный шрифт */
-	  font-family: 'Noto Serif SC', serif;
-	  border-bottom: 2px solid rgba(58, 50, 38, 0.2);
-	  padding: 5px 0;
-	  font-size: 1.1em;
-	  color: var(--color-primary-dark);
-	  margin-bottom: 5px;
-	  caption-side: top; /* Заголовок сверху */
-	  text-align: left;
-  }
-
-  .wgo-commentbox .wgo-info-item {
-	  display: table-row;
-  }
-
-  .wgo-commentbox .wgo-info-label, .wgo-commentbox .wgo-info-value {
-	  display: table-cell;
-	  border-bottom: 1px solid rgba(58, 50, 38, 0.1);
-	  padding: 4px 8px 4px 0; /* Паддинги */
-	  vertical-align: top; /* Выравнивание по верху */
-  }
-
-  .wgo-commentbox .wgo-info-label {
-	  font-weight: 500; /* Полужирный */
-	  color: #555; /* Темно-серый */
-	  width: 30%; /* Ширина колонки с метками */
-	  padding-right: 10px;
-  }
-
-  .wgo-commentbox .wgo-info-value {
-	  color: var(--color-text);
-  }
-
-  /* Убираем границу у последнего элемента */
-  .wgo-commentbox .wgo-info-item:last-child .wgo-info-label,
-  .wgo-commentbox .wgo-info-item:last-child .wgo-info-value {
-	  border-bottom: 0;
   }
 
   /*--- /Блок комментариев ---------------------------------------------------------------*/
@@ -511,208 +366,110 @@
   /*--- Блок управления ------------------------------------------------------------------*/
 
   .wgo-player-control {
-	  box-sizing: border-box;
-	  -moz-box-sizing: border-box;
-	  -webkit-box-sizing: border-box;
-	  padding: 8px 5px; /* Паддинги для всего блока */
-	  background-color: rgba(255, 255, 255, 0.6); /* Легкий фон для блока управления */
-	  border-top: 1px solid rgba(58, 50, 38, 0.1); /* Граница сверху */
+	  margin: 0;
+	  padding: 10px 0;
+	  text-align: center;
+	  width: 100%;
+	  background: linear-gradient(180deg, #f8f5ed, #ede4d0); /* Градиентный фон */
+	  border-top: 1px solid #e5dcc9; /* Граница сверху */
+	  border-radius: 0 0 8px 8px; /* Скругление углов */
   }
 
   .wgo-control-wrapper {
-	  width: 100%;
+	  display: inline-block;
+	  width: auto;
+	  position: relative;
+	  margin: 0 auto;
 	  text-align: center;
-	  display: flex; /* Используем flex для выравнивания групп */
-	  justify-content: space-between; /* Распределяем группы */
-	  align-items: center;
   }
 
-  /* Группы кнопок (оставляем без изменений) */
-  .wgo-ctrlgroup-left {
-	  /* float: left; - убираем float */
+  /* Группировка кнопок */
+  .wgo-ctrlgroup {
+	  display: inline-block;
+	  margin: 0 8px; /* Увеличенный отступ между группами */
   }
-
-  .wgo-ctrlgroup-right {
-	  /* float: right; - убираем float */
-  }
-
-  .wgo-ctrlgroup-control {
-	  /* margin: 0 auto; - убираем */
-	  display: flex; /* Выравниваем кнопки в группе */
-	  align-items: center;
-	  gap: 5px; /* Отступ между кнопками в группе */
-  }
-
-  /* Стили кнопок */
 
   button.wgo-button {
-	  border: 1px solid rgba(58, 50, 38, 0.2); /* Граница цветом туши */
-	  border-radius: 4px; /* Скругление */
-	  background-color: rgba(248, 244, 233, 0.7); /* Очень светлый фон */
-	  width: 40px; /* Размер кнопки */
-	  height: 40px;
-	  margin: 0 2px; /* Небольшие отступы */
-	  vertical-align: middle;
-	  color: #3a3226; /* Цвет иконки */
-	  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
-	  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-	  padding: 0; /* Убираем внутренние отступы */
-	  display: inline-flex; /* Для центрирования иконки */
-	  align-items: center;
-	  justify-content: center;
-  }
-
-  button.wgo-button:not([disabled]):hover,
-  input[type="text"].wgo-player-mn-value:focus {
-	  background-color: rgba(230, 213, 184, 0.8); /* Светло-древесный при наведении */
-	  border-color: rgba(58, 50, 38, 0.4);
-	  box-shadow: 0 0 5px 0 rgba(166, 124, 82, 0.3); /* Легкое свечение */
-  }
-
-  button.wgo-button.wgo-selected {
-	  background-color: rgba(166, 124, 82, 0.6); /* Древесный для выделенной */
-	  border-color: rgba(58, 50, 38, 0.6);
-	  color: #fff; /* Белая иконка */
-	  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-  }
-
-  button.wgo-button.wgo-selected:hover {
-	  background-color: rgba(166, 124, 82, 0.8);
-	  border-color: rgba(58, 50, 38, 0.8);
-  }
-
-  /* Иконки внутри кнопок */
-  .wgo-button::before {
-	  font-size: 28px; /* Размер иконки */
-	  line-height: 1; /* Для центрирования */
-	  display: inline-block;
-	  margin-top: 2px; /* Небольшая коррекция позиции */
-  }
-
-  /* Неактивные кнопки */
-  .wgo-button[disabled]::before, input[type="text"].wgo-player-mn-value[disabled] {
-	  color: rgba(58, 50, 38, 0.4); /* Полупрозрачный цвет туши */
-	  opacity: 0.6;
-  }
-  button.wgo-button[disabled] {
-	  background-color: rgba(230, 213, 184, 0.4);
-	  border-color: rgba(58, 50, 38, 0.1);
-	  box-shadow: none;
-	  cursor: not-allowed;
-  }
-
-
-  /* Эффект нажатия */
-  .wgo-button:not([disabled]):active::before {
+	  font-family: 'Noto Sans JP', sans-serif;
+	  width: 34px; /* Чуть больше кнопки */
+	  height: 34px;
+	  margin: 0 2px;
+	  padding: 0;
+	  background: linear-gradient(to bottom, #f9f6f0, #e9e0d1); /* Градиент для кнопок */
+	  border: 1px solid #d1c5ad;
+	  border-radius: 5px; /* Скругленные углы */
+	  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); /* Легкая тень */
+	  cursor: pointer;
 	  position: relative;
-	  top: 1px;
-	  /* left: 1px; - убираем сдвиг влево */
+	  color: #6a5c4c; /* Цвет для иконок */
+	  font-size: 16px;
+	  transition: all 0.15s ease; /* Плавная анимация */
   }
 
-  /*!* Трансформация иконок *!*/
-  /*.wgo-button-first::before, .wgo-button-multiprev::before, .wgo-button-previous::before  {*/
-	/*  transform: scaleX(-1);*/
-	/*  -moz-transform: scaleX(-1);*/
-	/*  -webkit-transform: scaleX(-1);*/
-	/*  -ms-transform: scaleX(-1);*/
-  /*}*/
+  button.wgo-button:not([disabled]):hover {
+	  background: linear-gradient(to bottom, #f5f1e8, #e3d8c7); /* Другой градиент при наведении */
+	  border-color: #bfb297; /* Темнее граница */
+	  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); /* Больше тень */
+  }
 
-  /* Иконки для конкретных кнопок (оставляем) */
-.wgo-button-first::before {
-    /* content: '\e81a';  - убираем */
-    content: '⏮';
-}
+  button.wgo-button:not([disabled]):active {
+	  background: linear-gradient(to bottom, #e9e0d1, #f9f6f0); /* Инвертированный градиент */
+	  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* Внутренняя тень */
+  }
 
-.wgo-button-multiprev::before {
-    /* content: '\e817'; */
-    content: '⏪';
-    margin-left: -5px;
-}
-
-.wgo-button-previous::before {
-    /* content: '\e80c'; */
-    content: '←';
-}
-
-.wgo-button-next::before {
-    /* content: '\e80c'; */
-    content: '→';
-}
-
-.wgo-button-multinext::before {
-    /* content: '\e817'; */
-    content: '⏩';
-}
-
-.wgo-button-last::before {
-    /* content: '\e81a'; */
-    content: '⏭';
-}
-
-.wgo-button-menu::before {
-    /* content: '\e81b'; */
-    content: '☰';
-    font-size: 20px;
-}
-
-.wgo-button-about::before {
-    /* content: '\e80f'; */
-    content: 'ℹ';
-    font-size: 24px;
-}
-
-
-  /* Виджет номера хода */
-
-  input[type="text"].wgo-player-mn-value  {
-	  border: 1px solid rgba(58, 50, 38, 0.2);
-	  border-radius: 4px;
-	  background-color: rgba(255, 255, 255, 0.8);
-	  width: 3em; /* Ширина поля ввода */
-	  height: 38px; /* Высота как у кнопок */
-	  font-weight: bold;
-	  font-size: 1em;
-	  text-align: center;
-	  display: inline-block;
+  /* Поле номера хода */
+  input[type="text"].wgo-player-mn-value {
+	  font-family: 'Noto Sans JP', sans-serif;
+	  width: 40px; /* Чуть шире */
+	  height: 32px; /* Высота */
+	  border: 1px solid #d1c5ad;
+	  border-radius: 5px;
+	  background-color: #fff;
+	  font-size: 14px;
+	  color: #3a3226;
 	  vertical-align: middle;
-	  outline: 0;
-	  padding: 0 5px; /* Паддинги */
-	  box-sizing: border-box;
-  }
-
-  .wgo-player-mn-wrapper {
-	  display: inline-block;
-	  width: auto; /* Автоширина */
+	  margin: 0 4px;
 	  text-align: center;
-	  margin: 0 3px; /* Отступы */
+	  transition: border-color 0.15s ease;
   }
 
-  /* Модификации для top/bottom (оставляем) */
-
-  .wgo-player-top .wgo-player-control {
-	  padding-bottom: 5px;
-	  border-top: 0;
-	  border-bottom: 1px solid rgba(58, 50, 38, 0.1);
+  input[type="text"].wgo-player-mn-value:focus {
+	  border-color: #bfb297;
+	  outline: none;
+	  box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1); /* Подсветка при фокусе */
   }
 
-  .wgo-player-bottom .wgo-player-control {
-	  padding-top: 5px;
-	   border-bottom: 0;
-	   border-top: 1px solid rgba(58, 50, 38, 0.1);
+  /* Стили сообщений и уведомлений */
+  .wgo-notification, .wgo-help {
+	  position: absolute;
+	  width: 100%;
+	  top: 30%;
+	  left: 0;
+	  text-align: center;
+	  padding: 20px;
+	  background-color: rgba(255, 255, 255, 0.8);
+	  color: #6a5c4c;
+	  font-weight: bold;
+	  border-radius: 8px;
+	  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	  z-index: 100;
   }
 
-  /* Скрытие кнопок на маленьких экранах (оставляем) */
-
-  .wgo-440 .wgo-button-multiprev,
-  .wgo-440 .wgo-button-multinext {
-	  display: none;
-  }
-
-  .wgo-340 .wgo-button-multiprev,
-  .wgo-340 .wgo-button-multinext,
-  .wgo-340 .wgo-button-first,
-  .wgo-340 .wgo-button-last {
-	  display: none;
+  /* Медиа-запросы для адаптивности */
+  @media screen and (max-width: 768px) {
+	  .wgo-player-info {
+		  flex-direction: column;
+		  padding: 8px;
+		  gap: 5px;
+	  }
+	  
+	  .wgo-player-info-box-wrapper {
+		  width: 100%;
+	  }
+	  
+	  .wgo-ctrlgroup {
+		  margin: 5px;
+	  }
   }
 
   /*--- /Блок управления -----------------------------------------------------------------*/
