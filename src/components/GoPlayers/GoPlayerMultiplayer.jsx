@@ -35,7 +35,12 @@ const GoPlayerMultiplayer = ({
         player.setCoordinates(true);
 
         const editable = new window.WGo.Player.Editable(player, player.board);
-        editable.set(true);
+        if (player.kifuReader) {
+            editable.set(true);
+        } else {
+            player.addEventListener("kifuLoaded", () => editable.set(true));
+        }
+
 
         playerRef.current = player;
         editableRef.current = editable;
