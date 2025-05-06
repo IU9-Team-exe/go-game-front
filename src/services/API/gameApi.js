@@ -57,5 +57,5 @@ export function analyseCurrent(gameId) {
  * @param gameCode
  */
 export function leaveGame(gameCode) {
-    return api.get(`/leaveGame?public_key=${gameCode}`);
+    return api.get(`/leaveGame?gameKey=${gameCode}`);
 }

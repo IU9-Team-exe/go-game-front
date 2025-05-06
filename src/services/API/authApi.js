@@ -16,7 +16,7 @@ export function login(username, password) {
  * Выход из аккаунта
  */
 export function logout() {
-    return api.delete("/logout");
+    return api.post("/logout");
 }
 
 /**
