@@ -16,7 +16,6 @@ function GameContent() {
     const navigate = useNavigate();
 
     const {
-        gameInfo,
         setGameInfo,
         sgf,
         updateSgf,
@@ -29,6 +28,7 @@ function GameContent() {
     const [moveError, setMoveError] = useState(null);
     const unmountedRef = useRef(false);
     const socketRef = useRef(null);
+    const [opponentUser, setOpponentUser] = useState(null);
 
     const [analysis, setAnalysis] = useState(null);
     const [isAnalysing, setIsAnalysing] = useState(false);
@@ -106,6 +106,11 @@ function GameContent() {
                     return;
                 }
 
+                if (data.event === "opponent_joined" || data.event === "opponent_info") {
+                    setOpponentUser(data.user);
+                    return;
+                }
+
                 if (data.move) {
                     setMoveError(null);
                     setIncomingMove(data);
@@ -176,10 +181,7 @@ function GameContent() {
         }
     };
 
-    const myColor = playerColor === "b" ? "black" : "white";
-
-    const opponent = gameInfo?.users?.find(u => u.color !== myColor);
-    const opponentNickname = opponent?.nickname ?? "ожидание";
+    const opponentNickname = opponentUser?.Username ?? "ожидание";
 
     return (
         <div>
