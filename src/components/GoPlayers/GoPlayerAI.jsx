@@ -4,14 +4,14 @@ import {convertCoords} from "../../utils/conversionUtils";
 import {useResponsiveBoardSize} from "../../utils/useResponsiveBoardSize";
 import {useGame} from "../../contexts/GameContext";
 
-const GoPlayerAI = ({options = {}}) => {
+const GoPlayerAI = ({options = {}, playerColor = "b"}) => {
     const containerRef = useRef(null);
     const playerRef = useRef(null);
     const editableRef = useRef(null);
     const originalPlayRef = useRef(null);
     const boardSize = useResponsiveBoardSize(20);
 
-    const {sgf, updateSgf, playerColor} = useGame();
+    const {sgfBot, updateSgfBot} = useGame();
 
     useEffect(() => {
         const container = containerRef.current;
@@ -22,7 +22,7 @@ const GoPlayerAI = ({options = {}}) => {
         const playerOptions = {
             width: boardSize,
             height: boardSize,
-            sgf,
+            sgf: sgfBot,
             ...options,
         };
         playerOptions.layout = {top: [], bottom: [], left: [], right: []};
@@ -48,7 +48,7 @@ const GoPlayerAI = ({options = {}}) => {
             generateMove({color: playerColor === "b" ? "B" : "W", coordinates: coord})
                 .then((resp) => {
                     if (resp.data.Status === 200 && resp.data.Body.sgf) {
-                        updateSgf(resp.data.Body.sgf);
+                        updateSgfBot(resp.data.Body.sgf);
                     } else {
                         console.error("Неверный ответ от /generateMove:", resp.data);
                     }
@@ -80,7 +80,7 @@ const GoPlayerAI = ({options = {}}) => {
             editableRef.current = null;
             originalPlayRef.current = null;
         };
-    }, [sgf, boardSize, options, playerColor, updateSgf]);
+    }, [sgfBot, boardSize, options, playerColor, updateSgfBot]);
 
     return (
         <div

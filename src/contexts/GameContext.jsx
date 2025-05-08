@@ -42,7 +42,7 @@ export const GameProvider = ({children}) => {
     const [state, dispatch] = useReducer(gameReducer, {}, getInitialState);
 
     useEffect(() => {
-        if (state.gameKey != null) localStorage.setItem("game_key", state.gameKey);
+        localStorage.setItem("game_key", state.gameKey);
     }, [state.gameKey]);
 
     useEffect(() => {
@@ -50,12 +50,13 @@ export const GameProvider = ({children}) => {
     }, [state.sgf]);
 
     useEffect(() => {
-        if (state.playerColor != null) localStorage.setItem("player_color", state.playerColor);
+        localStorage.setItem("player_color", state.playerColor);
     }, [state.playerColor]);
 
     useEffect(() => {
-        if (state.gameKeyBot != null) localStorage.setItem("game_key_bot", state.gameKeyBot);
+        localStorage.setItem("game_key_bot", state.gameKeyBot);
     }, [state.gameKeyBot]);
+
     useEffect(() => {
         localStorage.setItem("game_sgf_bot", state.sgfBot);
     }, [state.sgfBot]);

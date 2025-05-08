@@ -153,9 +153,10 @@ function GameContent() {
         } catch (error) {
             console.error("Ошибка выхода из игры", error);
         } finally {
-            navigate("/");
+            setPlayerColor(null)
             updateGameKey(null);
             updateSgf(null);
+            navigate("/");
         }
     };
 

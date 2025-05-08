@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import GoPlayerAI from "../../components/GoPlayers/GoPlayerAI.jsx";
 import AnalysisDialog from "../../components/AnalysisDialog/AnalysisDialog.jsx";
-import { newBotGame } from "../../services/API/aiApi.js";
-import { analyseCurrent, leaveGame } from "../../services/API/gameApi.js";
-import { GameProvider, useGame } from "../../contexts/GameContext.jsx";
+import {newBotGame} from "../../services/API/aiApi.js";
+import {analyseCurrent, leaveGame} from "../../services/API/gameApi.js";
+import {GameProvider, useGame} from "../../contexts/GameContext.jsx";
 import styles from "../Game/Game.module.css";
 
 function AIContent() {
@@ -22,16 +22,27 @@ function AIContent() {
     useEffect(() => {
         (async () => {
             try {
-                const resp = await newBotGame();
-                const { Status, Body } = resp.data;
-                if (Status === 200 && Body.sgf) {
+                const response = await newBotGame();
+                const {Status, Body} = response.data;
+
+                if (Body.sgf) {
                     updateSgfBot(Body.sgf);
-                    if (Body.secret_key) updateGameKeyBot(Body.secret_key);
-                } else if (Status === 400 && Body.secret_key) {
-                    updateGameKeyBot(Body.secret_key);
+                    if (Body.secret_key) {
+                        updateGameKeyBot(Body.secret_key);
+                    }
                 }
-            } catch (err) {
-                console.error("Ошибка создания игры с ботом:", err);
+            } catch (error) {
+                if (error.response?.status === 409) {
+                    console.log(error.response.data.Body.message)
+                    const match = error.response.data?.Body?.message.match(/bot game already exists:\s*(\S+)/i);
+                    if (match) {
+                        updateGameKeyBot(match[1]);
+                    } else {
+                        console.warn('Не удалось извлечь ключ игры из сообщения:', error.message);
+                    }
+                } else {
+                    console.error("Ошибка создания игры с ботом:", error);
+                }
             }
         })();
     }, [gameKeyBot]);
@@ -70,7 +81,7 @@ function AIContent() {
     return (
         <div className="main-container">
             <div className={styles.container}>
-                <h2 style={{ textAlign: "center" }}>Игра с KataGo</h2>
+                <h2 style={{textAlign: "center"}}>Игра с KataGo</h2>
                 <button onClick={handleLeave} className={styles.leaveButton}>
                     Выйти
                 </button>
@@ -78,7 +89,7 @@ function AIContent() {
                     onClick={handleAnalyse}
                     className={styles.leaveButton}
                     disabled={isAnalysing}
-                    style={{ marginLeft: 8 }}
+                    style={{marginLeft: 8}}
                 >
                     {isAnalysing ? "Анализ..." : "Анализ игры"}
                 </button>
@@ -90,7 +101,7 @@ function AIContent() {
             />
 
             {isAnalysisOpen && (
-                <AnalysisDialog analysis={analysis} onClose={closeAnalyse} />
+                <AnalysisDialog analysis={analysis} onClose={closeAnalyse}/>
             )}
         </div>
     );
@@ -99,7 +110,7 @@ function AIContent() {
 export default function AI() {
     return (
         <GameProvider>
-            <AIContent />
+            <AIContent/>
         </GameProvider>
     );
 }
