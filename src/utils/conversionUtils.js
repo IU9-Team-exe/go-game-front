@@ -45,9 +45,8 @@ const coordToSgf = (coord) => {
 };
 
 export const fixSgfFormat = (sgfRaw) => {
-    return sgfRaw.replace(/;(black|white)\[([A-T]\d{1,2})\]/gi, (_, color, coord) => {
-        const sgfCoord = coordToSgf(coord);
+    return sgfRaw.replace(/;(black|white)\[([^\]]*)\]/gi, (_, color, coord) => {
         const sgfColor = color.toLowerCase() === "black" ? "B" : "W";
-        return `;${sgfColor}[${sgfCoord}]`;
+        return `;${sgfColor}[${coord}]`;
     });
 };

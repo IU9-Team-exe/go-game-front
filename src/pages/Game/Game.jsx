@@ -20,6 +20,7 @@ function GameContent() {
         setGameInfo,
         sgf,
         updateSgf,
+        updateGameKey,
         playerColor,
         setPlayerColor
     } = useGame();
@@ -46,14 +47,13 @@ function GameContent() {
     }, [playerColor, setPlayerColor]);
 
     useEffect(() => {
-        let intervalId;
-
         const fetchGameInfo = async () => {
             try {
                 const response = await getGameInfo(gameKey);
                 if (response.data?.Status === 200) {
                     const body = response.data.Body;
                     setGameInfo(body);
+                    updateGameKey(body?.game_key)
 
                     const rawSgf = (body?.sgf || "").trim();
                     const cleaned = fixSgfFormat(rawSgf || "(;FF[4]GM[1]SZ[19])");
@@ -67,9 +67,6 @@ function GameContent() {
         };
 
         fetchGameInfo();
-        intervalId = setInterval(fetchGameInfo, 5000);
-
-        return () => clearInterval(intervalId);
     }, [gameKey]);
 
     const connectSocket = useCallback(() => {
@@ -103,14 +100,15 @@ function GameContent() {
                     }
                     setMoveError(null);
                     const cleaned = fixSgfFormat(info.NewSgf || "(;FF[4]GM[1]SZ[19])");
+                    console.log("sgf form ws after fix:", cleaned)
                     updateSgf(cleaned);
-                    setIncomingMove(data.move);
+                    setIncomingMove(data);
                     return;
                 }
 
                 if (data.move) {
                     setMoveError(null);
-                    setIncomingMove(data.move);
+                    setIncomingMove(data);
                 }
             } catch (err) {
                 console.error("Ошибка обработки WS сообщения", err);
@@ -126,7 +124,7 @@ function GameContent() {
                 setTimeout(connectSocket, 3000);
             }
         };
-    }, [gameKey, updateSgf]);
+    }, [gameKey]);
 
     useEffect(() => {
         connectSocket();
@@ -156,6 +154,8 @@ function GameContent() {
             console.error("Ошибка выхода из игры", error);
         } finally {
             navigate("/");
+            updateGameKey(null);
+            updateSgf(null);
         }
     };
 
@@ -202,7 +202,7 @@ function GameContent() {
             </div>
 
             {moveError && <div className={styles.error}>Ошибка хода: {moveError}</div>}
-            <GoPlayerMultiplayer onSendMove={sendMove} incomingMove={incomingMove} initialSgf={sgf}/>
+            <GoPlayerMultiplayer onSendMove={sendMove} incomingMove={incomingMove}/>
 
             {isAnalysisOpen && (
                 <AnalysisDialog analysis={analysis} onClose={() => setIsAnalysisOpen(false)}/>

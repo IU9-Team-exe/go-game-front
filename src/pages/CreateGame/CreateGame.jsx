@@ -8,7 +8,7 @@ import { useGame } from "../../contexts/GameContext"; // Импортируем 
 function CreateGame() {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const { setPlayerColor } = useGame(); // Получаем setPlayerColor
+    const { setPlayerColor } = useGame();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -22,25 +22,33 @@ function CreateGame() {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await newGame(); // Параметры по умолчанию на бэке
+            const response = await newGame();
             const gameKey = response.data?.Body?.public_key || response.data?.Body?.currGameKey;
             if (gameKey) {
-                setPlayerColor("b"); // Создатель всегда начинает за черных
+                setPlayerColor("b");
                 navigate(`/game/${gameKey}`);
             } else {
-                throw new Error("Не удалось получить ключ игры от сервера.");
+                setError(response.data?.Body?.error || "Не удалось создать игру. Попробуйте снова.");
             }
-        } catch (err) {
-            console.error("Ошибка создания игры", err);
-            setError(err.response?.data?.Body?.ErrorDescription || err.message || "Не удалось создать игру. Попробуйте снова.");
+        } catch (error) {
+            if (error.response?.status === 409) {
+                const gameKey = error.response.data?.Body?.currGameKey;
+                if (gameKey) {
+                    setPlayerColor("b");
+                    navigate(`/game/${gameKey}`);
+                } else {
+                    setError("Вы уже находитесь в игре, но не удалось получить её ключ.");
+                }
+            } else {
+                setError(error.response?.data?.Body?.error || "Неизвестная ошибка. Попробуйте снова.");
+            }
+        } finally {
             setIsLoading(false);
-            // Не перенаправляем при ошибке
         }
-        // Не нужно setIsLoading(false) при успехе, т.к. происходит редирект
     };
 
     return (
-        <div className={`${styles.container} main-container`}> {/* Добавлен main-container */}
+        <div className={`${styles.container} main-container`}>
             <h2>Создать новую игру Го</h2>
             <p className={styles.description}>
                 Нажмите кнопку ниже, чтобы создать новую игровую комнату.

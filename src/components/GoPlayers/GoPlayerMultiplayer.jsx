@@ -1,22 +1,23 @@
 import React, { useEffect, useRef } from "react";
-import { convertCoords, parseCoords } from "../../utils/conversionUtils";
+import { convertCoords } from "../../utils/conversionUtils";
 import { useGame } from "../../contexts/GameContext.jsx";
 import { useResponsiveBoardSize } from "../../utils/useResponsiveBoardSize.js";
 
 const GoPlayerMultiplayer = ({
-                                 initialSgf = "(;FF[4]GM[1]SZ[19])",
                                  options = {},
                                  onSendMove,
-                                 incomingMove,
                              }) => {
     const containerRef = useRef(null);
     const playerRef = useRef(null);
     const editableRef = useRef(null);
     const originalPlayRef = useRef(null);
-    const { playerColor } = useGame();
+    const { sgf,
+            playerColor,
+    } = useGame();
     const boardSize = useResponsiveBoardSize(20);
 
     useEffect(() => {
+
         const container = containerRef.current;
         if (!container || !window.WGo || !window.WGo.Player) return;
 
@@ -25,7 +26,7 @@ const GoPlayerMultiplayer = ({
         const playerOptions = {
             width: boardSize,
             height: boardSize,
-            sgf: initialSgf,
+            sgf: sgf,
             ...options,
         };
         playerOptions.layout = { top: [], bottom: [], left: [], right: [] };
@@ -83,7 +84,7 @@ const GoPlayerMultiplayer = ({
             editableRef.current = null;
             originalPlayRef.current = null;
         };
-    }, [initialSgf, boardSize, options, playerColor, onSendMove]);
+    }, [sgf, boardSize, options, playerColor, onSendMove]);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -95,18 +96,6 @@ const GoPlayerMultiplayer = ({
         };
     }, []);
 
-    useEffect(() => {
-        if (!incomingMove) return;
-        const editable = editableRef.current;
-        const originalPlay = originalPlayRef.current;
-        if (!editable || !originalPlay) return;
-
-        const { color, coordinates } = incomingMove;
-        const size = playerRef.current?.kifu?.size || 19;
-        const { x, y } = parseCoords(coordinates, size);
-        const wgoColor = color === "black" ? window.WGo.B : window.WGo.W;
-        originalPlay.call(editable, x, y, wgoColor);
-    }, [incomingMove]);
 
     return (
         <div

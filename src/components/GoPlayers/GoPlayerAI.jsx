@@ -1,17 +1,17 @@
-import React, { useEffect, useRef } from "react";
-import { generateMove } from "../../services/API/aiApi";
-import { convertCoords } from "../../utils/conversionUtils";
-import { useResponsiveBoardSize } from "../../utils/useResponsiveBoardSize";
-import { useGame } from "../../contexts/GameContext";
+import React, {useEffect, useRef} from "react";
+import {generateMove} from "../../services/API/aiApi";
+import {convertCoords} from "../../utils/conversionUtils";
+import {useResponsiveBoardSize} from "../../utils/useResponsiveBoardSize";
+import {useGame} from "../../contexts/GameContext";
 
-const GoPlayerAI = ({ options = {} }) => {
+const GoPlayerAI = ({options = {}}) => {
     const containerRef = useRef(null);
     const playerRef = useRef(null);
     const editableRef = useRef(null);
     const originalPlayRef = useRef(null);
     const boardSize = useResponsiveBoardSize(20);
 
-    const { sgf, updateSgf, playerColor } = useGame();
+    const {sgf, updateSgf, playerColor} = useGame();
 
     useEffect(() => {
         const container = containerRef.current;
@@ -25,7 +25,7 @@ const GoPlayerAI = ({ options = {} }) => {
             sgf,
             ...options,
         };
-        playerOptions.layout = { top: [], bottom: [], left: [], right: [] };
+        playerOptions.layout = {top: [], bottom: [], left: [], right: []};
         playerOptions.enableKeys = false;
 
         const player = new window.WGo.BasicPlayer(container, playerOptions);
@@ -45,7 +45,7 @@ const GoPlayerAI = ({ options = {} }) => {
 
             originalPlayRef.current.call(this, x, y);
             const coord = convertCoords(x, y, player.kifu.size);
-            generateMove({ color: playerColor === "b" ? "B" : "W", coordinates: coord })
+            generateMove({color: playerColor === "b" ? "B" : "W", coordinates: coord})
                 .then((resp) => {
                     if (resp.data.Status === 200 && resp.data.Body.sgf) {
                         updateSgf(resp.data.Body.sgf);
@@ -65,7 +65,7 @@ const GoPlayerAI = ({ options = {} }) => {
         player.board.addEventListener("click", editable._ev_click);
 
         const blockWheel = (e) => e.preventDefault();
-        container.addEventListener("wheel", blockWheel, { passive: false });
+        container.addEventListener("wheel", blockWheel, {passive: false});
 
         setTimeout(() => player.last(), 0);
 
@@ -85,7 +85,7 @@ const GoPlayerAI = ({ options = {} }) => {
     return (
         <div
             ref={containerRef}
-            style={{ width: boardSize, height: boardSize, overflow: "hidden" }}
+            style={{width: boardSize, height: boardSize, overflow: "hidden"}}
         />
     );
 };

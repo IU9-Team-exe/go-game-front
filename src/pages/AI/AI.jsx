@@ -38,7 +38,7 @@ function AIContent() {
                 console.error("Ошибка создания игры с ботом:", err);
             }
         })();
-    }, [setPlayerColor, updateSgf, setGameKey]);
+    }, [setPlayerColor]);
 
     const handleAnalyse = async () => {
         if (!gameKey) return;

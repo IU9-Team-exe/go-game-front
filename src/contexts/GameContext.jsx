@@ -17,9 +17,7 @@ export const GameProvider = ({children}) => {
     });
 
     useEffect(() => {
-        if (gameKey) {
-            localStorage.setItem("game_key", gameKey);
-        }
+        localStorage.setItem("game_key", gameKey);
     }, [gameKey]);
 
     useEffect(() => {
@@ -36,6 +34,10 @@ export const GameProvider = ({children}) => {
         setSgf(newSgf);
     };
 
+    const updateGameKey = (newGameKey) => {
+        setGameKey(newGameKey);
+    };
+
     return (
         <GameContext.Provider
             value={{
@@ -45,6 +47,7 @@ export const GameProvider = ({children}) => {
                 setGameKey,
                 sgf,
                 updateSgf,
+                updateGameKey,
                 playerColor,
                 setPlayerColor,
             }}
