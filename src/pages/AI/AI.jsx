@@ -10,11 +10,9 @@ import styles from "../Game/Game.module.css";
 function AIContent() {
     const navigate = useNavigate();
     const {
-        updateSgf,
-        playerColor,
-        setPlayerColor,
-        gameKey,
-        updateGameKey,
+        updateSgfBot,
+        gameKeyBot,
+        updateGameKeyBot,
     } = useGame();
 
     const [analysis, setAnalysis] = useState(null);
@@ -22,28 +20,27 @@ function AIContent() {
     const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
 
     useEffect(() => {
-        setPlayerColor("b");
         (async () => {
             try {
                 const resp = await newBotGame();
                 const { Status, Body } = resp.data;
                 if (Status === 200 && Body.sgf) {
-                    updateSgf(Body.sgf);
-                    if (Body.secret_key) updateGameKey(Body.secret_key);
+                    updateSgfBot(Body.sgf);
+                    if (Body.secret_key) updateGameKeyBot(Body.secret_key);
                 } else if (Status === 400 && Body.secret_key) {
-                    updateGameKey(Body.secret_key);
+                    updateGameKeyBot(Body.secret_key);
                 }
             } catch (err) {
                 console.error("Ошибка создания игры с ботом:", err);
             }
         })();
-    }, [setPlayerColor]);
+    }, [gameKeyBot]);
 
     const handleAnalyse = async () => {
-        if (!gameKey) return;
+        if (!gameKeyBot) return;
         setIsAnalysing(true);
         try {
-            const resp = await analyseCurrent(gameKey);
+            const resp = await analyseCurrent(gameKeyBot);
             if (resp.data.Status === 200) {
                 setAnalysis(resp.data);
                 setIsAnalysisOpen(true);
@@ -58,14 +55,14 @@ function AIContent() {
     const closeAnalyse = () => setIsAnalysisOpen(false);
 
     const handleLeave = async () => {
-        if (!gameKey) return navigate("/");
+        if (!gameKeyBot) return navigate("/");
         try {
-            await leaveGame(gameKey);
+            await leaveGame(gameKeyBot);
         } catch (err) {
             console.error("Ошибка выхода из игры:", err);
         } finally {
-            updateGameKey(null);
-            updateSgf(null);
+            updateGameKeyBot(null);
+            updateSgfBot(null);
             navigate("/");
         }
     };
@@ -89,7 +86,7 @@ function AIContent() {
 
             <GoPlayerAI
                 mode="ai"
-                playerColor={playerColor}
+                playerColor={"b"}
             />
 
             {isAnalysisOpen && (

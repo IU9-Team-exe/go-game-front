@@ -4,12 +4,16 @@ const SET_GAME_INFO = "SET_GAME_INFO";
 const SET_GAME_KEY = "SET_GAME_KEY";
 const SET_SGF = "SET_SGF";
 const SET_PLAYER_COLOR = "SET_PLAYER_COLOR";
+const SET_GAME_KEY_BOT = "SET_GAME_KEY";
+const SET_SGF_BOT = "SET_SGF";
 
 const getInitialState = () => ({
     gameInfo: null,
     gameKey: localStorage.getItem("game_key"),
     sgf: localStorage.getItem("game_sgf") || '(;FF[4]GM[1]SZ[19])',
     playerColor: localStorage.getItem("player_color"),
+    gameKeyBot: localStorage.getItem("game_key_bot"),
+    sgfBot: localStorage.getItem("game_sgf_bot") || '(;FF[4]GM[1]SZ[19])',
 });
 
 function gameReducer(state, action) {
@@ -22,6 +26,10 @@ function gameReducer(state, action) {
             return {...state, sgf: action.payload};
         case SET_PLAYER_COLOR:
             return {...state, playerColor: action.payload};
+        case SET_GAME_KEY_BOT:
+            return {...state, gameKeyBot: action.payload};
+        case SET_SGF_BOT:
+            return {...state, sgfBot: action.payload};
         default:
             throw new Error(`Unknown action type: ${action.type}`);
     }
@@ -45,10 +53,19 @@ export const GameProvider = ({children}) => {
         if (state.playerColor != null) localStorage.setItem("player_color", state.playerColor);
     }, [state.playerColor]);
 
+    useEffect(() => {
+        if (state.gameKeyBot != null) localStorage.setItem("game_key_bot", state.gameKeyBot);
+    }, [state.gameKeyBot]);
+    useEffect(() => {
+        localStorage.setItem("game_sgf_bot", state.sgfBot);
+    }, [state.sgfBot]);
+
     const setGameInfo = (info) => dispatch({type: SET_GAME_INFO, payload: info});
     const updateGameKey = (key) => dispatch({type: SET_GAME_KEY, payload: key});
     const updateSgf = (newSgf) => dispatch({type: SET_SGF, payload: newSgf});
     const setPlayerColor = (color) => dispatch({type: SET_PLAYER_COLOR, payload: color});
+    const updateGameKeyBot = key => dispatch({type: SET_GAME_KEY_BOT, payload: key});
+    const updateSgfBot = sgf => dispatch({type: SET_SGF_BOT, payload: sgf});
 
     const value = useMemo(
         () => ({
@@ -56,10 +73,14 @@ export const GameProvider = ({children}) => {
             gameKey: state.gameKey,
             sgf: state.sgf,
             playerColor: state.playerColor,
+            gameKeyBot: state.gameKeyBot,
+            sgfBot: state.sgfBot,
             setGameInfo,
             updateGameKey,
             updateSgf,
             setPlayerColor,
+            updateGameKeyBot,
+            updateSgfBot,
         }),
         [state]
     );
@@ -74,5 +95,3 @@ export const useGame = () => {
     }
     return context;
 };
-
-export default GameContext;
