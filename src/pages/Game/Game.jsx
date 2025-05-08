@@ -83,7 +83,7 @@ function GameContent() {
             socketRef.current = ws;
         };
         ws.onmessage = (event) => {
-            console.log("WS сообщение:", event.data);
+            // console.log("WS сообщение:", event.data);
             try {
                 const text = event.data.trim();
                 if (!text.startsWith("{")) {
