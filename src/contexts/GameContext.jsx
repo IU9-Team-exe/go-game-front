@@ -1,61 +1,78 @@
-import React, {createContext, useContext, useState, useEffect} from "react";
+import React, {createContext, useContext, useReducer, useEffect, useMemo} from "react";
 
-const GameContext = createContext();
+const SET_GAME_INFO = "SET_GAME_INFO";
+const SET_GAME_KEY = "SET_GAME_KEY";
+const SET_SGF = "SET_SGF";
+const SET_PLAYER_COLOR = "SET_PLAYER_COLOR";
+
+const getInitialState = () => ({
+    gameInfo: null,
+    gameKey: localStorage.getItem("game_key"),
+    sgf: localStorage.getItem("game_sgf") || '(;FF[4]GM[1]SZ[19])',
+    playerColor: localStorage.getItem("player_color"),
+});
+
+function gameReducer(state, action) {
+    switch (action.type) {
+        case SET_GAME_INFO:
+            return {...state, gameInfo: action.payload};
+        case SET_GAME_KEY:
+            return {...state, gameKey: action.payload};
+        case SET_SGF:
+            return {...state, sgf: action.payload};
+        case SET_PLAYER_COLOR:
+            return {...state, playerColor: action.payload};
+        default:
+            throw new Error(`Unknown action type: ${action.type}`);
+    }
+}
+
+const GameContext = createContext(null);
+
 
 export const GameProvider = ({children}) => {
-    const [gameInfo, setGameInfo] = useState(null);
-    const [gameKey, setGameKey] = useState(() => {
-        return localStorage.getItem("game_key") || null;
-    });
-
-    const [sgf, setSgf] = useState(() => {
-        const storedSgf = localStorage.getItem("game_sgf");
-        return storedSgf || "(;FF[4]GM[1]SZ[19])";
-    });
-    const [playerColor, setPlayerColor] = useState(() => {
-        return localStorage.getItem("player_color") || null;
-    });
+    const [state, dispatch] = useReducer(gameReducer, {}, getInitialState);
 
     useEffect(() => {
-        localStorage.setItem("game_key", gameKey);
-    }, [gameKey]);
+        if (state.gameKey != null) localStorage.setItem("game_key", state.gameKey);
+    }, [state.gameKey]);
 
     useEffect(() => {
-        localStorage.setItem("game_sgf", sgf);
-    }, [sgf]);
+        localStorage.setItem("game_sgf", state.sgf);
+    }, [state.sgf]);
 
     useEffect(() => {
-        if (playerColor !== null) {
-            localStorage.setItem("player_color", playerColor);
-        }
-    }, [playerColor]);
+        if (state.playerColor != null) localStorage.setItem("player_color", state.playerColor);
+    }, [state.playerColor]);
 
-    const updateSgf = (newSgf) => {
-        setSgf(newSgf);
-    };
+    const setGameInfo = (info) => dispatch({type: SET_GAME_INFO, payload: info});
+    const updateGameKey = (key) => dispatch({type: SET_GAME_KEY, payload: key});
+    const updateSgf = (newSgf) => dispatch({type: SET_SGF, payload: newSgf});
+    const setPlayerColor = (color) => dispatch({type: SET_PLAYER_COLOR, payload: color});
 
-    const updateGameKey = (newGameKey) => {
-        setGameKey(newGameKey);
-    };
-
-    return (
-        <GameContext.Provider
-            value={{
-                gameInfo,
-                setGameInfo,
-                gameKey,
-                setGameKey,
-                sgf,
-                updateSgf,
-                updateGameKey,
-                playerColor,
-                setPlayerColor,
-            }}
-        >
-            {children}
-        </GameContext.Provider>
+    const value = useMemo(
+        () => ({
+            gameInfo: state.gameInfo,
+            gameKey: state.gameKey,
+            sgf: state.sgf,
+            playerColor: state.playerColor,
+            setGameInfo,
+            updateGameKey,
+            updateSgf,
+            setPlayerColor,
+        }),
+        [state]
     );
+
+    return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useGame = () => useContext(GameContext);
+export const useGame = () => {
+    const context = useContext(GameContext);
+    if (!context) {
+        throw new Error("useGame must be used within GameProvider");
+    }
+    return context;
+};
+
+export default GameContext;

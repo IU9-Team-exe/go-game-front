@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from "react";
-import {joinGame, leaveGame} from "../../services/API/gameApi";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { joinGame } from "../../services/API/gameApi";
+import { useNavigate } from "react-router-dom";
 import styles from "./JoinGame.module.css";
-import {useAuth} from "../../contexts/AuthContext.jsx";
-import {GameProvider, useGame} from "../../contexts/GameContext";
+import { useAuth } from "../../contexts/AuthContext.jsx";
+import { GameProvider, useGame } from "../../contexts/GameContext";
 
 function JoinGameContent() {
-    const [gameCode, setGameCode] = useState("");
+    const [code, setCode] = useState("");
     const navigate = useNavigate();
-    const {user} = useAuth();
-    const {setPlayerColor} = useGame();
+    const { user } = useAuth();
+    const { setPlayerColor, updateGameKey } = useGame();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -20,24 +20,19 @@ function JoinGameContent() {
     }, [user, navigate]);
 
     const handleJoin = async (e) => {
-        e.preventDefault(); // Предотвращаем стандартную отправку формы
-        if (!gameCode.trim()) {
+        e.preventDefault();
+        if (!code.trim()) {
             setError("Введите код игры.");
             return;
         }
         setIsLoading(true);
-        setError(null);
         try {
-            const response = await joinGame(gameCode);
-            const oldGameCode = response.data?.Body?.currGameKey;
-            if (oldGameCode) {
-                await leaveGame(gameCode);
-            }
+            await joinGame(code);
             setPlayerColor("w");
-            navigate(`/game/${gameCode}`);
+            updateGameKey(code);
+            navigate(`/game/${code}`);
         } catch (err) {
-            console.error("Ошибка подключения к игре", err);
-            setError(err.response?.data?.Body?.ErrorDescription || err.message || "Не удалось подключиться к игре. Проверьте код или попробуйте позже.");
+            setError(err.response?.data?.Body?.ErrorDescription || err.message);
             setIsLoading(false);
         }
     };
@@ -52,8 +47,8 @@ function JoinGameContent() {
             <form onSubmit={handleJoin} className={styles.joinForm}>
                 <input
                     type="text"
-                    value={gameCode}
-                    onChange={(e) => setGameCode(e.target.value)}
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
                     placeholder="Код игры"
                     className={styles.inputField}
                     required

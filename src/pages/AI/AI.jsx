@@ -10,12 +10,11 @@ import styles from "../Game/Game.module.css";
 function AIContent() {
     const navigate = useNavigate();
     const {
-        sgf,
         updateSgf,
         playerColor,
         setPlayerColor,
         gameKey,
-        setGameKey,
+        updateGameKey,
     } = useGame();
 
     const [analysis, setAnalysis] = useState(null);
@@ -30,9 +29,9 @@ function AIContent() {
                 const { Status, Body } = resp.data;
                 if (Status === 200 && Body.sgf) {
                     updateSgf(Body.sgf);
-                    if (Body.secret_key) setGameKey(Body.secret_key);
+                    if (Body.secret_key) updateGameKey(Body.secret_key);
                 } else if (Status === 400 && Body.secret_key) {
-                    setGameKey(Body.secret_key);
+                    updateGameKey(Body.secret_key);
                 }
             } catch (err) {
                 console.error("Ошибка создания игры с ботом:", err);
@@ -65,6 +64,8 @@ function AIContent() {
         } catch (err) {
             console.error("Ошибка выхода из игры:", err);
         } finally {
+            updateGameKey(null);
+            updateSgf(null);
             navigate("/");
         }
     };

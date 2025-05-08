@@ -3,12 +3,12 @@ import { newGame } from "../../services/API/gameApi";
 import { useNavigate } from "react-router-dom";
 import styles from "./CreateGame.module.css";
 import { useAuth } from "../../contexts/AuthContext.jsx";
-import { useGame } from "../../contexts/GameContext"; // Импортируем useGame
+import { useGame } from "../../contexts/GameContext";
 
 function CreateGame() {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const { setPlayerColor } = useGame();
+    const { setPlayerColor, updateGameKey } = useGame();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -23,10 +23,11 @@ function CreateGame() {
         setError(null);
         try {
             const response = await newGame();
-            const gameKey = response.data?.Body?.public_key || response.data?.Body?.currGameKey;
-            if (gameKey) {
+            const key = response.data.Body?.public_key || response.data.Body?.currGameKey;
+            if (key) {
                 setPlayerColor("b");
-                navigate(`/game/${gameKey}`);
+                updateGameKey(key);
+                navigate(`/game/${key}`);
             } else {
                 setError(response.data?.Body?.error || "Не удалось создать игру. Попробуйте снова.");
             }
