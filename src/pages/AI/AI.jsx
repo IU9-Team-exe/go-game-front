@@ -45,7 +45,7 @@ function AIContent() {
                 }
             }
         })();
-    }, [gameKeyBot]);
+    }, []);
 
     const handleAnalyse = async () => {
         if (!gameKeyBot) return;
@@ -66,7 +66,6 @@ function AIContent() {
     const closeAnalyse = () => setIsAnalysisOpen(false);
 
     const handleLeave = async () => {
-        if (!gameKeyBot) return navigate("/");
         try {
             await leaveGame(gameKeyBot);
         } catch (err) {
