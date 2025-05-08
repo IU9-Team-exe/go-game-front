@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { joinGame } from "../../services/API/gameApi";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {joinGame, leaveGame} from "../../services/API/gameApi";
+import {useNavigate} from "react-router-dom";
 import styles from "./JoinGame.module.css";
-import { useAuth } from "../../contexts/AuthContext.jsx";
-import { GameProvider, useGame } from "../../contexts/GameContext";
+import {useAuth} from "../../contexts/AuthContext.jsx";
+import {GameProvider, useGame} from "../../contexts/GameContext";
 
 function JoinGameContent() {
     const [code, setCode] = useState("");
     const navigate = useNavigate();
-    const { user } = useAuth();
-    const { setPlayerColor, updateGameKey } = useGame();
+    const {user} = useAuth();
+    const {setPlayerColor, updateGameKey} = useGame();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -31,9 +31,20 @@ function JoinGameContent() {
             setPlayerColor("w");
             updateGameKey(code);
             navigate(`/game/${code}`);
-        } catch (err) {
-            setError(err.response?.data?.Body?.ErrorDescription || err.message);
-            setIsLoading(false);
+        } catch (error) {
+            if (error.response?.status === 409) {
+                const gameKey = error.response.data?.Body?.currGameKey;
+                if (gameKey) {
+                    await leaveGame(gameKey);
+                    await joinGame(code);
+                    setPlayerColor("w");
+                    updateGameKey(code);
+                    navigate(`/game/${code}`);
+                }
+            } else {
+                setError(error.response?.data?.Body?.ErrorDescription || error.message);
+                setIsLoading(false);
+            }
         }
     };
 

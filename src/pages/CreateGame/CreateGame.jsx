@@ -36,6 +36,7 @@ function CreateGame() {
                 const gameKey = error.response.data?.Body?.currGameKey;
                 if (gameKey) {
                     setPlayerColor("b");
+                    updateGameKey(gameKey);
                     navigate(`/game/${gameKey}`);
                 } else {
                     setError("Вы уже находитесь в игре, но не удалось получить её ключ.");
