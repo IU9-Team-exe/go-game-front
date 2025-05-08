@@ -4,8 +4,8 @@ const SET_GAME_INFO = "SET_GAME_INFO";
 const SET_GAME_KEY = "SET_GAME_KEY";
 const SET_SGF = "SET_SGF";
 const SET_PLAYER_COLOR = "SET_PLAYER_COLOR";
-const SET_GAME_KEY_BOT = "SET_GAME_KEY";
-const SET_SGF_BOT = "SET_SGF";
+const SET_GAME_KEY_BOT = "SET_GAME_KEY_BOT";
+const SET_SGF_BOT = "SET_SGF_BOT";
 
 const getInitialState = () => ({
     gameInfo: null,
