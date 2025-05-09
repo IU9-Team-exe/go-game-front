@@ -49,7 +49,7 @@ export function getMoveExplanation(gameId, currentMoveNumber) {
  * @param gameId
  */
 export function analyseCurrent(gameId) {
-    return api.get(`/analyseCurrent?secret_key=${gameId}`)
+    return api.get(`/analyseCurrent?game_key=${gameId}`)
 }
 
 /**
