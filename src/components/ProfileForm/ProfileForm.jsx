@@ -7,6 +7,7 @@ const ProfileForm = ({ initialData = {}, onSave, isLoading }) => {
         email: "",
         PasswordHash: "",
     });
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -62,17 +63,28 @@ const ProfileForm = ({ initialData = {}, onSave, isLoading }) => {
                 </div>
 
                 <div className={styles.inputGroup}>
-                <label htmlFor="password">Пароль:</label>
-                <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="Введите пароль"
-                    value={formData.PasswordHash}
-                    onChange={handleChange}
-                    required
-                />
-        </div>
+                    <label htmlFor="password">Пароль:</label>
+                    <input
+                        id="password"
+                        name="PasswordHash"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Введите пароль"
+                        value={formData.PasswordHash}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <div className={styles.inputGroup}>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={showPassword}
+                            onChange={() => setShowPassword((prev) => !prev)}
+                        />
+                        Показать пароль
+                    </label>
+                </div>
 
                 {error && <p className={styles.error}>{error}</p>}
 
