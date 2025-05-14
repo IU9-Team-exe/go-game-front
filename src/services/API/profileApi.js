@@ -19,3 +19,15 @@ export function getUserByNickname(username) {
         username: username,
     })
 }
+
+/**
+ * Обновление информации о пользователе
+ * @param username
+ * @param email
+ */
+export function updateUserData(username, email) {
+    return api.post("/updateUserData", {
+        username: username,
+        email: email,
+    })
+}

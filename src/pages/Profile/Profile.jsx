@@ -1,15 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {useAuth} from "../../contexts/AuthContext";
-import {useMutation} from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useMutation } from "@tanstack/react-query";
 import ProfileForm from "../../components/ProfileForm/ProfileForm";
-import {getUserByNickname} from "../../services/API/profileApi.js";
-
-
-const updateProfile = () =>
-    console.log("123");
+import { getUserByNickname, updateUserData } from "../../services/API/profileApi.js";
 
 const Profile = () => {
-    const {user} = useAuth();
+    const { user } = useAuth();
     const [userInfo, setUserInfo] = useState(null);
     const [successMsg, setSuccessMsg] = useState("");
 
@@ -30,19 +26,20 @@ const Profile = () => {
     }, [user]);
 
     const mutation = useMutation({
-        mutationFn: updateProfile,
+        mutationFn: ({ username, email }) =>
+            updateUserData(username, email),
         onSuccess: () => {
             setSuccessMsg("Профиль успешно обновлён ✅");
+        },
+        onError: (err) => {
+            console.error("Ошибка обновления профиля:", err);
         },
     });
 
     const handleSave = (formData, setError) => {
         setSuccessMsg("");
         mutation.mutate(
-            {
-                email: formData.email,
-                password: formData.PasswordHash
-            },
+            { username: formData.username, email: formData.email },
             {
                 onError: (err) => {
                     console.error("Ошибка обновления профиля:", err);
@@ -66,11 +63,6 @@ const Profile = () => {
 
     return (
         <div className="main-container">
-            <ProfileForm
-                initialData={userInfo}
-                onSave={handleSave}
-                isLoading={mutation.isLoading}
-            />
             {successMsg && (
                 <p
                     style={{
@@ -82,6 +74,11 @@ const Profile = () => {
                     {successMsg}
                 </p>
             )}
+            <ProfileForm
+                initialData={userInfo}
+                onSave={handleSave}
+                isLoading={mutation.isLoading}
+            />
         </div>
     );
 };

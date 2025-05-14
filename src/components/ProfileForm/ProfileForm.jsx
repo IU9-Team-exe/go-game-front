@@ -18,7 +18,6 @@ const ProfileForm = ({ initialData = {}, onSave, isLoading }) => {
                 PasswordHash: initialData.PasswordHash || initialData.PasswordHash || "",
             });
         }
-        console.log(initialData);
     }, [initialData]);
 
     const handleChange = (e) => {
@@ -44,8 +43,8 @@ const ProfileForm = ({ initialData = {}, onSave, isLoading }) => {
                         name="username"
                         type="text"
                         value={formData.username}
-                        readOnly
-                        disabled
+                        onChange={handleChange}
+                        required
                     />
                 </div>
 
