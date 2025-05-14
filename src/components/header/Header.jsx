@@ -63,9 +63,11 @@ const Header = () => {
                 <div className={styles.right}>
                     {user ? (
                         <>
-                            <Typography variant="subtitle1" className={styles.nickname}>
-                                {user.username}
-                            </Typography>
+                            <NavLink to="/profile" className={styles.link}>
+                                <Typography variant="subtitle1" className={styles.nickname}>
+                                    {user.username}
+                                </Typography>
+                            </NavLink>
                             <button onClick={handleLogout} className={`${styles.button} ${styles.logoutButton}`}>
                                 Выйти
                             </button>
