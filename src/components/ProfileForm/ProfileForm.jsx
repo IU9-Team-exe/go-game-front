@@ -5,7 +5,7 @@ const ProfileForm = ({ initialData = {}, onSave, isLoading }) => {
     const [formData, setFormData] = useState({
         username: "",
         email: "",
-        password: "",
+        PasswordHash: "",
     });
     const [error, setError] = useState(null);
 
@@ -14,9 +14,10 @@ const ProfileForm = ({ initialData = {}, onSave, isLoading }) => {
             setFormData({
                 username: initialData.Username || initialData.username || "",
                 email: initialData.Email || initialData.email || "",
-                password: initialData.Password || initialData.password || "",
+                PasswordHash: initialData.PasswordHash || initialData.PasswordHash || "",
             });
         }
+        console.log(initialData);
     }, [initialData]);
 
     const handleChange = (e) => {
@@ -61,13 +62,13 @@ const ProfileForm = ({ initialData = {}, onSave, isLoading }) => {
                 </div>
 
                 <div className={styles.inputGroup}>
-                <label htmlFor="password">Password:</label>
+                <label htmlFor="password">Пароль:</label>
                 <input
                     id="password"
                     name="password"
                     type="password"
                     placeholder="Введите пароль"
-                    value={formData.password}
+                    value={formData.PasswordHash}
                     onChange={handleChange}
                     required
                 />
