@@ -21,6 +21,7 @@ function JoinGameContent() {
 
     const handleJoin = async (e) => {
         e.preventDefault();
+        setError(null);
         if (!code.trim()) {
             setError("Введите код игры.");
             return;
@@ -40,16 +41,37 @@ function JoinGameContent() {
                     setPlayerColor("w");
                     updateGameKey(code);
                     navigate(`/game/${code}`);
+                } else {
+                    setError(error.response.data?.Body?.ErrorDescription || error.message);
                 }
             } else {
                 setError(error.response?.data?.Body?.ErrorDescription || error.message);
-                setIsLoading(false);
             }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSpectator = async () => {
+        setError(null);
+        if (!code.trim()) {
+            setError("Введите код игры.");
+            return;
+        }
+        setIsLoading(true);
+        try {
+            setPlayerColor("spectator");
+            updateGameKey(code);
+            navigate(`/game/${code}`);
+        } catch (err) {
+            setError(err.response?.data?.Body?.ErrorDescription || err.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className={`${styles.container} main-container`}> {/* Добавлен main-container */}
+        <div className={`${styles.container} main-container`}>
             <h2>Подключиться к игре</h2>
             <p className={styles.description}>
                 Введите код игры, полученный от другого игрока, чтобы присоединиться.
@@ -65,9 +87,19 @@ function JoinGameContent() {
                     required
                     disabled={isLoading}
                 />
-                <button type="submit" className={styles.joinButton} disabled={isLoading}>
-                    {isLoading ? "Подключение..." : "Подключиться"}
-                </button>
+                <div className={styles.buttonsRow}>
+                    <button type="submit" className={styles.joinButton} disabled={isLoading}>
+                        {isLoading ? "Подключение..." : "Играть"}
+                    </button>
+                    <button
+                        type="button"
+                        className={styles.joinButton}
+                        onClick={handleSpectator}
+                        disabled={isLoading}
+                    >
+                        Смотреть как зритель
+                    </button>
+                </div>
             </form>
             {error && <p className={styles.error}>{error}</p>}
         </div>

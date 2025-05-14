@@ -66,3 +66,8 @@
    width: 100%; /* Занимает ширину контейнера */
    box-sizing: border-box; /* Учитываем padding и border */
 }
+
+.buttonsRow {
+   display: flex;
+   gap: 0.5rem;
+}
