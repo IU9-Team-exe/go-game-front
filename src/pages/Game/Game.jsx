@@ -34,11 +34,11 @@ function GameContent() {
     const [isAnalysing, setIsAnalysing] = useState(false);
     const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
 
-    useEffect(() => {
-        if (!user) {
-            navigate("/login");
-        }
-    }, [user, navigate]);
+    // useEffect(() => {
+    //     if (!user) {
+    //         navigate("/login");
+    //     }
+    // }, [user, navigate]);
 
     useEffect(() => {
         if (!playerColor) {
@@ -187,9 +187,11 @@ function GameContent() {
         <div>
             <div className={styles.container}>
                 <h2>Код игры: {gameKey}</h2>
-                <p className={styles.info}>
-                    Оппонент: <strong>{opponentNickname}</strong>
-                </p>
+                {playerColor !== "spectator" &&
+                    <p className={styles.info}>
+                        Оппонент: <strong>{opponentNickname}</strong>
+                    </p>
+                }
                 <div className={styles.buttonsRow}>
                     <button onClick={handleLeave} className={styles.leaveButton}>
                         Выйти
