@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, {useState} from "react";
+import {Link, NavLink} from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
+import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
@@ -10,8 +11,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import styles from "./Header.module.css";
-import { useAuth } from "../../contexts/AuthContext";
-import { logout as apiLogout } from "../../services/API/authApi";
+import {useAuth} from "../../contexts/AuthContext";
+import {logout as apiLogout} from "../../services/API/authApi";
 
 const GoStoneIcon = () => (
     <div className={styles.goStoneIconContainer}>
@@ -22,16 +23,16 @@ const GoStoneIcon = () => (
 );
 
 const navLinks = [
-    { to: "/offline", label: "Offline" },
-    { to: "/create", label: "Создать" },
-    { to: "/join", label: "Присоединиться" },
-    { to: "/ai", label: "Играть с AI" },
-    { to: "/tasks/levels", label: "Уровни задач" },
-    { to: "/archive", label: "Архив" },
+    {to: "/offline", label: "Offline"},
+    {to: "/create", label: "Создать"},
+    {to: "/join", label: "Присоединиться"},
+    {to: "/ai", label: "Играть с AI"},
+    {to: "/tasks/levels", label: "Уровни задач"},
+    {to: "/archive", label: "Архив"},
 ];
 
 const Header = () => {
-    const { user, logout: contextLogout } = useAuth();
+    const {user, logout: contextLogout} = useAuth();
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleLogout = async () => {
@@ -52,7 +53,7 @@ const Header = () => {
     const drawerContent = (
         <div className={styles.drawer}>
             <List>
-                {navLinks.map(({ to, label }) => (
+                {navLinks.map(({to, label}) => (
                     <ListItem key={to} disablePadding>
                         <ListItemButton component={NavLink} to={to} onClick={toggleDrawer}>
                             {label}
@@ -70,24 +71,33 @@ const Header = () => {
                     <div className={styles.left}>
                         <IconButton
                             edge="start"
-                            className={styles.menuButton}
                             onClick={toggleDrawer}
                             aria-label="открыть меню"
+                            sx={{
+                                display: {xs: 'block', md: 'none'},
+                            }}
                         >
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                         <Link to="/" className={styles.logoLink}>
-                            <GoStoneIcon />
+                            <GoStoneIcon/>
                             <Typography variant="h6" component="div" className={styles.title}>
                                 囲碁
                             </Typography>
                         </Link>
-                        <nav className={styles.navigation}>
-                            {navLinks.map(({ to, label }) => (
+                        <Box
+                            component="nav"
+                            className={styles.navigation}
+                            sx={{
+                                display: {xs: "none", md: "flex"},
+                                flexShrink: 0
+                            }}
+                        >
+                            {navLinks.map(({to, label}) => (
                                 <NavLink
                                     key={to}
                                     to={to}
-                                    className={({ isActive }) =>
+                                    className={({isActive}) =>
                                         isActive
                                             ? `${styles.link} ${styles.activeLink}`
                                             : styles.link
@@ -96,7 +106,7 @@ const Header = () => {
                                     {label}
                                 </NavLink>
                             ))}
-                        </nav>
+                        </Box>
                     </div>
                     <div className={styles.right}>
                         {user ? (
@@ -139,7 +149,7 @@ const Header = () => {
                 anchor="top"
                 open={mobileOpen}
                 onClose={toggleDrawer}
-                ModalProps={{ keepMounted: true }} // оптимизация для iOS
+                ModalProps={{keepMounted: true}} // оптимизация для iOS
             >
                 {drawerContent}
             </Drawer>

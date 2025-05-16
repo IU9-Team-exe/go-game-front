@@ -151,12 +151,6 @@
     margin-right: 0.5rem; /* Отступ справа от имени */
 }
 
-/* Мобильный гамбургер — скрываем по умолчанию */
-.menuButton {
-    display: none;
-    color: var(--color-text-on-dark) !important;
-}
-
 /* Стили для самого drawer-контейнера */
 .drawer {
     width: 100%;
@@ -182,15 +176,6 @@
     border-radius: 4px;
 }
 
-/* --- Появление гамбургера и скрытие навигации на экранах <=865px --- */
-@media (max-width: 1200px) {
-    .navigation {
-        display: none;
-    }
-    .menuButton {
-        display: block;
-    }
-}
 
 /* Сохраняем только изменения шрифтов и отступов в узких экранах */
 @media (max-width: 768px) {
