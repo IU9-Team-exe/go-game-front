@@ -12,7 +12,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 1.5rem; /* Немного больше паддинги */
-    flex-wrap: wrap; /* Позволяем переносить элементы на маленьких экранах */
+    flex-wrap: nowrap; /* Оставляем всё в одну строку */
 }
 
 .left {
@@ -66,7 +66,6 @@
     background-color: var(--color-stone-black); /* Центральная точка */
 }
 
-
 .title {
     font-family: var(--font-family-serif) !important; /* Serif для названия */
     font-weight: bold !important;
@@ -76,8 +75,8 @@
 
 /* Стили для навигации */
 .navigation {
-     display: flex;
-     gap: 1.2rem; /* Отступ между ссылками */
+    display: flex;
+    gap: 1.2rem; /* Отступ между ссылками */
 }
 
 /* Стили для ссылок */
@@ -132,18 +131,17 @@
 }
 .registerButton:hover {
     background-color: #5a5246; /* Светлее тушь */
-     border-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
 }
 
 .logoutButton {
-     background-color: transparent;
-     color: var(--color-text-on-dark);
-     border: 1px solid var(--color-text-on-dark);
+    background-color: transparent;
+    color: var(--color-text-on-dark);
+    border: 1px solid var(--color-text-on-dark);
 }
-
 .logoutButton:hover {
-     background-color: rgba(248, 244, 233, 0.1);
-     border-color: #fff;
+    background-color: rgba(248, 244, 233, 0.1);
+    border-color: #fff;
 }
 
 /* Отображение имени пользователя */
@@ -153,25 +151,51 @@
     margin-right: 0.5rem; /* Отступ справа от имени */
 }
 
-/* Адаптивность */
+/* Мобильный гамбургер — скрываем по умолчанию */
+.menuButton {
+    display: none;
+    color: var(--color-text-on-dark) !important;
+}
+
+/* Стили для самого drawer-контейнера */
+.drawer {
+    width: 100%;
+    background-color: var(--color-primary-dark);
+    padding: 1rem 0;
+}
+
+/* Список внутри выдвижного меню */
+.drawer .MuiList-root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Белые кнопки внутри Drawer */
+.drawer .MuiListItemButton-root {
+    width: 90%;
+    text-align: center;
+    color: var(--color-primary-dark);
+    background-color: #fff;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+/* --- Появление гамбургера и скрытие навигации на экранах <=865px --- */
+@media (max-width: 1200px) {
+    .navigation {
+        display: none;
+    }
+    .menuButton {
+        display: block;
+    }
+}
+
+/* Сохраняем только изменения шрифтов и отступов в узких экранах */
 @media (max-width: 768px) {
     .toolbar {
-        flex-direction: column;
-        align-items: flex-start;
         padding: 1rem;
-    }
-    .left {
-        margin-bottom: 1rem;
-        flex-wrap: wrap; /* Позволяем переносить лого и навигацию */
-         gap: 1rem;
-    }
-    .navigation {
-        gap: 0.8rem; /* Уменьшаем отступы */
-        margin-top: 0.5rem; /* Отступ сверху для навигации */
-    }
-    .right {
-        width: 100%;
-        justify-content: flex-end; /* Кнопки справа */
     }
     .title {
         font-size: 1.3rem !important;
@@ -182,19 +206,6 @@
 }
 
 @media (max-width: 480px) {
-    .left {
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
-    }
-    .navigation {
-        width: 100%;
-        justify-content: space-around; /* Распределяем ссылки */
-    }
-    .right {
-       margin-top: 1rem;
-       justify-content: center; /* Центрируем кнопки */
-    }
     .button {
         padding: 0.4em 0.8em;
     }
