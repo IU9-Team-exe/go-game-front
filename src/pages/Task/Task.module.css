@@ -25,3 +25,34 @@
     font-size: 1.75rem;
     margin-bottom: 1rem;
 }
+
+.controls {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.markDone {
+    font-size: 1rem;
+    color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.status {
+    font-size: 0.9rem;
+    color: var(--color-secondary);
+}
+
+.statusDone {
+    font-size: 0.9rem;
+    color: var(--color-primary-dark);
+    font-weight: 500;
+}
+
+.error {
+    color: var(--color-accent);
+    font-size: 0.9rem;
+}

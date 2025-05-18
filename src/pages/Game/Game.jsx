@@ -111,6 +111,12 @@ function GameContent() {
                     return;
                 }
 
+                if (data.event === "waiting_for_opponent") {
+                    //TODO: сделать нормальную обработку вышедшего игрока (ждем бэк)
+                    setOpponentUser(null);
+                    return;
+                }
+
                 if (data.move) {
                     setMoveError(null);
                     setIncomingMove(data);

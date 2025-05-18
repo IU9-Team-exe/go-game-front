@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {joinGame, leaveGame} from "../../services/API/gameApi";
 import {useNavigate} from "react-router-dom";
 import styles from "./JoinGame.module.css";
-import {useAuth} from "../../contexts/AuthContext.jsx";
+// import {useAuth} from "../../contexts/AuthContext.jsx";
 import {GameProvider, useGame} from "../../contexts/GameContext";
 
 function JoinGameContent() {
     const [code, setCode] = useState("");
     const navigate = useNavigate();
-    const {user} = useAuth();
+    // const {user} = useAuth();
     const {setPlayerColor, updateGameKey} = useGame();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -42,10 +42,10 @@ function JoinGameContent() {
                     updateGameKey(code);
                     navigate(`/game/${code}`);
                 } else {
-                    setError(error.response.data?.Body?.ErrorDescription || error.message);
+                    setError(error.response.data?.Body?.message || error.message);
                 }
             } else {
-                setError(error.response?.data?.Body?.ErrorDescription || error.message);
+                setError(error.response?.data?.Body?.message || error.message);
             }
         } finally {
             setIsLoading(false);

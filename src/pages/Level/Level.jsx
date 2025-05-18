@@ -4,11 +4,11 @@ import { useAuth } from "../../contexts/AuthContext";
 import { getAvailableGamesForUser } from "../../services/API/tasksApi";
 import TaskCard from "../../components/TaskCard/TaskCard";
 import styles from "./Level.module.css";
+import {getUserByNickname} from "../../services/API/profileApi.js";
 
 const Level = () => {
     const { level } = useParams();
     const { user } = useAuth();
-    const userID = user.id;
 
     const [searchParams, setSearchParams] = useSearchParams();
     const pageParam = parseInt(searchParams.get("page") || "1", 10);
@@ -32,21 +32,33 @@ const Level = () => {
     useEffect(() => {
         setLoading(true);
         setError(null);
-        getAvailableGamesForUser(page, userID, level)
-            .then((resp) => {
-                const body = resp.data.Body;
-                setTasks(body.tasks || []);
-                setTotalPages(body.total_pages || 1);
+        let userID = null
+
+        getUserByNickname(user.username)
+            .then((response) => {
+                const body = response.data.Body;
+                userID = body.id
             })
-            .catch((err) => {
-                setError(
-                    err.response?.data?.Body?.ErrorDescription ||
-                    err.message ||
-                    "Ошибка загрузки задач"
-                );
+            .catch(() => {
+                setError("Ошибка загрузки задач")
             })
-            .finally(() => setLoading(false));
-    }, [page, level, userID]);
+            .finally(() => {
+                getAvailableGamesForUser(page, userID, level)
+                    .then((resp) => {
+                        const body = resp.data.Body;
+                        setTasks(body.tasks || []);
+                        setTotalPages(body.total_pages || 1);
+                    })
+                    .catch((err) => {
+                        setError(
+                            err.response?.data?.Body?.ErrorDescription ||
+                            err.message ||
+                            "Ошибка загрузки задач"
+                        );
+                    })
+                    .finally(() => setLoading(false));
+            });
+    }, [page, level]);
 
     const handlePrev = () => page > 1 && setPage(page - 1);
     const handleNext = () => page < totalPages && setPage(page + 1);
