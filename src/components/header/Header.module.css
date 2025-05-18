@@ -1,4 +1,3 @@
-/* Стили для AppBar (хедер) */
 .appBar {
     background-color: var(--color-primary-dark) !important; /* Темно-янтарный */
     color: var(--color-text-on-dark) !important; /* Светлый текст */
@@ -6,19 +5,19 @@
     font-family: var(--font-family-base);
 }
 
-/* Стили для Toolbar */
+
 .toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1.5rem; /* Немного больше паддинги */
-    flex-wrap: nowrap; /* Оставляем всё в одну строку */
+    padding: 0.5rem 1.5rem;
+    flex-wrap: nowrap;
 }
 
 .left {
     display: flex;
     align-items: center;
-    gap: 1.5rem; /* Увеличим отступ */
+    gap: 1.5rem;
 }
 
 .right {
@@ -27,7 +26,6 @@
     gap: 1rem;
 }
 
-/* Стили для логотипа */
 .logoLink {
     display: flex;
     align-items: center;
@@ -40,11 +38,11 @@
     width: 36px; /* Размер иконки */
     height: 36px;
     border-radius: 50%;
-    background-color: var(--color-stone-black); /* Черный камень */
+    background-color: var(--color-stone-black);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 3px; /* Отступ для внутреннего камня */
+    padding: 3px;
     box-shadow: var(--shadow-sm);
 }
 
@@ -52,7 +50,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-color: var(--color-stone-white); /* Белый камень */
+    background-color: var(--color-stone-white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -63,25 +61,24 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-color: var(--color-stone-black); /* Центральная точка */
+    background-color: var(--color-stone-black);
 }
 
 .title {
-    font-family: var(--font-family-serif) !important; /* Serif для названия */
+    font-family: var(--font-family-serif) !important;
     font-weight: bold !important;
-    font-size: 1.5rem !important; /* Немного увеличим */
+    font-size: 1.5rem !important;
     color: var(--color-text-on-dark);
 }
 
-/* Стили для навигации */
+
 .navigation {
     display: flex;
-    gap: 1.2rem; /* Отступ между ссылками */
+    gap: 1.2rem;
 }
 
-/* Стили для ссылок */
 .link {
-    color: var(--color-text-on-dark);
+    color: var(--color-text-on-dark) !important;
     text-decoration: none;
     padding: 0.3rem 0.5rem;
     border-radius: 4px;
@@ -91,8 +88,8 @@
 
 .link:hover,
 .link:focus {
-    background-color: rgba(248, 244, 233, 0.1); /* Легкий фон при наведении */
-    color: #fff; /* Ярче при наведении */
+    background-color: rgba(248, 244, 233, 0.1);
+    color: #fff;
     text-decoration: none;
 }
 
@@ -101,7 +98,6 @@
     font-weight: var(--font-weight-bold);
 }
 
-/* Стили для кнопок (если не используются MUI Button) */
 .button {
     border-radius: var(--border-radius);
     border: 1px solid transparent;
@@ -151,14 +147,13 @@
     margin-right: 0.5rem; /* Отступ справа от имени */
 }
 
-/* Стили для самого drawer-контейнера */
+
 .drawer {
     width: 100%;
     background-color: var(--color-primary-dark);
     padding: 1rem 0;
 }
 
-/* Список внутри выдвижного меню */
 .drawer .MuiList-root {
     display: flex;
     flex-direction: column;
@@ -166,18 +161,7 @@
     gap: 0.5rem;
 }
 
-/* Белые кнопки внутри Drawer */
-.drawer .MuiListItemButton-root {
-    width: 90%;
-    text-align: center;
-    color: var(--color-primary-dark);
-    background-color: #fff;
-    font-weight: 500;
-    border-radius: 4px;
-}
 
-
-/* Сохраняем только изменения шрифтов и отступов в узких экранах */
 @media (max-width: 768px) {
     .toolbar {
         padding: 1rem;

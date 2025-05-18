@@ -55,7 +55,7 @@ const Header = () => {
             <List>
                 {navLinks.map(({to, label}) => (
                     <ListItem key={to} disablePadding>
-                        <ListItemButton component={NavLink} to={to} onClick={toggleDrawer}>
+                        <ListItemButton component={NavLink} to={to} onClick={toggleDrawer} className={styles.link}>
                             {label}
                         </ListItemButton>
                     </ListItem>
