@@ -9,7 +9,6 @@ const GoPlayerOffline = ({ sgf = defaultSgf, options = {} }) => {
     const boardSize = useResponsiveBoardSize(20);
     const layoutInfo = {
         top:    ["Control"],
-        bottom: ["CommentBox"],
     };
 
     useEffect(() => {
