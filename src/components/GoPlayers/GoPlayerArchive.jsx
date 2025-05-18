@@ -6,6 +6,10 @@ const GoPlayerArchive = ({ sgf = "(;FF[4]GM[1]SZ[19])", options = {}, onMoveChan
     const playerRef = useRef(null);
     const onMoveChangeRef = useRef(onMoveChange); // Ref to keep track of the latest callback
     const boardSize = useResponsiveBoardSize(20);
+    const layoutInfo = {
+        top:    ["Control"],
+        bottom: ["CommentBox"],
+    };
 
     // Update the ref whenever the callback changes
     useEffect(() => {
@@ -22,7 +26,12 @@ const GoPlayerArchive = ({ sgf = "(;FF[4]GM[1]SZ[19])", options = {}, onMoveChan
             // --- Initialization ---
             containerRef.current.innerHTML = ''; // Clear previous instance visually
 
-            const playerOptions = { width: boardSize, height: boardSize, sgf, ...options };
+            const playerOptions = {
+                width: boardSize,
+                height: boardSize,
+                layout: layoutInfo,
+                sgf,
+                ...options };
             player = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
             player.setCoordinates(true);
 

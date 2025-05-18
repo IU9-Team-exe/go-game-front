@@ -4,6 +4,10 @@ import {useResponsiveBoardSize} from "../../utils/useResponsiveBoardSize";
 const GoPlayerTask = ({sgf, options = {}}) => {
     const containerRef = useRef(null);
     const boardSize = useResponsiveBoardSize(20);
+    const layoutInfo = {
+        top:    ["Control"],
+        bottom: ["CommentBox"],
+    };
 
     useEffect(() => {
         if (!window.WGo || !window.WGo.Player || !containerRef.current) return;
@@ -13,6 +17,7 @@ const GoPlayerTask = ({sgf, options = {}}) => {
         const playerOptions = {
             width: boardSize,
             height: boardSize,
+            layout: layoutInfo,
             sgf,
             enableKeys: false,
             ...options,

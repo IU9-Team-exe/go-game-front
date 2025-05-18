@@ -7,10 +7,19 @@ const GoPlayerOffline = ({ sgf = defaultSgf, options = {} }) => {
     const containerRef = useRef(null);
     const playerRef = useRef(null);
     const boardSize = useResponsiveBoardSize(20);
+    const layoutInfo = {
+        top:    ["Control"],
+        bottom: ["CommentBox"],
+    };
 
     useEffect(() => {
         if (window.WGo && window.WGo.Player) {
-            const playerOptions = { width: boardSize, height: boardSize, sgf, ...options };
+            const playerOptions = {
+                width: boardSize,
+                height: boardSize,
+                layout: layoutInfo,
+                sgf,
+                ...options };
             const player = new window.WGo.BasicPlayer(containerRef.current, playerOptions);
             player.setCoordinates(true);
             const editable = new window.WGo.Player.Editable(player, player.board);

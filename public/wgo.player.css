@@ -46,13 +46,46 @@
 
   /*--- Регионы (оставляем без изменений) ----------------------------------------------*/
 
-  .wgo-player-left, .wgo-player-center, .wgo-player-right  {
-	  float: left;
-  }
+/* Переключаем корневой контейнер на flex */
+.wgo-player-main {
+	display: flex;
+	align-items: flex-start;  /* выравнивание по верху */
+}
 
-  .wgo-player-center {
-	  width: 100%;
-  }
+/* Убираем старые float’ы */
+.wgo-player-left,
+.wgo-player-center,
+.wgo-player-right {
+	float: none !important;
+	display: block;
+}
+
+/* Левая панель (если используется) */
+.wgo-player-left {
+	flex: 0 0 auto;   /* ширина содержимого */
+	margin-right: 10px;
+}
+
+/* Основное пространство (доска) занимает всё, что осталось */
+.wgo-player-center {
+	flex: 1 1 auto;
+	width: auto !important;
+	margin: 0 10px;   /* отступы вокруг доски */
+}
+
+/* Правая панель (GameInfo / Comments) */
+.wgo-player-right {
+	flex: 0 0 auto;   /* только по содержимому */
+	margin-left: 10px;
+}
+
+/* Сами инфо-боксы внутри панели */
+.wgo-player-right .wgo-box-wrapper,
+.wgo-player-left  .wgo-box-wrapper {
+	width: 100%;      /* растягиваются на всю панель */
+	box-sizing: border-box;
+}
+
 
   .wgo-player-left-wrapper, .wgo-player-right-wrapper  {
 	  height: 100%;
