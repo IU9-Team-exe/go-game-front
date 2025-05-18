@@ -67,25 +67,14 @@ function ArchiveGameCard({game}) {
                 <strong>Результат:</strong> {formatResult(Result)}
             </div>
 
-            {Sgf && (
-                <>
-                    <a
-                        href={Sgf}
-                        download="sgf.txt"
-                        className={styles.sgfLink}
-                        title="Скачать SGF"
-                    >
-                        Скачать SGF
-                    </a>
-                    <Link
-                        to={`/archive/game/${game_id}`}
-                        className={styles.viewGameButton}
-                        title="Посмотреть партию"
-                    >
-                        Посмотреть партию
-                    </Link>
-                </>
-            )}
+            <Link
+                to={`/archive/game/${game_id}`}
+                className={styles.viewGameButton}
+                title="Посмотреть партию"
+            >
+                Посмотреть партию
+            </Link>
+
         </div>
     );
 }
