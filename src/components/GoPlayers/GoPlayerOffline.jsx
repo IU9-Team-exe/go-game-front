@@ -6,7 +6,7 @@ const defaultSgf = "(;FF[4]GM[1]SZ[19])";
 const GoPlayerOffline = ({ sgf = defaultSgf, options = {} }) => {
     const containerRef = useRef(null);
     const playerRef = useRef(null);
-    const boardSize = useResponsiveBoardSize(20);
+    const boardSize = useResponsiveBoardSize(1);
     const layoutInfo = {
         top:    ["Control"],
     };

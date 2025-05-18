@@ -69,7 +69,7 @@
 /* Основное пространство (доска) занимает всё, что осталось */
 .wgo-player-center {
 	flex: 1 1 auto;
-	width: auto !important;
+	width: 100%;
 	margin: 0 10px;   /* отступы вокруг доски */
 }
 
@@ -86,6 +86,13 @@
 	box-sizing: border-box;
 }
 
+/*.wgo-player-left, .wgo-player-center, .wgo-player-right  {*/
+/*	float: left;*/
+/*}*/
+
+/*.wgo-player-center {*/
+/*	width: 100%;*/
+/*}*/
 
   .wgo-player-left-wrapper, .wgo-player-right-wrapper  {
 	  height: 100%;
@@ -556,17 +563,17 @@
 	  width: 100%;
 	  text-align: center;
 	  display: flex; /* Используем flex для выравнивания групп */
-	  justify-content: space-between; /* Распределяем группы */
+	  justify-content: center; /* Распределяем группы */
 	  align-items: center;
   }
 
   /* Группы кнопок (оставляем без изменений) */
   .wgo-ctrlgroup-left {
-	  /* float: left; - убираем float */
+	  display:none !important;
   }
 
   .wgo-ctrlgroup-right {
-	  /* float: right; - убираем float */
+	  display:none !important;
   }
 
   .wgo-ctrlgroup-control {
