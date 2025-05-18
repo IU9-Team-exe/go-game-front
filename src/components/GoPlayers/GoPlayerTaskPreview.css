@@ -1,0 +1,48 @@
+.go-task-preview {
+    overflow: hidden;
+    flex-shrink: 0;
+    display: block !important;
+    position: relative;
+}
+
+.go-task-preview .wgo-player-left,
+.go-task-preview .wgo-player-right,
+.go-task-preview .wgo-player-top,
+.go-task-preview .wgo-player-bottom,
+.go-task-preview .wgo-player-left-wrapper,
+.go-task-preview .wgo-player-right-wrapper,
+.go-task-preview .wgo-player-top-wrapper,
+.go-task-preview .wgo-player-bottom-wrapper {
+    display: none !important;
+}
+
+.go-task-preview .wgo-player-center {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
+}
+
+.go-task-preview .wgo-player-board {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+}
+
+.go-task-preview .wgo-board {
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.go-task-preview .wgo-board canvas {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}

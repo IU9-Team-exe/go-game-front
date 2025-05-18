@@ -1,11 +1,10 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import GoPlayerTask from "../../components/GoPlayers/GoPlayerTask";
 import styles from "./Task.module.css";
 
 export default function TaskPage() {
     const { state } = useLocation();
-    const navigate = useNavigate();
     const { sgf, taskNumber, taskLevel } = state || {};
 
     if (!sgf) {
@@ -19,11 +18,8 @@ export default function TaskPage() {
     return (
         <div>
             <div className={`main-container ${styles.container}`}>
-                <button className={styles.backButton} onClick={() => navigate(-1)}>
-                    ← Назад
-                </button>
                 <h2 className={styles.title}>
-                    Задача #{taskNumber} {taskLevel && ` (уровень ${taskLevel})`}
+                    Задача №{taskNumber} {taskLevel && ` (уровень ${taskLevel})`}
                 </h2>
             </div>
             <GoPlayerTask sgf={sgf} />
