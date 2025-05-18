@@ -13,6 +13,13 @@ export function login(username, password) {
 }
 
 /**
+ * Проверка авторизации
+ */
+export function checkAuth() {
+    return api.get("/checkAuthorized")
+}
+
+/**
  * Выход из аккаунта
  */
 export function logout() {

@@ -1,14 +1,23 @@
 import React from "react";
-import AppRouter from "./routes/AppRouter";
+import { useAuth } from "./contexts/AuthContext";
 import Header from "./components/header/Header";
+import AppRouter from "./routes/AppRouter";
 
-function App() {
+export default function App() {
+    const { isAuthLoading } = useAuth();
+
+    if (isAuthLoading) {
+        return (
+            <div className="main-container">
+                Проверяем авторизацию…
+            </div>
+        );
+    }
+
     return (
         <>
-            <Header/>
-            <AppRouter/>
+            <Header />
+            <AppRouter />
         </>
     );
 }
-
-export default App;

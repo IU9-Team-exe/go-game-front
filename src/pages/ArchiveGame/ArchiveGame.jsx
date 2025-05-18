@@ -141,8 +141,6 @@ const ArchiveGame = () => {
             <h2 className={styles.title}>Архивная партия</h2>
             <div className={styles.gameDetails}>
                 <p><strong>Игроки:</strong> {gameInfo.BlackPlayer} vs {gameInfo.WhitePlayer}</p>
-                <p><strong>Дата:</strong> {new Date(gameInfo.Date).toLocaleDateString("ru-RU")}</p>
-                {gameInfo.Event && <p><strong>Событие:</strong> {gameInfo.Event}</p>}
             </div>
 
             <div className={styles.playerContainer}>

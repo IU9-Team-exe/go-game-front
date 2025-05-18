@@ -27,7 +27,7 @@ const navLinks = [
     {to: "/create", label: "Создать"},
     {to: "/join", label: "Присоединиться"},
     {to: "/ai", label: "Играть с AI"},
-    {to: "/tasks/levels", label: "Уровни задач"},
+    {to: "/tasks/levels", label: "Задачи"},
     {to: "/archive", label: "Архив"},
 ];
 

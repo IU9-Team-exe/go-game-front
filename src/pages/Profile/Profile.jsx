@@ -53,14 +53,6 @@ const Profile = () => {
         );
     };
 
-    if (!user) {
-        return (
-            <div className="main-container">
-                <p>Необходимо авторизоваться для просмотра профиля.</p>
-            </div>
-        );
-    }
-
     return (
         <div className="main-container">
             {successMsg && (

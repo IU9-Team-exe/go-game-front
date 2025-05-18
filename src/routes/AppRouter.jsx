@@ -14,24 +14,45 @@ import TasksLevels from "../pages/TasksLevels/TasksLevels.jsx";
 import Level from "../pages/Level/Level.jsx";
 import TaskPage from "../pages/Task/Task.jsx";
 import Profile from "../pages/Profile/Profile.jsx";
+import PrivateRoute from "./PrivateRoute.jsx";
 
 export default function AppRouter() {
     return (
         <Routes>
             <Route path="/" element={<Home/>}/>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/register" element={<Register/>}/>
             <Route path="/offline" element={<Offline/>}/>
-            <Route path="/join" element={<JoinGame />} />
-            <Route path="/create" element={<CreateGame />} />
-            <Route path="/game/:gameKey" element={<Game />} />
-            <Route path="/ai" element={<AI />} />
-            <Route path="/archive" element={<ArchivePage />} />
-            <Route path="/archive/game/:gameId" element={<ArchiveGame />} />
-            <Route path="/tasks/levels" element={<TasksLevels />} />
-            <Route path="/tasks/level/:level" element={<Level />} />
-            <Route path="/task/:taskNumber" element={<TaskPage />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/join" element={<JoinGame/>}/>
+            <Route path="/create" element={<CreateGame/>}/>
+            <Route path="/game/:gameKey" element={<Game/>}/>
+            <Route path="/ai" element={<AI/>}/>
+            <Route path="/archive" element={
+                <PrivateRoute>
+                    <ArchivePage/>
+                </PrivateRoute>
+            }
+            />
+            <Route path="/archive/game/:gameId" element={<ArchiveGame/>}/>
+            <Route path="/tasks/levels" element={
+                <PrivateRoute>
+                    <TasksLevels/>
+                </PrivateRoute>
+            }
+            />
+            <Route path="/tasks/level/:level" element={
+                <PrivateRoute>
+                    <Level/>
+                </PrivateRoute>
+            }
+            />
+            <Route path="/task/:taskNumber" element={<TaskPage/>}/>
+            <Route path="/profile" element={
+                <PrivateRoute>
+                    <Profile/>
+                </PrivateRoute>
+            }
+            />
             <Route path="*" element={<div>Страница не найдена</div>}/>
         </Routes>
     );
