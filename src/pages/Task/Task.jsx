@@ -6,9 +6,9 @@ import styles from "./Task.module.css";
 
 export default function TaskPage() {
     const { state } = useLocation();
-    const { sgf, taskNumber, taskLevel } = state || {};
+    const { sgf, taskNumber, taskLevel, taskStatus } = state || {};
 
-    const [done, setDone] = useState(false);
+    const [done, setDone] = useState(taskStatus);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 

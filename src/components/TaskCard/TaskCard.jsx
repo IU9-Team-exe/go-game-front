@@ -12,6 +12,7 @@ const TaskCard = ({ task, level }) => {
             state: {
                 sgf: task.task_sgf,
                 taskNumber: task.task_number,
+                taskStatus: task.task_status,
                 taskLevel: level,
             },
         });
