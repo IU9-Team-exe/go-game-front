@@ -46,3 +46,16 @@
     width: 100% !important;
     height: 100% !important;
 }
+
+
+/*fix*/
+.go-task-preview .wgo-player-center,
+.go-task-preview .wgo-player-board {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.go-task-preview .wgo-board,
+.go-task-preview .wgo-board canvas {
+    box-sizing: border-box !important;
+}
