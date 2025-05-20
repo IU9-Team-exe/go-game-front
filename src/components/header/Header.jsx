@@ -113,7 +113,7 @@ const Header = () => {
                             <>
                                 <NavLink to="/profile" className={styles.link}>
                                     <Typography variant="subtitle1" className={styles.nickname}>
-                                        {user.username}
+                                        {user.username} ({user.rating}★)
                                     </Typography>
                                 </NavLink>
                                 <button
