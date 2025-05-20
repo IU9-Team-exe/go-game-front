@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { getAvailableGamesForUser } from "../../services/API/tasksApi";
+import React, {useEffect, useState} from "react";
+import {useParams, useSearchParams} from "react-router-dom";
+import {useAuth} from "../../contexts/AuthContext";
+import {getAvailableGamesForUser} from "../../services/API/tasksApi";
 import TaskCard from "../../components/TaskCard/TaskCard";
 import styles from "./Level.module.css";
 import {getUserByNickname} from "../../services/API/profileApi.js";
 
 const Level = () => {
-    const { level } = useParams();
-    const { user } = useAuth();
+    const {level} = useParams();
+    const {user} = useAuth();
 
     const [searchParams, setSearchParams] = useSearchParams();
     const pageParam = parseInt(searchParams.get("page") || "1", 10);
@@ -26,38 +26,28 @@ const Level = () => {
     }, [pageParam]);
 
     useEffect(() => {
-        setSearchParams({ page: page.toString() });
+        setSearchParams({page: page.toString()});
     }, [page]);
 
     useEffect(() => {
         setLoading(true);
         setError(null);
-        let userID = null
 
-        getUserByNickname(user.username)
-            .then((response) => {
-                const body = response.data.Body;
-                userID = body.id
+        getAvailableGamesForUser(page, user.id, level)
+            .then((resp) => {
+                const body = resp.data.Body;
+                setTasks(body.tasks || []);
+                setTotalPages(body.total_pages || 1);
             })
-            .catch(() => {
-                setError("Ошибка загрузки задач")
+            .catch((err) => {
+                setError(
+                    err.response?.data?.Body?.ErrorDescription ||
+                    err.message ||
+                    "Ошибка загрузки задач"
+                );
             })
-            .finally(() => {
-                getAvailableGamesForUser(page, userID, level)
-                    .then((resp) => {
-                        const body = resp.data.Body;
-                        setTasks(body.tasks || []);
-                        setTotalPages(body.total_pages || 1);
-                    })
-                    .catch((err) => {
-                        setError(
-                            err.response?.data?.Body?.ErrorDescription ||
-                            err.message ||
-                            "Ошибка загрузки задач"
-                        );
-                    })
-                    .finally(() => setLoading(false));
-            });
+            .finally(() => setLoading(false));
+
     }, [page, level]);
 
     const handlePrev = () => page > 1 && setPage(page - 1);
@@ -74,7 +64,7 @@ const Level = () => {
             {!loading && tasks.length > 0 && (
                 <div className={styles.tasksGrid}>
                     {tasks.map((t) => (
-                        <TaskCard key={t.task_number} task={t} level={level} />
+                        <TaskCard key={t.task_number} task={t} level={level}/>
                     ))}
                 </div>
             )}

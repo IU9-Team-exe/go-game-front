@@ -13,7 +13,7 @@ const Profile = () => {
         if (!user) return;
         const fetchUserInfo = async () => {
             try {
-                const response = await getUserByNickname(user.username || user);
+                const response = await getUserByNickname(user.username);
                 if (response.data?.Status === 200) {
                     setUserInfo(response.data.Body);
                 }
@@ -22,7 +22,7 @@ const Profile = () => {
             }
         };
 
-        fetchUserInfo();
+        fetchUserInfo().then();
     }, [user]);
 
     const mutation = useMutation({
