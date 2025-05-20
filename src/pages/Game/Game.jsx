@@ -70,7 +70,7 @@ function GameContent() {
     }, [gameKey]);
 
     const connectSocket = useCallback(() => {
-        const socketUrl = `${WS_URL_BASE}?game_id=${gameKey}`;
+        const socketUrl = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + `${WS_URL_BASE}?game_id=${gameKey}`;
         let ws;
         try {
             ws = new WebSocket(socketUrl);
