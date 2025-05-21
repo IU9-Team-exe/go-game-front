@@ -73,7 +73,9 @@ const ArchiveGame = () => {
         setShowExplanation(false);
 
         try {
-            const data = await getMoveExplanation(gameId, currentMoveNumber);
+            const response = await getMoveExplanation(gameId, currentMoveNumber);
+
+            const data = response.data;
 
             if (data?.Status === 200 && data?.Body?.llm_response) {
                 setAiExplanation(data.Body.llm_response);
