@@ -75,20 +75,6 @@ const ArchiveGame = () => {
         try {
             const response = await getMoveExplanation(gameId, currentMoveNumber);
 
-            if (!response.ok) {
-                let errorMsg = `HTTP error! status: ${response.status}`;
-                try {
-                    const errorBody = await response.json();
-                    errorMsg = errorBody?.Body?.ErrorDescription || errorMsg;
-                } catch (parseError) {
-                    console.warn("Could not parse error response body:", parseError);
-                }
-                if (response.status === 0 || response.type === 'opaque' || response.type === 'error') {
-                    errorMsg = "Network error or CORS issue. Check console and backend CORS configuration.";
-                }
-                throw new Error(errorMsg);
-            }
-
             const data = await response.json();
 
             if (data?.Status === 200 && data?.Body?.llm_response) {
